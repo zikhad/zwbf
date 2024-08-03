@@ -1,0 +1,6 @@
+Tooltip_FR = {
+    Tooltip_Contraceptive   = "Prévient la grossesse",
+    Tooltip_Lactaid         = "Aide à la lactation",
+    Tooltip_BreastPump      = "Utile pour extraire le lait",
+    Tooltip_MilkBottle      = "Une bouteille pleine de lait maternel",
+}

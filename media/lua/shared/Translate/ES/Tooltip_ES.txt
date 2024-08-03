@@ -1,0 +1,6 @@
+Tooltip_EN {
+    Tooltip_Contraceptive   = "Previene el embarazo",
+    Tooltip_Lactaid         = "Ayuda con la lactancia",
+    Tooltip_BreastPump      = "Útil para extraer leche",
+    Tooltip_MilkBottle      = "Una botella llena de leche materna",
+}

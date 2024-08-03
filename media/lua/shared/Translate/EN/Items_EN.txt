@@ -1,0 +1,5 @@
+Items_EN {
+    DisplayNameContraceptive        = "Contraceptive",
+    DisplayNameMilkBottle           = "Milk Bottle",
+    DisplayNameMilkBottle_rotten    = "Milk Bottle (rotten)",
+}

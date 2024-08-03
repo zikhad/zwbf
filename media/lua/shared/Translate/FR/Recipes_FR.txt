@@ -1,0 +1,4 @@
+Recipes_FR = {
+	Recipe_Fill_Biberon = "Remplir le biberon",
+	Recipe_Fill_Milk_Bottle = "Remplir la bouteille de lait",
+}

@@ -1,0 +1,96 @@
+module ZWBF {
+	imports {
+		Base,
+		Babies
+	}
+
+	item Contraceptive
+	{
+	    DisplayCategory 	= FirstAid,
+		Weight				= 0.1,
+		Type				= Drainable,
+        UseDelta			= 0.1,
+		UseWhileEquipped	= FALSE,
+		DisplayName			= Contraceptive,
+		Icon				= PillsPainkiller,
+		Tooltip 			= Tooltip_Contraceptive,
+		StaticModel 		= PillBottle,
+		WorldStaticModel 	= PainKillers_Ground,
+		Medical 			= TRUE,
+	}
+	item Lactaid
+	{
+		DisplayCategory 	= FirstAid,
+		Weight				= 0.1,
+		Type				= Drainable,
+        UseDelta			= 0.1,
+		UseWhileEquipped	= FALSE,
+		DisplayName			= Lactaid,
+		Icon				= PillsPainkiller,
+		Tooltip 			= Tooltip_Lactaid,
+		StaticModel 		= PillBottle,
+		WorldStaticModel 	= PainKillers_Ground,
+		Medical 			= TRUE,
+	}
+	item BreastPump
+	{
+		DisplayCategory 	= Babies,
+		Weight				= 0.2,
+		Type				= Food,
+		DisplayName			= Breast Pump,
+		Icon				= breastpump,
+		StaticModel			= Biberon,
+		WorldStaticModel	= Biberon,
+		Tooltip				= Tooltip_BreastPump,
+	}
+	
+	item MilkBottle
+	{
+		DisplayName			= Milk Bottle,
+		DisplayCategory		= Food,
+		Type				= Food,
+		Weight				= 0.2,
+		Icon				= WaterBottle_Full,
+		Tooltip 			= Tooltip_MilkBottle,
+		CantBeFrozen 		= TRUE,
+		EvolvedRecipe 		= HotDrink:2;HotDrinkRed:2;HotDrinkWhite:2;HotDrinkSpiffo:2;HotDrinkTea:2;Beverage:2;Beverage2:2;Oatmeal:2;Soup:5;Stew:5,
+		FoodType 			= Milk,
+		DaysFresh			= 4,
+		DaysTotallyRotten 	= 7,
+		HungerChange 		= -10,
+		ThirstChange 		= -100,
+		Calories 			= 110,
+		Carbohydrates 		= 13,
+		Lipids 				= 2.5,
+		Proteins 			= 8,
+		CustomContextMenu 	= Drink,
+		CustomEatSound 		= DrinkingFromCarton,
+		StaticModel 		= WaterBottle,
+		WorldStaticModel 	= WaterBottleFull,
+		Tags 				= Milk,
+		ReplaceOnUse 		= WaterBottleEmpty,
+		ReplaceOnRotten		= MilkBottle_rotten,
+	}
+	item MilkBottle_rotten
+	{
+		DisplayName			= Milk Bottle (rotten),
+		DisplayCategory 	= Food,
+		Weight				= 0.2,
+		Icon				= WaterBottle_Full,
+		Tooltip 			= Tooltip_MilkBottle,
+		CantBeFrozen 		= TRUE,
+		FoodType 			= Milk,
+		PoisonPower 		= 5,
+		HungerChange 		= -10,
+		ThirstChange 		= -100,
+		Calories 			= 110,
+		Carbohydrates 		= 13,
+		Lipids 				= 2.5,
+		Proteins 			= 8,
+		CustomContextMenu	= Drink,
+		CustomEatSound 		= DrinkingFromCarton,
+		StaticModel 		= WaterBottle,
+        WorldStaticModel	= WaterBottleFull,
+		ReplaceOnUse 		= WaterBottleEmpty,
+	}
+}

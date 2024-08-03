@@ -1,0 +1,36 @@
+module ZWBFRecipes
+{
+    import
+    {
+        Base,
+        Babies
+    }
+
+    recipe Fill Biberon
+    {
+        Empty_Biberon,
+        keep BreastPump,
+
+        Result: Biberon_milk,
+        Time: 500.0,
+        Category: Cooking,
+        OnGiveXP: Recipe.OnGiveXP.None,
+        Category: Cooking,
+        Sound: PourWaterIntoObject,
+        OnTest: ZWBFRecipes.OnTest.BreastPump,
+        OnCreate: ZWBFRecipes.OnCreate.BreastPump,
+    }
+    recipe Fill Milk Bottle
+    {
+        WaterBottleEmpty,
+        keep BreastPump,
+
+        Result: MilkBottle,
+        Time: 500.0,
+        Category: Cooking,
+        OnGiveXP: Recipe.OnGiveXP.None,
+        Category: Cooking,
+        Sound: PourWaterIntoObject,
+        OnTest: ZWBFRecipes.OnTest.BreastPump,
+    }
+}

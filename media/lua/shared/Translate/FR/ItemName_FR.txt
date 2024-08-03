@@ -1,0 +1,7 @@
+ItemName_FR = {
+	ItemName_ZWBF.BreastPump = "Tire-lait",
+	ItemName_ZWBF.Contraceptive = "Contraceptif",
+	ItemName_ZWBF.Lactaid = "Lactaide",
+	ItemName_ZWBF.MilkBottle = "Bouteille de lait",
+	ItemName_ZWBF.MilkBottle_rotten = "Bouteille de lait (pourri)",
+}

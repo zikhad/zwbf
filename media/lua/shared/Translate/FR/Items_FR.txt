@@ -1,0 +1,5 @@
+Items_FR = {
+    DisplayNameContraceptive        = "Contraceptif",
+    DisplayNameMilkBottle           = "Bouteille de lait",
+    DisplayNameMilkBottle_rotten    = "Bouteille de lait (pourri)",
+}

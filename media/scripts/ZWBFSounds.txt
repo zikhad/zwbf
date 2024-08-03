@@ -1,0 +1,11 @@
+module Base {
+  
+    sound BreastfeedBaby {
+        category = Item, loop = false, is3D = true,
+        clip {
+            file = media/sound/feed.ogg,
+            distanceMin = 2, distanceMax = 6,
+            reverbFactor = 0.1, volume = 0.5,
+        }
+    }
+}

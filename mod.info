@@ -1,0 +1,9 @@
+name=ZomboWin Being Female
+poster=poster.png
+id=ZWBF
+description=ZomboWin Being Female by Zikhad.
+description=This mod introduces More Female Roleplay to Project Zomboid.
+description=Menstrual cycle, Pregnancy, Lactation and more
+url=https://github.com/zikhad/zwbf
+versionMin=1.0.3
+require=ZomboWin,ZomboWinDefeatStrip,UIAPI,Pregnancy,Babies
