@@ -51,7 +51,7 @@ function ZWBF_BuildInventoryCM(player, context, items)
 
 		if (
 				string.find(item:getType(), "Baby") and
-				Lactation:getMilkAmount() > Lactation:getBottleAmount()
+				Lactation:getMilkAmount() >= Lactation:getBottleAmount()
 			) then
 			context:addOption(
 				getText("ContextMenu_BreastFeed_Baby"),
