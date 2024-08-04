@@ -1,3 +1,5 @@
+# [V 1.0.4] Lactation hotfix
+- Fix lactation Multiplier issue
 # [V 1.0.3] Adding translations
 - adding ES and FR translations (Thanks @Yonchi and @blabla012345)
 # [V 1.0.2] Bug fix: missing commas
