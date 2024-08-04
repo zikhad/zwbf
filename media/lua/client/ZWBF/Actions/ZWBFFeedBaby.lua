@@ -6,6 +6,7 @@ local getText = getText
 local getPlayer = getPlayer
 local GameTime = GameTime
 local getGametimeTimestamp = getGametimeTimestamp
+local ZombRandFloat = ZombRandFloat
 
 local Lactation = require("ZWBF/ZWBFLactation")
 
@@ -75,6 +76,7 @@ function ZWBFActionFeedBaby:perform()
 	ISBaseTimedAction.perform(self)
 	feedBaby(self.baby)
 	Lactation:remove(Lactation:getBottleAmount())
+    Lactation:setMultiplier(1 + ZombRandFloat(0.1, 0.3))
     Lactation:addExpiration(Lactation.CONSTANTS.EXPIRATION)
 end
 

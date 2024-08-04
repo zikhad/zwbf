@@ -32,6 +32,9 @@ function Lactation:update()
 	local player = getPlayer()
 	local data = Lactation.data
 	data.MilkAmount = (data.MilkAmount > 0) and data.MilkAmount or 0
+	data.MilkMultiplier = (data.MilkMultiplier > 0) and data.MilkMultiplier or 0
+	data.IsLactating = data.IsLactating or false
+	data.Expiration = (data.Expiration > 0) and data.Expiration or 0
 
 	player:getModData().ZWBFLactation = data
 end
@@ -150,6 +153,7 @@ local function onEveryHour()
 	local multiplier = 1 + data.MilkMultiplier
 	data.MilkAmount = (data.MilkAmount + amount) * multiplier
 	data.MilkMultiplier = data.MilkMultiplier - 0.1
+	data.MilkAmount = (data.MilkAmount < 0) and 0 or data.MilkAmount
 	if data.MilkAmount > Lactation.CONSTANTS.MAX_CAPACITY then
 		data.MilkAmount = Lactation.CONSTANTS.MAX_CAPACITY
 	end
