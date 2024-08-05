@@ -46,4 +46,22 @@ function Utils:getAnim()
 	end
 end
 
+function Utils:isAnimationWhitelisted(animation)
+    local blacklist = {
+        "bj",
+        "oral",
+        "masturbation"
+    }
+    
+    animation = string.lower(animation)
+
+    for _, value in ipairs(blacklist) do
+        if string.find(animation, value) then
+            return false
+        end
+    end
+    return true
+    
+end
+
 return Utils

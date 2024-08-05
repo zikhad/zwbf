@@ -10,6 +10,8 @@ local MAX_AMOUNT = 50
 local ZomboWin = require("ZomboWin/ZomboWin")
 local ActionEvents = ZomboWin.AnimationHandler.ActionEvents
 
+local Utils = require("ZWBF/ZWBFUtils")
+
 --- Localized global functions from PZ
 local getText = getText
 local HaloTextHelper = HaloTextHelper
@@ -58,7 +60,9 @@ local function _onPlayerUpdate(character)
 	-- Only do this if the ZomboWinSexScene is not playing and the flag is true
 	if not character:getModData().ZomboWinSexScene and shouldAddSperm then
 		injectSperm()    --- Inject sperm into the womb
-		impregnate()     --- Handle impregnation
+		if Utils:isAnimationWhitelisted(Utils:getAnim()) then
+			impregnate()     --- Handle impregnation			
+		end
 		shouldAddSperm = false --- Reset the flag
 	end
 end
