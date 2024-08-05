@@ -1,6 +1,8 @@
 local Utils = {}
 
 local ISToolTip = ISToolTip
+local ISTimedActionQueue = ISTimedActionQueue;
+local getPlayer = getPlayer;
 
 --- Create an option in provided menu context
 --- @param menu any
@@ -32,6 +34,16 @@ function Utils:percentageToNumber(percentage, maxNumber)
 
     -- Calculate the corresponding number between 0 and maxNumber
     return math.floor((percentage / 100) * maxNumber)
+end
+
+
+--Gets the players timedaction queue
+function Utils:getAnim()
+	--Loop through table but returns first result
+    for i,n in pairs(ISTimedActionQueue.getTimedActionQueue(getPlayer()).queue) do
+		--Returns name of the animation
+        return n.animation --Or reutrn n for full table information
+	end
 end
 
 return Utils

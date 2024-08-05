@@ -245,6 +245,7 @@ function Womb:getImage()
     
     -- check if the player is in a scene
     if player:getModData().ZomboWinSexScene then
+        print("ZWBF - Womb - In Scene" .. Utils:getAnim()) -- debug the current animation
         -- if so, a scene will be selected based on womb conditions
         return sceneWomb()
     end
