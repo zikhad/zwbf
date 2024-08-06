@@ -37,7 +37,9 @@ function Utils:percentageToNumber(percentage, maxNumber)
 end
 
 
---Gets the players timedaction queue
+--- Gets the player current animation
+--- @param player any
+--- @return string | nil
 function Utils:getAnim(player)
     player = player or getPlayer()
 	--Loop through table but returns first result
@@ -48,6 +50,9 @@ function Utils:getAnim(player)
     return nil
 end
 
+--- Returns true if the animation is whitelisted
+--- @param animation string
+--- @return boolean
 function Utils:isAnimationWhitelisted(animation)
     local blacklist = {
         "bj",

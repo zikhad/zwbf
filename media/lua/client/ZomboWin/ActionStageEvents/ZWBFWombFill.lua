@@ -58,13 +58,17 @@ local function injectSperm()
 end
 
 local function _onPlayerUpdate(character)
-	-- Only do this if the ZomboWinSexScene is not playing and the flag is true
+
+	-- Retrieve and save the latest animation, useful as we need this information after the animation finishes
 	local currrentAnimation = Utils:getAnim(character)
 	lastAnimation = currrentAnimation and currrentAnimation or lastAnimation
+	
+	-- Only do this if the ZomboWinSexScene is not playing and the flag is true
 	if (
 		(not character:getModData().ZomboWinSexScene) and
 		shouldAddSperm
 	) then
+		-- only few animations are allowed to inject sperm
 		if Utils:isAnimationWhitelisted(lastAnimation) then
 			injectSperm()    --- Inject sperm into the womb
 			impregnate()     --- Handle impregnation
