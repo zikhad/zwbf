@@ -10,6 +10,8 @@ local MAX_AMOUNT = 50
 local ZomboWin = require("ZomboWin/ZomboWin")
 local ActionEvents = ZomboWin.AnimationHandler.ActionEvents
 
+local Utils = require("ZWBF/ZWBFUtils")
+
 --- Localized global functions from PZ
 local getText = getText
 local HaloTextHelper = HaloTextHelper
@@ -20,6 +22,7 @@ local Events = Events
 
 --- VARIABLES
 local shouldAddSperm = false -- This is a flag to determine if the sperm should be added to the womb
+local lastAnimation = ""
 
 local Pregnancy = require("ZWBF/ZWBFPregnancy")
 local Womb = require("ZWBF/ZWBFWomb")
@@ -55,10 +58,21 @@ local function injectSperm()
 end
 
 local function _onPlayerUpdate(character)
+
+	-- Retrieve and save the latest animation, useful as we need this information after the animation finishes
+	local currrentAnimation = Utils:getAnim(character)
+	lastAnimation = currrentAnimation and currrentAnimation or lastAnimation
+	
 	-- Only do this if the ZomboWinSexScene is not playing and the flag is true
-	if not character:getModData().ZomboWinSexScene and shouldAddSperm then
-		injectSperm()    --- Inject sperm into the womb
-		impregnate()     --- Handle impregnation
+	if (
+		(not character:getModData().ZomboWinSexScene) and
+		shouldAddSperm
+	) then
+		-- only few animations are allowed to inject sperm
+		if Utils:isAnimationWhitelisted(lastAnimation) then
+			injectSperm()    --- Inject sperm into the womb
+			impregnate()     --- Handle impregnation
+		end
 		shouldAddSperm = false --- Reset the flag
 	end
 end

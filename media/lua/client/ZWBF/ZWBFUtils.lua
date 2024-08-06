@@ -1,6 +1,8 @@
 local Utils = {}
 
 local ISToolTip = ISToolTip
+local ISTimedActionQueue = ISTimedActionQueue;
+local getPlayer = getPlayer;
 
 --- Create an option in provided menu context
 --- @param menu any
@@ -32,6 +34,44 @@ function Utils:percentageToNumber(percentage, maxNumber)
 
     -- Calculate the corresponding number between 0 and maxNumber
     return math.floor((percentage / 100) * maxNumber)
+end
+
+
+--- Gets the player current animation
+--- @param player any
+--- @return string | nil
+function Utils:getAnim(player)
+    player = player or getPlayer()
+	--Loop through table but returns first result
+    for i,n in pairs(ISTimedActionQueue.getTimedActionQueue(player).queue) do
+		--Returns name of the animation
+        return n.animation --Or reutrn n for full table information
+	end
+    return nil
+end
+
+--- Returns true if the animation is whitelisted
+--- @param animation string
+--- @return boolean
+function Utils:isAnimationWhitelisted(animation)
+    local blacklist = {
+        "bj",
+        "blowjob",
+        "oral",
+        "masturbation",
+        "female2",
+        "fingering"
+    }
+    
+    animation = string.lower(animation)
+
+    for _, value in ipairs(blacklist) do
+        if string.find(animation, value) then
+            return false
+        end
+    end
+    return true
+    
 end
 
 return Utils
