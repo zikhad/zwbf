@@ -60,7 +60,7 @@ local function _onPlayerUpdate(character)
 	-- Only do this if the ZomboWinSexScene is not playing and the flag is true
 	if not character:getModData().ZomboWinSexScene and shouldAddSperm then
 		injectSperm()    --- Inject sperm into the womb
-		if Utils:isAnimationWhitelisted(Utils:getAnim()) then
+		if Utils:isAnimationWhitelisted(Utils:getAnim(character)) then
 			impregnate()     --- Handle impregnation			
 		end
 		shouldAddSperm = false --- Reset the flag

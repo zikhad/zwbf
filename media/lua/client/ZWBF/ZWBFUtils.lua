@@ -38,12 +38,14 @@ end
 
 
 --Gets the players timedaction queue
-function Utils:getAnim()
+function Utils:getAnim(player)
+    player = player or getPlayer()
 	--Loop through table but returns first result
-    for i,n in pairs(ISTimedActionQueue.getTimedActionQueue(getPlayer()).queue) do
+    for i,n in pairs(ISTimedActionQueue.getTimedActionQueue(player).queue) do
 		--Returns name of the animation
         return n.animation --Or reutrn n for full table information
 	end
+    return ""
 end
 
 function Utils:isAnimationWhitelisted(animation)
