@@ -51,8 +51,11 @@ end
 function Utils:isAnimationWhitelisted(animation)
     local blacklist = {
         "bj",
+        "blowjob",
         "oral",
-        "masturbation"
+        "masturbation",
+        "female2",
+        "fingering"
     }
     
     animation = string.lower(animation)
