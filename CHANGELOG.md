@@ -1,3 +1,5 @@
+# [V 1.0.5] Animation whitelist
+- Add animation whitelist logic
 # [V 1.0.4] Lactation hotfix
 - Fix lactation Multiplier issue
 # [V 1.0.3] Adding translations
