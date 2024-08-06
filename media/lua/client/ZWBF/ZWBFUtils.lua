@@ -45,7 +45,7 @@ function Utils:getAnim(player)
 		--Returns name of the animation
         return n.animation --Or reutrn n for full table information
 	end
-    return ""
+    return nil
 end
 
 function Utils:isAnimationWhitelisted(animation)

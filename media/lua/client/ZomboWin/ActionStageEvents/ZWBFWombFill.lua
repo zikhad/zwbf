@@ -22,6 +22,7 @@ local Events = Events
 
 --- VARIABLES
 local shouldAddSperm = false -- This is a flag to determine if the sperm should be added to the womb
+local lastAnimation = ""
 
 local Pregnancy = require("ZWBF/ZWBFPregnancy")
 local Womb = require("ZWBF/ZWBFWomb")
@@ -58,10 +59,15 @@ end
 
 local function _onPlayerUpdate(character)
 	-- Only do this if the ZomboWinSexScene is not playing and the flag is true
-	if not character:getModData().ZomboWinSexScene and shouldAddSperm then
-		injectSperm()    --- Inject sperm into the womb
-		if Utils:isAnimationWhitelisted(Utils:getAnim(character)) then
-			impregnate()     --- Handle impregnation			
+	local currrentAnimation = Utils:getAnim(character)
+	lastAnimation = currrentAnimation and currrentAnimation or lastAnimation
+	if (
+		(not character:getModData().ZomboWinSexScene) and
+		shouldAddSperm
+	) then
+		if Utils:isAnimationWhitelisted(lastAnimation) then
+			injectSperm()    --- Inject sperm into the womb
+			impregnate()     --- Handle impregnation
 		end
 		shouldAddSperm = false --- Reset the flag
 	end
