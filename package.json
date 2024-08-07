@@ -3,7 +3,8 @@
   "version": "1.0.5",
   "description": "ZomboWin Being Female Mod",
   "scripts": {
-    "release": "standard-version"
+    "release": "standard-version",
+    "postrelease": "node scripts/zipper.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,8 @@
   },
   "homepage": "https://github.com/zikhad/zwbf#readme",
   "devDependencies": {
+    "archiver": "^7.0.1",
+    "fs-extra": "^11.2.0",
     "standard-version": "^9.5.0"
   }
 }
