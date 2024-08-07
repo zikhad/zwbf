@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const archiver = require('archiver');
+const micromatch = require('micromatch');
 
 const EXCLUDE_PATTERNS = [
 	'node_modules',
@@ -14,19 +15,14 @@ const EXCLUDE_PATTERNS = [
 	'*.code-workspace'
 ];
 
-function shouldExclude(filePath) {
-	return EXCLUDE_PATTERNS.some(pattern => {
-		const regex = new RegExp(
-			pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*')
-		);
-		return regex.test(filePath);
-	});
+function shouldInclude(filePath) {
+	return !micromatch.isMatch(filePath, EXCLUDE_PATTERNS);
 }
 
 function addFilesToArchive(archive, dirPath) {
 	const files = fs.readdirSync(dirPath);
 	files
-		.filter(file => !shouldExclude(file))
+		.filter(shouldInclude)
 		.forEach(file => {
 			const filePath = path.join(dirPath, file);
 			const stats = fs.statSync(filePath);
