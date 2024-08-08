@@ -70,22 +70,33 @@ jobs:
 
       - name: Create GitHub Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
-          release_name: Release ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
+          name: Release ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
           body: ${{ steps.generate_changelog.outputs.result }}
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+          files: ./${{ steps.get_zip_name.outputs.ZIPNAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./${{ steps.get_zip_name.outputs.ZIPNAME }}
-          asset_name: ${{ steps.get_zip_name.outputs.ZIPNAME }}
-          asset_content_type: application/zip
+
+#      - name: Create GitHub Release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
+#          release_name: Release ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
+#          body: ${{ steps.generate_changelog.outputs.result }}
+#          draft: false
+#          prerelease: false
+#
+#      - name: Upload Release Asset
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ./${{ steps.get_zip_name.outputs.ZIPNAME }}
+#          asset_name: ${{ steps.get_zip_name.outputs.ZIPNAME }}
+#          asset_content_type: application/zip
