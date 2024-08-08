@@ -4,7 +4,8 @@
   "description": "ZomboWin Being Female Mod",
   "scripts": {
     "release": "standard-version",
-    "postrelease": "node scripts/zipper.js"
+    "postrelease": "node scripts/zipper.js",
+    "zipname": "node scripts/zipname.js"
   },
   "repository": {
     "type": "git",
