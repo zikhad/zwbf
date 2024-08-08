@@ -19,16 +19,17 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Configure Git user
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      
       - name: Install dependencies
         run: npm install
 
       - name: Run release script
         run: npm run release
 
-      - name: Configure Git user
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
       - name: Push changes
         env:
