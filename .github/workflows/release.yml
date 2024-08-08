@@ -32,6 +32,10 @@ jobs:
 
       - name: Run release script
         run: npm run release
+      
+      - name: Get latest tag
+        id: get_latest_tag
+        run: echo "::set-output name=LATEST_TAG::$(git describe --tags $(git rev-list --tags --max-count=1))"
 
 
       - name: Push changes
@@ -39,7 +43,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})
-          git push --follow-tags origin $BRANCH_NAME
+          git push --follow-tags origin HEAD
       
       - name: Get Zip name
         id: get_zip_name
@@ -51,8 +55,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
+          release_name: Release ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
           draft: false
           prerelease: false
 
