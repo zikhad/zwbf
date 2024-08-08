@@ -48,8 +48,8 @@ jobs:
       - name: Get Zip name
         id: get_zip_name
         run: |
-          ZIPNAME=$(npm run zipname)
-          echo "ZIPNAME=$ZIPNAME" >> $OUTPUTOUTPUT
+          ZIPNAME=$(node scripts/zipname.js)
+          echo "ZIPNAME=$ZIPNAME" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
         id: create_release
