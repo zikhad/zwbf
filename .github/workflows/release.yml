@@ -5,6 +5,9 @@ on:
     branches:
       - feat-deploy-system
 
+permissions:
+  contents: write
+
 jobs:
   release:
     if: github.actor != 'github-actions[bot]'
