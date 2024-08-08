@@ -32,14 +32,6 @@ jobs:
 
       - name: Run release script
         run: npm run release
-      
-      - name: Get latest tag
-        id: get_latest_tag
-        run: echo "LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_OUTPUT
-      - name: Get previous tag
-        id: get_previous_tag
-        run: echo "PREVIOUS_TAG=$(git describe --tags $(git rev-list --tags --skip=1 --max-count=1))" >> $GITHUB_OUTPUT
-
 
       - name: Push changes
         env:
@@ -47,6 +39,14 @@ jobs:
         run: |
           BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})
           git push --follow-tags origin HEAD
+      
+      - name: Get latest tag
+        id: get_latest_tag
+        run: echo "LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_OUTPUT
+      
+      - name: Get previous tag
+        id: get_previous_tag
+        run: echo "PREVIOUS_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1 --max-count=1))" >> $GITHUB_OUTPUT
       
       - name: Get Zip name
         id: get_zip_name
