@@ -1,6 +1,6 @@
 {
   "name": "zwbf",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "ZomboWin Being Female Mod",
   "scripts": {
     "release": "standard-version",
