@@ -47,7 +47,9 @@ jobs:
       
       - name: Get Zip name
         id: get_zip_name
-        run: echo "ZIPNAME=$(npm run zipname)" >> $GITHUB_OUTPUT
+        run: |
+          ZIPNAME=$(npm run zipname)
+          echo "ZIPNAME=$ZIPNAME" >> $OUTPUTOUTPUT
 
       - name: Create GitHub Release
         id: create_release
