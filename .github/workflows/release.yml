@@ -1,0 +1,80 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for all tags and branches
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Configure Git user
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run release script
+        run: npm run release
+
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})
+          git push --follow-tags origin HEAD
+      
+      - name: Get latest tag
+        id: get_latest_tag
+        run: echo "LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_OUTPUT
+      
+      - name: Get previous tag
+        id: get_previous_tag
+        run: echo "PREVIOUS_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1 --max-count=1))" >> $GITHUB_OUTPUT
+      
+      - name: Get Zip name
+        id: get_zip_name
+        run: |
+          ZIPNAME=$(node scripts/zipname.js)
+          echo "ZIPNAME=$ZIPNAME" >> $GITHUB_OUTPUT
+      
+      - name: Generate changelog link
+        id: generate_changelog
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const latestTag = '${{ steps.get_latest_tag.outputs.LATEST_TAG }}';
+            const previousTag = '${{ steps.get_previous_tag.outputs.PREVIOUS_TAG }}';
+            const repo = context.repo.repo;
+            const owner = context.repo.owner;
+            const changelogUrl = `https://github.com/${owner}/${repo}/compare/${previousTag}...${latestTag}`;
+            return `Full Changelog: ${changelogUrl}`;
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
+          name: Release ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
+          body: ${{ steps.generate_changelog.outputs.result }}
+          files: ./${{ steps.get_zip_name.outputs.ZIPNAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
