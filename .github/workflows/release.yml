@@ -35,9 +35,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git add .
-          git commit -m "chore(release): update changelog and version"
-          git push origin main
+          BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})
+          git push --follow-tags origin $BRANCH_NAME
       
       - name: Get Zip name
         id: get_zip_name
