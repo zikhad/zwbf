@@ -36,6 +36,9 @@ jobs:
       - name: Get latest tag
         id: get_latest_tag
         run: echo "LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_OUTPUT
+      - name: Get previous tag
+        id: get_previous_tag
+        run: echo "PREVIOUS_TAG=$(git describe --tags $(git rev-list --tags --skip=1 --max-count=1))" >> $GITHUB_OUTPUT
 
 
       - name: Push changes
@@ -50,6 +53,18 @@ jobs:
         run: |
           ZIPNAME=$(node scripts/zipname.js)
           echo "ZIPNAME=$ZIPNAME" >> $GITHUB_OUTPUT
+      
+      - name: Generate changelog link
+        id: generate_changelog
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const latestTag = '${{ steps.get_latest_tag.outputs.LATEST_TAG }}';
+            const previousTag = '${{ steps.get_previous_tag.outputs.PREVIOUS_TAG }}';
+            const repo = context.repo.repo;
+            const owner = context.repo.owner;
+            const changelogUrl = `https://github.com/${owner}/${repo}/compare/${previousTag}...${latestTag}`;
+            return `Full Changelog: ${changelogUrl}`;
 
       - name: Create GitHub Release
         id: create_release
@@ -59,6 +74,7 @@ jobs:
         with:
           tag_name: ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
           release_name: Release ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
+          body: ${{ steps.generate_changelog.outputs.result }}
           draft: false
           prerelease: false
 
