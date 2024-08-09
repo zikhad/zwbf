@@ -63,17 +63,59 @@ local animStep = 0 -- the current step of the animation
 --- @return string
 local function sceneWomb()
     local data = Womb.data
-    animStep = animStep + 1 -- always increment the anim step
-    
-    if Pregnancy:getIsPregnant() and (Pregnancy:getProgress() > 0.6) then
-        animStep = animStep > 11 and 11 or animStep
-        return string.format("media/ui/sex/pregnant/sex_%s.png", animStep) -- return the scene image
+    animStep = animStep + 0.1 -- always increment the anim step
+    local animIndex
+    local isPregnant = Pregnancy:getIsPregnant()
+    local progress = Pregnancy:getProgress()
+    local fullness = (data.SpermAmount > (Womb.CONSTANTS.MAX_CAPACITY / 2)) and "full" or "empty"
+
+    -- Number of repetitions (used for both pregnant and empty cases)
+    local repetitions = 10
+
+    if isPregnant and progress > 0.6 then
+        -- Pregnant animation: 0 to 4 then 4 to 0, 'animReps' times before going 0 to 11
+        local loopIndex = math.floor(animStep) % 10
+        if loopIndex < 5 then
+            animIndex = loopIndex
+        else
+            animIndex = 9 - loopIndex
+        end
+        
+        if math.floor(animStep / 10) >= repetitions then
+            animIndex = math.floor(animStep) - 10 * repetitions
+            animIndex = animIndex > 11 and 11 or animIndex
+        end
+        
+        return string.format("media/ui/sex/pregnant/sex_%s.png", animIndex) -- return the scene image
+
+    elseif fullness == "empty" then
+        -- Not pregnant and fullness is empty: 0 to 4 then 4 to 0, 'animReps' times before going 0 to 9
+        local loopIndex = math.floor(animStep) % 10
+        if loopIndex < 5 then
+            animIndex = loopIndex
+        else
+            animIndex = 9 - loopIndex
+        end
+        
+        if math.floor(animStep / 10) >= repetitions then
+            animIndex = math.floor(animStep) - 10 * repetitions
+            animIndex = animIndex > 9 and 9 or animIndex
+        end
+
+    else
+        -- Not pregnant and fullness is full: 0 to 9 then 9 to 0 repeatedly
+        local loopIndex = math.floor(animStep) % 18
+        if loopIndex < 9 then
+            animIndex = loopIndex
+        else
+            animIndex = 17 - loopIndex
+        end
     end
-    
-    local fullness = (data.SpermAmount > (Womb.CONSTANTS.MAX_CAPACITY / 2)) and "full" or "empty" -- get the fullness of the womb
-    animStep = animStep > 9 and 9 or animStep
-    return string.format("media/ui/sex/normal/sex_%s_%s.png", fullness, animStep) -- return the scene image
+
+    return string.format("media/ui/sex/normal/sex_%s_%s.png", fullness, animIndex) -- return the scene image
 end
+
+
 
 --- Returns the normal Womb image depending on Womb's conditions
 --- @return string
@@ -310,7 +352,7 @@ end
 --- Hook up event listeners
 Events.OnCreatePlayer.Add(Womb.init)
 
-Events.EveryOneMinute.Add(onUpdateUI)
+Events.OnPostRender.Add(onUpdateUI)
 Events.EveryOneMinute.Add(onCheckContraceptive)
 Events.EveryOneMinute.Add(onCheckPregnancy)
 
