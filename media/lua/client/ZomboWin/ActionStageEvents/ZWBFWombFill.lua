@@ -69,10 +69,11 @@ local function _onPlayerUpdate(character)
 		shouldAddSperm
 	) then
 		-- only few animations are allowed to inject sperm
-		if Utils:isAnimationWhitelisted(lastAnimation) then
+		if Utils:isAnimationAllowed(lastAnimation) then
 			injectSperm()    --- Inject sperm into the womb
 			impregnate()     --- Handle impregnation
 		end
+		lastAnimation = "" --- Reset the last animation
 		shouldAddSperm = false --- Reset the flag
 	end
 end
