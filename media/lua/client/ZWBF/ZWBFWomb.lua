@@ -150,7 +150,7 @@ local function setCyclePhase()
     local data = Womb.data
     if Pregnancy:getIsPregnant() then
         data.CyclePhase = "Pregnant"
-        data.Fertility = 0
+        data.Fertility = Pregnancy:getProgress()
     elseif data.CycleDay < 1 then
         data.CyclePhase = "Recovery"
         data.Fertility = 0
@@ -169,14 +169,18 @@ end
 --- Set fertility based on the current cycle phase and conditions like pregnancy and contraceptives
 local function setFertility()
     local data = Womb.data
-    if Pregnancy:getIsPregnant() then
-        data.Fertility = Pregnancy:getProgress()
-    elseif data.OnContraceptive or data.CyclePhase == "Pregnant" or data.CyclePhase == "Recovery" or data.CyclePhase == "Luteal" then
+    if (data.OnContraceptive) then
         data.Fertility = 0
-    elseif data.CyclePhase == "Ovulation" then
-        data.Fertility = ZombRandFloat(0.8, 1)
     else
-        data.Fertility = ZombRandFloat(0, 0.4)
+        local fertility = {
+            ["Recovery"] = 0,
+            ["Menstruation"] = ZombRandFloat(0, 0.4),
+            ["Follicular"] = ZombRandFloat(0, 0.2),
+            ["Ovulation"] = ZombRandFloat(0.8, 1),
+            ["Luteal"] = ZombRandFloat(0, 0.3),
+            ["Pregnant"] = Pregnancy:getProgress()
+        } 
+        data.Fertility = fertility[data.CyclePhase] or 0;
     end
 end
 
@@ -359,5 +363,6 @@ Events.EveryOneMinute.Add(onCheckPregnancy)
 Events.EveryTenMinutes.Add(onRunDown)
 
 Events.EveryDays.Add(Womb.addCycleDay)
+
 
 return Womb
