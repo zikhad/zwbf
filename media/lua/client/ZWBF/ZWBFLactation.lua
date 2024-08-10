@@ -19,12 +19,12 @@ Lactation.data = {
 --- CONSTANTS
 Lactation.CONSTANTS = {
 	AMOUNTS = {
-		MIN = 0,
-		MAX = 20
+		MIN = 0, -- Minimum amount of milk produced
+		MAX = 20 -- Maximum amount of milk produced
 	},
-	MAX_CAPACITY = 1000,
-	MAX_LEVEL = 5,
-	EXPIRATION = 7,
+	MAX_CAPACITY = 1000, -- Maximum amount of milk that can be stored
+	MAX_LEVEL = 5, -- Maximum level of milk
+	EXPIRATION = 7, -- Expiration in days
 }
 
 --- Updates the data
@@ -128,6 +128,11 @@ end
 function Lactation:set(status)
 	local data = Lactation.data
 	data.IsLactating = status
+	if (not data.IsLactating) then
+		data.MilkAmount = 0
+		data.MilkMultiplier = 0
+		data.Expiration = 0
+	end
 end
 
 --- Set the multiplier for the milk
@@ -153,8 +158,10 @@ local function onEveryHour()
 	local multiplier = 1 + data.MilkMultiplier
 	data.MilkAmount = (data.MilkAmount + amount) * multiplier
 	data.MilkMultiplier = data.MilkMultiplier - 0.1
-	data.MilkAmount = (data.MilkAmount < 0) and 0 or data.MilkAmount
-	if data.MilkAmount > Lactation.CONSTANTS.MAX_CAPACITY then
+	
+	if (data.MilkAmount < 0) then
+		data.MilkAmount = 0
+	elseif data.MilkAmount > Lactation.CONSTANTS.MAX_CAPACITY then
 		data.MilkAmount = Lactation.CONSTANTS.MAX_CAPACITY
 	end
 end
@@ -164,9 +171,8 @@ local function onCheckPregnancy()
 	local data = Lactation.data
 	if Pregnancy:getIsPregnant() and Pregnancy:getProgress() > 0.4 then
 		Lactation:set(true)
-		Lactation:setMultiplier(1 + Pregnancy:getProgress())
+		Lactation:setMultiplier(Pregnancy:getProgress())
 		Lactation:addExpiration(Lactation.CONSTANTS.EXPIRATION)
-		Lactation:set(true)
 	end
 end
 
@@ -190,9 +196,7 @@ local function onCheckExpiration()
 	if data.Expiration > 0 then
 		data.Expiration = data.Expiration - 1
 		if data.Expiration <= 0 then
-			data.IsLactating = false
-			data.MilkMultiplier = 0
-			data.Expiration = 0
+			Lactation:set(false)
 		end
 	end
 end
