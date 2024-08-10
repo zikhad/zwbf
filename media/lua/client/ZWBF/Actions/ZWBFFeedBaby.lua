@@ -90,7 +90,7 @@ function ZWBFActionFeedBaby:perform()
 	ISBaseTimedAction.perform(self)
 	feedBaby(self.baby)
 	Lactation:remove(Lactation:getBottleAmount())
-    Lactation:setMultiplier(1 + ZombRandFloat(0.1, 0.3))
+    Lactation:setMultiplier(ZombRandFloat(0.1, 0.3))
     Lactation:addExpiration(Lactation.CONSTANTS.EXPIRATION)
 end
 
