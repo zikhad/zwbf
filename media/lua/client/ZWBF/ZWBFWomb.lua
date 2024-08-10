@@ -80,12 +80,12 @@ local function sceneWomb()
         else
             animIndex = 9 - loopIndex
         end
-        
+
         if math.floor(animStep / 10) >= repetitions then
             animIndex = math.floor(animStep) - 10 * repetitions
             animIndex = animIndex > 11 and 11 or animIndex
         end
-        
+
         return string.format("media/ui/sex/pregnant/sex_%s.png", animIndex) -- return the scene image
 
     elseif fullness == "empty" then
@@ -96,7 +96,7 @@ local function sceneWomb()
         else
             animIndex = 9 - loopIndex
         end
-        
+
         if math.floor(animStep / 10) >= repetitions then
             animIndex = math.floor(animStep) - 10 * repetitions
             animIndex = animIndex > 9 and 9 or animIndex
@@ -123,7 +123,7 @@ local function normalWomb()
     local data = Womb.data
     local percentage = math.floor((data.SpermAmount / Womb.CONSTANTS.MAX_CAPACITY) * 100)
     local imageIndex = Utils:percentageToNumber(percentage, Womb.CONSTANTS.SPERM_LEVEL)
-    
+
     -- If any amount of sperm is present, give the first image
     if imageIndex == 0 and data.SpermAmount > 0 then
         imageIndex = 1
@@ -154,12 +154,12 @@ local function setCyclePhase()
     elseif data.CycleDay < 1 then
         data.CyclePhase = "Recovery"
         data.Fertility = 0
-    elseif data.CycleDay < 7 then
+    elseif data.CycleDay < 6 then
         Pregnancy:onFinishRecovery()
         data.CyclePhase = "Menstruation"
-    elseif data.CycleDay < 14 then
+    elseif data.CycleDay < 13 then
         data.CyclePhase = "Follicular"
-    elseif data.CycleDay < 21 then
+    elseif data.CycleDay < 16 then
         data.CyclePhase = "Ovulation"
     else
         data.CyclePhase = "Luteal"
@@ -173,13 +173,13 @@ local function setFertility()
         data.Fertility = 0
     else
         local fertility = {
+            ["Pregnant"] = Pregnancy:getProgress(),
             ["Recovery"] = 0,
-            ["Menstruation"] = ZombRandFloat(0, 0.4),
-            ["Follicular"] = ZombRandFloat(0, 0.2),
-            ["Ovulation"] = ZombRandFloat(0.8, 1),
+            ["Menstruation"] = ZombRandFloat(0, 0.3),
+            ["Follicular"] = ZombRandFloat(0, 0.4),
+            ["Ovulation"] = ZombRandFloat(0.85, 1),
             ["Luteal"] = ZombRandFloat(0, 0.3),
-            ["Pregnant"] = Pregnancy:getProgress()
-        } 
+        }
         data.Fertility = fertility[data.CyclePhase] or 0;
     end
 end
@@ -288,7 +288,7 @@ end
 --- @return string
 function Womb:getImage()
     local player = getPlayer()
-    
+
     -- check if the player is in a scene
     if (
         player:getModData().ZomboWinSexScene and
@@ -299,7 +299,7 @@ function Womb:getImage()
         return sceneWomb()
     end
     animStep = 0 -- clear the anim step if not in a scene
-    
+
     return normalWomb() -- If not in a scene, the normal womb will be shown
 end
 
@@ -324,7 +324,7 @@ end
 function Womb:update()
     local player = getPlayer()
     local data = Womb.data
-    
+
     if data.SpermAmount > Womb.CONSTANTS.MAX_CAPACITY then
         data.SpermAmount = Womb.CONSTANTS.MAX_CAPACITY
     elseif data.SpermAmount < 0 then
@@ -342,7 +342,7 @@ function Womb:init()
     data.CycleDay = data.CycleDay or ZombRand(1, 28)
     data.OnContraceptive = data.OnContraceptive or false
     Womb.data = data
-    
+
     setFertility()
 end
 
