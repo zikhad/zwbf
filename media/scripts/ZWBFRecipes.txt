@@ -32,5 +32,6 @@ module ZWBFRecipes
         Category: Cooking,
         Sound: PourWaterIntoObject,
         OnTest: ZWBFRecipes.OnTest.BreastPump,
+        OnCreate: ZWBFRecipes.OnCreate.BreastPump,
     }
 }
