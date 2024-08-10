@@ -9,11 +9,13 @@ local Utils = require("ZWBF/ZWBFUtils")
 local Pregnancy = require("ZWBF/ZWBFPregnancy")
 
 local Lactation = {}
+
+-- local representation of Lactation Data
 Lactation.data = {
-	IsLactating = false,
-	MilkAmount = 0,
-	MilkMultiplier = 0,
-	Expiration = 0,
+	IsLactating = false, -- Controls if the player is lactating
+	MilkAmount = 0, -- Amount of milk currently stored
+	MilkMultiplier = 0, -- Multiplier for the milk
+	Expiration = 0, -- Expiration in minutes
 }
 
 --- CONSTANTS
@@ -43,7 +45,7 @@ end
 --- @param days integer
 function Lactation:addExpiration(days)
 	local data = Lactation.data
-	data.Expiration = 60 * 24 * days
+	data.Expiration = 60 * 24 * days -- 60 minutes * 24 hours * days
 end
 
 --- Initializes the Lactation
@@ -204,7 +206,7 @@ end
 --- Hook up event listeners
 Events.OnCreatePlayer.Add(Lactation.init)
 Events.EveryHours.Add(onEveryHour)
-Events.EveryHours.Add(onCheckExpiration)
+Events.EveryOneMinute.Add(onCheckExpiration)
 Events.EveryOneMinute.Add(onEveryMinute)
 Events.EveryOneMinute.Add(onCheckPregnancy)
 
