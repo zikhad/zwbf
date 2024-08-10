@@ -78,5 +78,5 @@ end
 
 --- Hook up event listeners
 Events.OnCreateUI.Add(onCreateUI)
-Events.EveryOneMinute.Add(onUpdateUI)
+Events.OnPostRender.Add(onUpdateUI)
 Events.OnFillWorldObjectContextMenu.Add(onCreateContextMenu)

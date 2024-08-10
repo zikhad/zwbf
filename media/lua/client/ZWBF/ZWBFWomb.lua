@@ -63,17 +63,59 @@ local animStep = 0 -- the current step of the animation
 --- @return string
 local function sceneWomb()
     local data = Womb.data
-    animStep = animStep + 1 -- always increment the anim step
-    
-    if Pregnancy:getIsPregnant() and (Pregnancy:getProgress() > 0.6) then
-        animStep = animStep > 11 and 11 or animStep
-        return string.format("media/ui/sex/pregnant/sex_%s.png", animStep) -- return the scene image
+    animStep = animStep + 0.1 -- always increment the anim step
+    local animIndex
+    local isPregnant = Pregnancy:getIsPregnant()
+    local progress = Pregnancy:getProgress()
+    local fullness = (data.SpermAmount > (Womb.CONSTANTS.MAX_CAPACITY / 2)) and "full" or "empty"
+
+    -- Number of repetitions (used for both pregnant and empty cases)
+    local repetitions = 10
+
+    if isPregnant and progress > 0.6 then
+        -- Pregnant animation: 0 to 4 then 4 to 0, 'animReps' times before going 0 to 11
+        local loopIndex = math.floor(animStep) % 10
+        if loopIndex < 5 then
+            animIndex = loopIndex
+        else
+            animIndex = 9 - loopIndex
+        end
+
+        if math.floor(animStep / 10) >= repetitions then
+            animIndex = math.floor(animStep) - 10 * repetitions
+            animIndex = animIndex > 11 and 11 or animIndex
+        end
+
+        return string.format("media/ui/sex/pregnant/sex_%s.png", animIndex) -- return the scene image
+
+    elseif fullness == "empty" then
+        -- Not pregnant and fullness is empty: 0 to 4 then 4 to 0, 'animReps' times before going 0 to 9
+        local loopIndex = math.floor(animStep) % 10
+        if loopIndex < 5 then
+            animIndex = loopIndex
+        else
+            animIndex = 9 - loopIndex
+        end
+
+        if math.floor(animStep / 10) >= repetitions then
+            animIndex = math.floor(animStep) - 10 * repetitions
+            animIndex = animIndex > 9 and 9 or animIndex
+        end
+
+    else
+        -- Not pregnant and fullness is full: 0 to 9 then 9 to 0 repeatedly
+        local loopIndex = math.floor(animStep) % 18
+        if loopIndex < 9 then
+            animIndex = loopIndex
+        else
+            animIndex = 17 - loopIndex
+        end
     end
-    
-    local fullness = (data.SpermAmount > (Womb.CONSTANTS.MAX_CAPACITY / 2)) and "full" or "empty" -- get the fullness of the womb
-    animStep = animStep > 9 and 9 or animStep
-    return string.format("media/ui/sex/normal/sex_%s_%s.png", fullness, animStep) -- return the scene image
+
+    return string.format("media/ui/sex/normal/sex_%s_%s.png", fullness, animIndex) -- return the scene image
 end
+
+
 
 --- Returns the normal Womb image depending on Womb's conditions
 --- @return string
@@ -81,7 +123,7 @@ local function normalWomb()
     local data = Womb.data
     local percentage = math.floor((data.SpermAmount / Womb.CONSTANTS.MAX_CAPACITY) * 100)
     local imageIndex = Utils:percentageToNumber(percentage, Womb.CONSTANTS.SPERM_LEVEL)
-    
+
     -- If any amount of sperm is present, give the first image
     if imageIndex == 0 and data.SpermAmount > 0 then
         imageIndex = 1
@@ -108,16 +150,16 @@ local function setCyclePhase()
     local data = Womb.data
     if Pregnancy:getIsPregnant() then
         data.CyclePhase = "Pregnant"
-        data.Fertility = 0
+        data.Fertility = Pregnancy:getProgress()
     elseif data.CycleDay < 1 then
         data.CyclePhase = "Recovery"
         data.Fertility = 0
-    elseif data.CycleDay < 7 then
+    elseif data.CycleDay < 6 then
         Pregnancy:onFinishRecovery()
         data.CyclePhase = "Menstruation"
-    elseif data.CycleDay < 14 then
+    elseif data.CycleDay < 13 then
         data.CyclePhase = "Follicular"
-    elseif data.CycleDay < 21 then
+    elseif data.CycleDay < 16 then
         data.CyclePhase = "Ovulation"
     else
         data.CyclePhase = "Luteal"
@@ -127,14 +169,18 @@ end
 --- Set fertility based on the current cycle phase and conditions like pregnancy and contraceptives
 local function setFertility()
     local data = Womb.data
-    if Pregnancy:getIsPregnant() then
-        data.Fertility = Pregnancy:getProgress()
-    elseif data.OnContraceptive or data.CyclePhase == "Pregnant" or data.CyclePhase == "Recovery" or data.CyclePhase == "Luteal" then
+    if (data.OnContraceptive) then
         data.Fertility = 0
-    elseif data.CyclePhase == "Ovulation" then
-        data.Fertility = ZombRandFloat(0.8, 1)
     else
-        data.Fertility = ZombRandFloat(0, 0.4)
+        local fertility = {
+            ["Pregnant"] = Pregnancy:getProgress(),
+            ["Recovery"] = 0,
+            ["Menstruation"] = ZombRandFloat(0, 0.3),
+            ["Follicular"] = ZombRandFloat(0, 0.4),
+            ["Ovulation"] = ZombRandFloat(0.85, 1),
+            ["Luteal"] = ZombRandFloat(0, 0.3),
+        }
+        data.Fertility = fertility[data.CyclePhase] or 0;
     end
 end
 
@@ -242,18 +288,18 @@ end
 --- @return string
 function Womb:getImage()
     local player = getPlayer()
-    
+
     -- check if the player is in a scene
     if (
         player:getModData().ZomboWinSexScene and
-        Utils:isAnimationWhitelisted(Utils:getAnim())
+        Utils:isAnimationAllowed(Utils:getAnim())
     ) then
         print("ZWBF - Womb - In Scene" .. Utils:getAnim()) -- debug the current animation
         -- if so, a scene will be selected based on womb conditions
         return sceneWomb()
     end
     animStep = 0 -- clear the anim step if not in a scene
-    
+
     return normalWomb() -- If not in a scene, the normal womb will be shown
 end
 
@@ -278,7 +324,7 @@ end
 function Womb:update()
     local player = getPlayer()
     local data = Womb.data
-    
+
     if data.SpermAmount > Womb.CONSTANTS.MAX_CAPACITY then
         data.SpermAmount = Womb.CONSTANTS.MAX_CAPACITY
     elseif data.SpermAmount < 0 then
@@ -296,7 +342,7 @@ function Womb:init()
     data.CycleDay = data.CycleDay or ZombRand(1, 28)
     data.OnContraceptive = data.OnContraceptive or false
     Womb.data = data
-    
+
     setFertility()
 end
 
@@ -310,12 +356,13 @@ end
 --- Hook up event listeners
 Events.OnCreatePlayer.Add(Womb.init)
 
-Events.EveryOneMinute.Add(onUpdateUI)
+Events.OnPostRender.Add(onUpdateUI)
 Events.EveryOneMinute.Add(onCheckContraceptive)
 Events.EveryOneMinute.Add(onCheckPregnancy)
 
 Events.EveryTenMinutes.Add(onRunDown)
 
 Events.EveryDays.Add(Womb.addCycleDay)
+
 
 return Womb

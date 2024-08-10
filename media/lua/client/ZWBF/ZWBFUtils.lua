@@ -4,6 +4,8 @@ local ISToolTip = ISToolTip
 local ISTimedActionQueue = ISTimedActionQueue;
 local getPlayer = getPlayer;
 
+local AnimationUtils = require("ZomboWin/ZomboWinAnimationUtils")
+
 --- Create an option in provided menu context
 --- @param menu any
 --- @param title string
@@ -38,7 +40,7 @@ end
 
 
 --- Gets the player current animation
---- @param player any
+--- @param player any | nil
 --- @return string | nil
 function Utils:getAnim(player)
     player = player or getPlayer()
@@ -51,27 +53,39 @@ function Utils:getAnim(player)
 end
 
 --- Returns true if the animation is whitelisted
---- @param animation string
+--- @param animation string | nil
 --- @return boolean
-function Utils:isAnimationWhitelisted(animation)
-    local blacklist = {
-        "bj",
-        "blowjob",
-        "oral",
-        "masturbation",
-        "female2",
-        "fingering"
-    }
-    
-    animation = string.lower(animation)
-
-    for _, value in ipairs(blacklist) do
-        if string.find(animation, value) then
-            return false
+function Utils:isAnimationAllowed(animation)
+    animation = animation or ""
+    -- TODO: Is it possible to use the tag system to check if the animation is allowed?
+    --[[
+        local allowedAnimations = AnimationUtils:getAnimations(2,1,1,{"Intercourse"}, {}, false)
+        for _, allowedAnimation in ipairs(allowedAnimations) do
+            if string.find(animation, allowedAnimation.id) then
+                return true
+            end        
         end
-    end
-    return true
-    
+        return false
+        print("XPTO - " .. tostring(xpto));
+    ]]
+
+        local blacklist = {
+            "bj",
+            "blowjob",
+            "oral",
+            "masturbation",
+            "female2",
+            "fingering"
+        }
+
+        animation = string.lower(animation)
+
+        for _, value in ipairs(blacklist) do
+            if string.find(animation, value) then
+                return false
+            end
+        end
+        return true
 end
 
 return Utils

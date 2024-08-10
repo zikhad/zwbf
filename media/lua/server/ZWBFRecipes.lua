@@ -1,5 +1,6 @@
 --- Localized global functions from PZ
 local getPlayer = getPlayer
+local ZombRandFloat = ZombRandFloat
 
 --- VARIABLES
 ZWBFRecipes = {
@@ -26,5 +27,6 @@ end
 function ZWBFRecipes.OnCreate.BreastPump(items, result, player)
     print("ZWBF - Recipes - OnCreate - Breast Pump")
     Lactation:remove(Lactation:getBottleAmount())
+    Lactation:setMultiplier(ZombRandFloat(0.1, 0.2))
     Lactation:addExpiration(Lactation.CONSTANTS.EXPIRATION)
 end
