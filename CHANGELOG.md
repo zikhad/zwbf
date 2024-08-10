@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/zikhad/zwbf/compare/v1.0.6...v1.1.0) (2024-08-10)
+
+
+### Features
+
+* **animation:** added animation loops, included PostRender Event ([dfdaa74](https://github.com/zikhad/zwbf/commit/dfdaa740f3921cd0e9a90b336e81252e0bba1225))
+
+
+### Bug Fixes
+
+* **lactation:** expiration logic fix ([118fdbf](https://github.com/zikhad/zwbf/commit/118fdbfda6e8c3bf509b4f04ea5ada1e56e2b97a))
+* **lactation:** fix for breastpump recipes ([460d784](https://github.com/zikhad/zwbf/commit/460d784778c1594ad9df2d44c4600e426ef9bcb6))
+* **lactation:** fix the milk multiplier when breastfeeding ([ba96be1](https://github.com/zikhad/zwbf/commit/ba96be1175c0359e0c910cc622d4e9aa5ed1b182))
+
 ### [1.0.6](https://github.com/zikhad/zwbf/compare/v1.0.5...v1.0.6) (2024-08-08)
 
 
