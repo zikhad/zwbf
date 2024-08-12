@@ -93,4 +93,25 @@ module ZWBF {
         WorldStaticModel	= WaterBottleFull,
 		ReplaceOnUse 		= WaterBottleEmpty,
 	}
+	item VaginalDouche_empty
+	{
+		DisplayCategory 	= FirstAid,
+		Weight				= 0.1,
+		DisplayName			= Vaginal Douche (Empty),
+		Icon				= vaginal_douche,
+		Tooltip 			= Tooltip_VaginalDouche_empty,
+		StaticModel 		= WaterBottle,
+		WorldStaticModel 	= WaterBottleEmpty,
+	}
+	item VaginalDouche_full
+	{
+		DisplayCategory 	= FirstAid,
+		Weight				= 0.2,
+		DisplayName			= Vaginal Douche (Full),
+		Icon				= vaginal_douche,
+		Tooltip 			= Tooltip_VaginalDouche_full,
+		StaticModel 		= WaterBottle,
+		WorldStaticModel 	= WaterBottleFull,
+		ReplaceOnUse 		= VaginalDouche_empty,
+	}
 }

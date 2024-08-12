@@ -34,4 +34,13 @@ module ZWBFRecipes
         OnTest: ZWBFRecipes.OnTest.BreastPump,
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
     }
+    recipe Fill Vaginal Douche
+    {
+        destroy: VaginalDouche_empty,
+        WaterPot;1,
+        CanBeDoneFromFloor: true,
+        Result: VaginalDouche_full,
+        Time: 100,
+        Category: Health,
+    }
 }
