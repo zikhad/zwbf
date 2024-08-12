@@ -34,8 +34,9 @@ Womb.CONSTANTS = {
 }
 
 --- Apply wetness to the groin
---- @param amount number (optional) The amount of wetness to apply
+--- @param amount number | nil (optional) The amount of wetness to apply
 function Womb:applyWetness(amount)
+    amount = amount or ZombRand(Womb.CONSTANTS.WETNESS.MIN, Womb.CONSTANTS.WETNESS.MAX)
     local player = getPlayer()
     local Groin = player:getBodyDamage():getBodyPart(BodyPartType.FromString("Groin"))
     Groin:setWetness(Groin:getWetness() + amount)
@@ -215,7 +216,7 @@ local function onRunDown()
     if data.SpermAmount > 0 then
         local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
         HaloTextHelper.addTextWithArrow(player, text, false, HaloTextHelper.getColorWhite())
-        Womb:applyWetness(ZombRand(Womb.CONSTANTS.WETNESS.MIN, Womb.CONSTANTS.WETNESS.MAX))
+        Womb:applyWetness()
     end
     data.SpermAmount = data.SpermAmount - amount
 end

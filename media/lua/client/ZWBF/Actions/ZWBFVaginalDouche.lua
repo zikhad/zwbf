@@ -34,7 +34,8 @@ function ZWBFActionVaginalDouche:perform()
 	self.douche:getContainer():setDrawDirty(true)
 	self.douche:setJobDelta(0.0)
 	ISBaseTimedAction.perform(self)
-	Womb:setSpermAmount(0);
+	Womb:setSpermAmount(0)
+	Womb:applyWetness()
 end
 
 function ZWBFActionVaginalDouche:new(character, item)
