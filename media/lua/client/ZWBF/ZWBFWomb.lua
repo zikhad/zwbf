@@ -67,7 +67,7 @@ local function sceneWomb()
     animStep = animStep + 0.1 -- always increment the anim step
     local animIndex
     local isPregnant = Pregnancy:getIsPregnant()
-    local progress = Pregnancy:getProgress()
+    local progress = isPregnant and Pregnancy:getProgress() or 0
     local fullness = (data.SpermAmount > (Womb.CONSTANTS.MAX_CAPACITY / 2)) and "full" or "empty"
 
     -- Number of repetitions (used for both pregnant and empty cases)
@@ -151,7 +151,7 @@ local function setCyclePhase()
     local data = Womb.data
     if Pregnancy:getIsPregnant() then
         data.CyclePhase = "Pregnant"
-        data.Fertility = Pregnancy:getProgress()
+        data.Fertility = Pregnancy:getIsPregnant() and Pregnancy:getProgress() or 0
     elseif data.CycleDay < 1 then
         data.CyclePhase = "Recovery"
         data.Fertility = 0
@@ -174,7 +174,7 @@ local function setFertility()
         data.Fertility = 0
     else
         local fertility = {
-            ["Pregnant"] = Pregnancy:getProgress(),
+            ["Pregnant"] = Pregnancy:getIsPregnant() and Pregnancy:getProgress() or 0,
             ["Recovery"] = 0,
             ["Menstruation"] = ZombRandFloat(0, 0.3),
             ["Follicular"] = ZombRandFloat(0, 0.4),
