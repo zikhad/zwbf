@@ -130,10 +130,6 @@ end
 function Pregnancy:getProgress()
 	local player = getPlayer()
 	local modData = player:getModData().Pregnancy
-	if modData == nil then
-		Pregnancy:start()
-		modData = player:getModData().Pregnancy
-	end
 	info()
 	return 1 - modData.HoursToLabor / modData.InitialPregnancyDuration
 end
