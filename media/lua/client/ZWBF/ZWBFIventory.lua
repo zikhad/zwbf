@@ -40,14 +40,6 @@ function OnFeed_Baby(item, player, items)
 	handleItemAction(item, player, ZWBFActionFeedBaby)
 end
 
---- Handler for when Vaginal clenup
---- @param item any
---- @param player any
---- @param items any
-function OnUse_VaginalDouche(item, player, items)
-	handleItemAction(item, player, ZWBFActionVaginalDouche)
-end
-
 --- Create context menu for ZomboWinBeingFemale
 --- @param player any
 --- @param context any
@@ -85,15 +77,6 @@ function ZWBF_BuildInventoryCM(player, context, items)
 				getText("ContextMenu_Take_Lactaid"),
 				item,
 				OnTake_Lactaid,
-				playerObj,
-				items
-			)
-		elseif item:getType() == "VaginalDouche_full"
-		then
-			context:addOption(
-				getText("ContextMenu_Clean_Sperm"),
-				item,
-				OnUse_VaginalDouche,
 				playerObj,
 				items
 			)

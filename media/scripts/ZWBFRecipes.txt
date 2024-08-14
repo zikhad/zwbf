@@ -36,11 +36,26 @@ module ZWBFRecipes
     }
     recipe Fill Vaginal Douche
     {
-        destroy: VaginalDouche_empty,
-        WaterPot;1,
+        VaginalDouche_empty,
+        Water;1,
         CanBeDoneFromFloor: true,
         Result: VaginalDouche_full,
         Time: 100,
         Category: Health,
+        Sound: PourWaterIntoObject,
+        OnGiveXP: Recipe.OnGiveXP.None,
+    }
+    recipe Clear Sperm
+    {
+        VaginalDouche_full,
+        Result: VaginalDouche_empty,
+        Time: 500,
+        CanBeDoneFromFloor: true,
+        Category: Health,
+        StopOnWalk: true,
+        Sound: PourWaterIntoObject,
+        AnimNode: Bandage,
+        OnTest: ZWBFRecipes.OnTest.ClearSperm,
+        OnCreate: ZWBFRecipes.OnCreate.ClearSperm
     }
 }
