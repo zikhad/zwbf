@@ -100,8 +100,8 @@ module ZWBF {
 		DisplayName			= Vaginal Douche (Empty),
 		Icon				= vaginal_douche,
 		Tooltip 			= Tooltip_VaginalDouche_empty,
-		StaticModel 		= WaterBottle,
-		WorldStaticModel 	= WaterBottleEmpty,
+		StaticModel 		= ZWBF.VaginalDouche,
+		WorldStaticModel 	= ZWBF.VaginalDouche,
 	}
 	item VaginalDouche_full
 	{
@@ -110,8 +110,8 @@ module ZWBF {
 		DisplayName			= Vaginal Douche (Full),
 		Icon				= vaginal_douche,
 		Tooltip 			= Tooltip_VaginalDouche_full,
-		StaticModel 		= WaterBottle,
-		WorldStaticModel 	= WaterBottleFull,
+		StaticModel 		= ZWBF.VaginalDouche,
+		WorldStaticModel 	= ZWBF.VaginalDouche,
 		ReplaceOnUse 		= VaginalDouche_empty,
 	}
 }

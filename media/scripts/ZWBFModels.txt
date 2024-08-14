@@ -1,0 +1,7 @@
+module ZWBF {
+	model VaginalDouche {
+		mesh 		= WorldItems/VaginalDouche
+		texture		= WorldItems/VaginalDouche
+		scale		= 1
+	}
+}
