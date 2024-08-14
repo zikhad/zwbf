@@ -75,14 +75,6 @@ local function info()
 	end
 end
 
---- Return Pregnancy progress that is calculated by the remaining hours to labor
---- @param modData any
---- @return number
-local function pregnancyProgress(modData)
-	info()
-	return 1 - modData.HoursToLabor / modData.InitialPregnancyDuration
-end
-
 --- This function is called every hour to update the pregnancy mod data ultil the next restart
 local function beforeRestartUpdate()
 	local player = getPlayer()
@@ -138,7 +130,8 @@ end
 function Pregnancy:getProgress()
 	local player = getPlayer()
 	local modData = player:getModData().Pregnancy
-	return pregnancyProgress(modData)
+	info()
+	return 1 - modData.HoursToLabor / modData.InitialPregnancyDuration
 end
 
 --- This function will return if the player is pregnant
