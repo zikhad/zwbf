@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/zikhad/zwbf/compare/v1.1.0...v1.1.1) (2024-08-14)
+
+
+### Bug Fixes
+
+* **pregnancy:** adding checks before checking progress ([fb36b59](https://github.com/zikhad/zwbf/commit/fb36b59b4f6e8feedb5e6233d001f19c342c37cf))
+* **pregnancy:** fix pregnancy modData ([a14e8d1](https://github.com/zikhad/zwbf/commit/a14e8d17f4a9216097ed12017d4671b82c7adf6a))
+
 ## [1.1.0](https://github.com/zikhad/zwbf/compare/v1.0.6...v1.1.0) (2024-08-10)
 
 
