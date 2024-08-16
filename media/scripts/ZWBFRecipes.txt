@@ -19,6 +19,8 @@ module ZWBFRecipes
         Sound: PourWaterIntoObject,
         OnTest: ZWBFRecipes.OnTest.BreastPump,
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
+        Prop1:  Source=1,
+        Prop2:  Source=2,
     }
     recipe Fill Milk Bottle
     {
@@ -33,29 +35,32 @@ module ZWBFRecipes
         Sound: PourWaterIntoObject,
         OnTest: ZWBFRecipes.OnTest.BreastPump,
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
+        Prop1:  Source=1,
+        Prop2:  Source=2,
     }
     recipe Fill Vaginal Douche
     {
         VaginalDouche_empty,
         Water;1,
-        CanBeDoneFromFloor: true,
         Result: VaginalDouche_full,
         Time: 100,
         Category: Health,
         Sound: PourWaterIntoObject,
         OnGiveXP: Recipe.OnGiveXP.None,
+        Prop1:  Source=1,
     }
     recipe Clear Sperm
     {
         VaginalDouche_full,
         Result: VaginalDouche_empty,
         Time: 500,
-        CanBeDoneFromFloor: true,
         Category: Health,
         StopOnWalk: true,
         Sound: PourWaterIntoObject,
-        AnimNode: Bandage,
+        AnimNode: MedicalCheck,
+        OnGiveXP: Recipe.OnGiveXP.None,
         OnTest: ZWBFRecipes.OnTest.ClearSperm,
-        OnCreate: ZWBFRecipes.OnCreate.ClearSperm
+        OnCreate: ZWBFRecipes.OnCreate.ClearSperm,
+        Prop1:  Source=1,
     }
 }
