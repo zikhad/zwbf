@@ -1,10 +1,69 @@
 local Utils = {}
+Utils.Table = {} -- Utility functions for tables
+Utils.Animation = {} -- Utility functions for animations
 
+-- Localized PZ Variables
 local ISToolTip = ISToolTip
 local ISTimedActionQueue = ISTimedActionQueue;
 local getPlayer = getPlayer;
+local ZomboWinAnimationData = ZomboWinAnimationData;
 
+-- ZomboWin Variables
 local AnimationUtils = require("ZomboWin/ZomboWinAnimationUtils")
+
+-- LOCAL FUNCTIONS
+
+--- Gets the player current animation
+--- @param player any | nil
+--- @return string | nil
+local function getAnim(player)
+    player = player or getPlayer()
+	--Loop through table but returns first result
+    for i,n in pairs(ISTimedActionQueue.getTimedActionQueue(player).queue) do
+		--Returns name of the animation
+        return n.animation --Or reutrn n for full table information
+	end
+    return nil
+end
+
+-- Get animation info table
+local function getAnimInfo(player)
+    -- Get Current animation name
+    local CurrentAnim = getAnim(player or getPlayer())
+    -- Check if any animation is playing
+    if not CurrentAnim then return nil end
+    
+    -- Loop through all animations in ZomboWinAnimationData
+    for _, data in pairs(ZomboWinAnimationData) do
+        -- Loop through all actors in the current animation data
+        for _, actor in ipairs(data.actors) do
+            -- Compare current animation name with the actor's perform stage
+            if actor.stages[1].perform == CurrentAnim then
+                -- Return the animation data for the current animation
+                return data
+            end
+        end
+    end
+    
+    -- Return nil if no matching animation is found
+    return nil
+end
+-- // LOCAL FUNCTIONS
+
+--- Define the function to check if any value from table1 exists in table2
+--- @param table1 table
+--- @param table2 table
+function Utils.Table:some(table1, table2)
+    for _, value1 in ipairs(table1) do
+        for _, value2 in ipairs(table2) do
+            if value1 == value2 then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 
 --- Create an option in provided menu context
 --- @param menu any
@@ -38,54 +97,19 @@ function Utils:percentageToNumber(percentage, maxNumber)
     return math.floor((percentage / 100) * maxNumber)
 end
 
-
---- Gets the player current animation
---- @param player any | nil
---- @return string | nil
-function Utils:getAnim(player)
-    player = player or getPlayer()
-	--Loop through table but returns first result
-    for i,n in pairs(ISTimedActionQueue.getTimedActionQueue(player).queue) do
-		--Returns name of the animation
-        return n.animation --Or reutrn n for full table information
-	end
-    return nil
-end
-
---- Returns true if the animation is whitelisted
---- @param animation string | nil
+--- Check if the current animation does not have any of the excluded tags
+--- @param player any | nil character of the animation (default: player)
+--- @param excludedTags string[] | nil table with tags to exclude
 --- @return boolean
-function Utils:isAnimationAllowed(animation)
-    animation = animation or ""
-    -- TODO: Is it possible to use the tag system to check if the animation is allowed?
-    --[[
-        local allowedAnimations = AnimationUtils:getAnimations(2,1,1,{"Intercourse"}, {}, false)
-        for _, allowedAnimation in ipairs(allowedAnimations) do
-            if string.find(animation, allowedAnimation.id) then
-                return true
-            end        
-        end
+function Utils.Animation:isAllowed(player, excludedTags)
+    player = player or getPlayer()
+    excludedTags = excludedTags or {"Oral", "Masturbation", "Anal", "Solo", "Mast"}
+    
+    local animationData = getAnimInfo(player) or {}
+    if Utils.Table:some(animationData.tags or {}, excludedTags) then
         return false
-        print("XPTO - " .. tostring(xpto));
-    ]]
-
-        local blacklist = {
-            "bj",
-            "blowjob",
-            "oral",
-            "masturbation",
-            "female2",
-            "fingering"
-        }
-
-        animation = string.lower(animation)
-
-        for _, value in ipairs(blacklist) do
-            if string.find(animation, value) then
-                return false
-            end
-        end
-        return true
+    end
+    return true
 end
 
 return Utils

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/zikhad/zwbf/compare/v1.1.1...v1.1.2) (2024-08-17)
+
+
+### Bug Fixes
+
+* **animation:** added support for animation tag system ([ea58e0d](https://github.com/zikhad/zwbf/commit/ea58e0dc2cd46f3d3477b541b51aabc9f17d23ac))
+
 ### [1.1.1](https://github.com/zikhad/zwbf/compare/v1.1.0...v1.1.1) (2024-08-14)
 
 
