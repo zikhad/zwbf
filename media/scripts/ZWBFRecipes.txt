@@ -57,10 +57,10 @@ module ZWBFRecipes
         Category: Health,
         StopOnWalk: true,
         Sound: PourWaterIntoObject,
-        AnimNode: MedicalCheck,
+        AnimNode: blabla_standing_cleans_herself,
         OnGiveXP: Recipe.OnGiveXP.None,
         OnTest: ZWBFRecipes.OnTest.ClearSperm,
         OnCreate: ZWBFRecipes.OnCreate.ClearSperm,
-        Prop1:  Source=1,
+        Prop2:  Source=1,
     }
 }
