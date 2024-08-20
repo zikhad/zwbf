@@ -20,8 +20,7 @@ module ZWBFRecipes
         Sound: PourWaterIntoObject,
         OnTest: ZWBFRecipes.OnTest.BreastPump,
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
-        Prop1:  Source=1,
-        Prop2:  Source=2,
+        Prop1:  Source=2,
     }
     recipe Fill Milk Bottle
     {
@@ -37,7 +36,6 @@ module ZWBFRecipes
         Sound: PourWaterIntoObject,
         OnTest: ZWBFRecipes.OnTest.BreastPump,
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
-        Prop1:  Source=1,
-        Prop2:  Source=2,
+        Prop1:  Source=2,
     }
 }
