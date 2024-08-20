@@ -6,6 +6,7 @@ module ZWBF {
 	}
 	model BreastPump {
 		mesh 		= WorldItems/BreastPump,
+		texture		= WorldItems/BreastPump,
 		scale		= 1
 	}
 }
