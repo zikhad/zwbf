@@ -13,12 +13,15 @@ module ZWBFRecipes
 
         Result: Biberon_milk,
         Time: 500.0,
+        AnimNode: Yonchi_breastpump,
         Category: Cooking,
         OnGiveXP: Recipe.OnGiveXP.None,
         Category: Cooking,
         Sound: PourWaterIntoObject,
         OnTest: ZWBFRecipes.OnTest.BreastPump,
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
+        Prop1:  Source=1,
+        Prop2:  Source=2,
     }
     recipe Fill Milk Bottle
     {
@@ -27,11 +30,14 @@ module ZWBFRecipes
 
         Result: MilkBottle,
         Time: 500.0,
+        AnimNode: Yonchi_breastpump,
         Category: Cooking,
         OnGiveXP: Recipe.OnGiveXP.None,
         Category: Cooking,
         Sound: PourWaterIntoObject,
         OnTest: ZWBFRecipes.OnTest.BreastPump,
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
+        Prop1:  Source=1,
+        Prop2:  Source=2,
     }
 }
