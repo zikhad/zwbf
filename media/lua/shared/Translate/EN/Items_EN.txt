@@ -2,4 +2,6 @@ Items_EN {
     DisplayNameContraceptive        = "Contraceptive",
     DisplayNameMilkBottle           = "Milk Bottle",
     DisplayNameMilkBottle_rotten    = "Milk Bottle (rotten)",
+    DisplayNameVaginalDouche_Empty  = "Vaginal Douche (Empty)",
+    DisplayNameVaginalDouche_Full   = "Vaginal Douche (Full)",
 }

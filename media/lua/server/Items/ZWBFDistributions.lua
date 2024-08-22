@@ -7,6 +7,8 @@ local distributionTable = {
                 {item = "ZWBF.Contraceptive", amount = 20},
                 {item = "ZWBF.Lactaid", amount = 10},
                 {item = "ZWBF.BreastPump", amount = 1},
+                {item = "ZWBF.BreastPump", amount = 1},
+                {item = "ZWBF.VaginalDouche_empty", amount = 5},
             }
         },
         medicine = {
@@ -14,6 +16,7 @@ local distributionTable = {
                 {item = "ZWBF.Contraceptive", amount = 10},
                 {item = "ZWBF.Lactaid", amount = 5},
                 {item = "ZWBF.BreastPump", amount = 2},
+                {item = "ZWBF.VaginalDouche_empty", amount = 5},
             }
         }
     },
@@ -23,6 +26,7 @@ local distributionTable = {
                 {item = "ZWBF.Contraceptive", amount = 20},
                 {item = "ZWBF.Lactaid", amount = 5},
                 {item = "ZWBF.BreastPump", amount = 10},
+                {item = "ZWBF.VaginalDouche_empty", amount = 15},
             }
         },
         medicine = {
@@ -30,6 +34,7 @@ local distributionTable = {
                 {item = "ZWBF.Contraceptive", amount = 20},
                 {item = "ZWBF.Lactaid", amount = 5},
                 {item = "ZWBF.BreastPump", amount = 5},
+                {item = "ZWBF.VaginalDouche_empty", amount = 10},
             }
         }
     },
@@ -38,6 +43,7 @@ local distributionTable = {
             items = {
                 {item = "ZWBF.Contraceptive", amount = 5},
                 {item = "ZWBF.BreastPump", amount = 1},
+                {item = "ZWBF.VaginalDouche_empty", amount = 5},
             }
         }
     },
@@ -47,6 +53,7 @@ local distributionTable = {
                 {item = "ZWBF.Contraceptive", amount = 20},
                 {item = "ZWBF.Lactaid", amount = 10},
                 {item = "ZWBF.BreastPump", amount = 2},
+                {item = "ZWBF.VaginalDouche_empty", amount = 5},
             }
         }
     },
@@ -56,6 +63,7 @@ local distributionTable = {
                 {item = "ZWBF.Contraceptive", amount = 10},
                 {item = "ZWBF.Lactaid", amount = 5},
                 {item = "ZWBF.BreastPump", amount = 4},
+                {item = "ZWBF.VaginalDouche_empty", amount = 5},
             }
         }
     }
