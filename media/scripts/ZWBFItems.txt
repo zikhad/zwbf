@@ -39,8 +39,8 @@ module ZWBF {
 		Type				= Food,
 		DisplayName			= Breast Pump,
 		Icon				= breastpump,
-		StaticModel			= Biberon,
-		WorldStaticModel	= Biberon,
+		StaticModel			= ZWBF.BreastPump,
+		WorldStaticModel	= ZWBF.BreastPump,
 		Tooltip				= Tooltip_BreastPump,
 	}
 	
@@ -93,6 +93,7 @@ module ZWBF {
         WorldStaticModel	= WaterBottleFull,
 		ReplaceOnUse 		= WaterBottleEmpty,
 	}
+	
 	item VaginalDouche_empty
 	{
 		DisplayCategory 	= FirstAid,

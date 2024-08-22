@@ -4,4 +4,9 @@ module ZWBF {
 		texture		= WorldItems/VaginalDouche,
 		scale		= 1
 	}
+	model BreastPump {
+		mesh 		= WorldItems/BreastPump,
+		texture		= WorldItems/BreastPump,
+		scale		= 1
+	}
 }
