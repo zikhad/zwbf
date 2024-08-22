@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/zikhad/zwbf/compare/v1.1.2...v1.2.0) (2024-08-22)
+
+
+### Features
+
+* **animation:** added douche usage animation ([6cc3880](https://github.com/zikhad/zwbf/commit/6cc388059c65e4290fdcbfa7cab6c25799776eae))
+* **items:** added 3d models to vaginal douche ([b2d4fc8](https://github.com/zikhad/zwbf/commit/b2d4fc805ce05b9c1aab2f2d33fb174830c3eeca))
+* **items:** added douche 3d model ([9d97b90](https://github.com/zikhad/zwbf/commit/9d97b903f10b7274c592aa9864aeda2d6c953ce1))
+* **items:** added vaginal douche ([88d7b76](https://github.com/zikhad/zwbf/commit/88d7b7649e4bd4c5c611b1fdac6c792185544316))
+* **items:** added vaginal douche recipes ([999caa3](https://github.com/zikhad/zwbf/commit/999caa38ea4495812d62e0663f62047af259b450))
+
+
+### Bug Fixes
+
+* **actions:** douche apply wetness ([3ae5a3e](https://github.com/zikhad/zwbf/commit/3ae5a3ed0815f705f91a0f217882a743682df474))
+* **items:** douche size ([341a2cc](https://github.com/zikhad/zwbf/commit/341a2ccc15d4a2c65b99fe27bee2f8e413069994))
+* **items:** pump animation fix ([076c0d1](https://github.com/zikhad/zwbf/commit/076c0d169d5bd16b2d68ed92207798d8f50c4534))
+
 ### [1.1.2](https://github.com/zikhad/zwbf/compare/v1.1.1...v1.1.2) (2024-08-17)
 
 
