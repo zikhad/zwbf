@@ -23,16 +23,7 @@ local Utils = require("ZWBF/ZWBFUtils")
 local Pregnancy = require("ZWBF/ZWBFPregnancy")
 local Womb = require("ZWBF/ZWBFWomb")
 
-local function impregnate()
-	local player = getPlayer()
-	if Pregnancy:getIsPregnant() or Womb:getOnContraceptive() then return end
-	local fertility = Womb:getFertility()
-	if ZombRandFloat(0, 1) > (1 - fertility) then
-		local text = getText("IGUI_ZWBF_UI_Fertilized")
-		HaloTextHelper.addText(player, text, HaloTextHelper.getColorGreen())
-		Pregnancy:start()
-	end
-end
+--- LOCAL FUNCTIONS
 
 --- Inject sperm into the player's womb
 local function injectSperm()
@@ -43,6 +34,18 @@ local function injectSperm()
 	local player = getPlayer()
 	local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
 	HaloTextHelper.addTextWithArrow(player, text, true, HaloTextHelper.getColorGreen())
+end
+
+--- Handles impregnation
+local function impregnate()
+	local player = getPlayer()
+	if Pregnancy:getIsPregnant() or Womb:getOnContraceptive() then return end
+	local fertility = Womb:getFertility()
+	if ZombRandFloat(0, 1) > (1 - fertility) then
+		local text = getText("IGUI_ZWBF_UI_Fertilized")
+		HaloTextHelper.addText(player, text, HaloTextHelper.getColorGreen())
+		Pregnancy:start()
+	end
 end
 
 --- Add the event to the ActionEvents
