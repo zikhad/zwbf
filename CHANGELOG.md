@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.3](https://github.com/zikhad/zwbf/compare/v1.2.2...v1.2.3) (2024-08-26)
+
+
+### Bug Fixes
+
+* **animations:** reduce the number of repetitions ([ebed508](https://github.com/zikhad/zwbf/commit/ebed50870dbcee92530582da4e984b21134efb99))
+
 ### [1.2.2](https://github.com/zikhad/zwbf/compare/v1.2.1...v1.2.2) (2024-08-26)
 
 
