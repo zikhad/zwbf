@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.2](https://github.com/zikhad/zwbf/compare/v1.2.1...v1.2.2) (2024-08-26)
+
+
+### Bug Fixes
+
+* **events:** fix on when the adding to womb should occur ([f2af8c3](https://github.com/zikhad/zwbf/commit/f2af8c3686e9b3d72267148b098b7bd4a0a7c572))
+
 ### [1.2.1](https://github.com/zikhad/zwbf/compare/v1.2.0...v1.2.1) (2024-08-22)
 
 ## [1.2.0](https://github.com/zikhad/zwbf/compare/v1.1.2...v1.2.0) (2024-08-22)
