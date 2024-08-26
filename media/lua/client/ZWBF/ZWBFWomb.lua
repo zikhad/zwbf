@@ -71,7 +71,7 @@ local function sceneWomb()
     local fullness = (data.SpermAmount > (Womb.CONSTANTS.MAX_CAPACITY / 2)) and "full" or "empty"
 
     -- Number of repetitions (used for both pregnant and empty cases)
-    local repetitions = 10
+    local repetitions = 9
 
     if isPregnant and progress > 0.6 then
         -- Pregnant animation: 0 to 4 then 4 to 0, 'animReps' times before going 0 to 11
