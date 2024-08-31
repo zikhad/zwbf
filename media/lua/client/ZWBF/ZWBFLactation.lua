@@ -73,13 +73,20 @@ end
 --- Returns the image for the boobs
 --- @return string
 function Lactation:getBoobImage()
-	local data = Lactation.data
-	local fullness = (data.MilkAmount > (Lactation.CONSTANTS.MAX_CAPACITY / 2)) and "full" or "empty"
-	if Pregnancy:getIsPregnant() and Pregnancy:getProgress() > 0.4 then
-		local stage = (Pregnancy:getProgress() < 0.7) and "early" or "late"
-		return string.format("media/ui/lactation/boobs/pregnant_%s_%s.png", stage, fullness)
-	end
-	return string.format("media/ui/lactation/boobs/%s_%s.png", "normal", fullness)
+    local data = Lactation.data
+    local skinColor = Utils:getSkinColor()
+    local fullness = (data.MilkAmount > Lactation.CONSTANTS.MAX_CAPACITY / 2) and "full" or "empty"
+    local basePath = string.format("media/ui/lactation/boobs/color-%s/", skinColor)
+    local imageName = ""
+
+    if Pregnancy:getIsPregnant() and Pregnancy:getProgress() > 0.4 then
+        local stage = (Pregnancy:getProgress() < 0.7) and "early" or "late"
+        imageName = string.format("pregnant_%s_%s.png", stage, fullness)
+    else
+        imageName = string.format("normal_%s.png", fullness)
+    end
+
+    return basePath .. imageName
 end
 
 --- Returns the image for the milk level
