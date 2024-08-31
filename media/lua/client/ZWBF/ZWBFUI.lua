@@ -98,7 +98,7 @@ local function onCreateContextMenu(player, context, items)
 	if isDebugEnabled() then
 		Utils:addOption(
 			submenu,
-			getText("ContextMenu_Add_Title"),
+			getText("ContextMenu_Add_Sperm_Title"),
 			getText("ContextMenu_Add_Description"),
 			function() Womb:addSperm(100) end
 		)
