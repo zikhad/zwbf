@@ -50,6 +50,14 @@ local function getAnimInfo(player)
 end
 -- // LOCAL FUNCTIONS
 
+--- Returns character skin color
+--- @param character any
+--- @return integer
+function Utils:getSkinColor(character)
+    character = character or getPlayer()
+   return character:getHumanVisual():getSkinTextureIndex()
+end
+
 --- Define the function to check if any value from table1 exists in table2
 --- @param table1 table
 --- @param table2 table
