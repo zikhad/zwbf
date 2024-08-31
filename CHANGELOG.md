@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/zikhad/zwbf/compare/v1.2.3...v1.3.0) (2024-08-31)
+
+
+### Features
+
+* added skin color support ([cec070d](https://github.com/zikhad/zwbf/commit/cec070d322805fbf30facbbc648a6fde4ff4e173))
+
 ### [1.2.3](https://github.com/zikhad/zwbf/compare/v1.2.2...v1.2.3) (2024-08-26)
 
 
