@@ -1,0 +1,7 @@
+Sandbox_EN = {
+    Sandbox_ZWBF                                 = "(ZWBF) Being Female",
+    Sandbox_ZWBF_Pregnancy_Recovery              = "Pregnancy Recovery Time",
+    Sandbox_ZWBF_Pregnancy_Recovery_tooltip      = "How many days before menstrual cycle restart?",
+    Sandbox_ZWBF_Womb_Max_Capacity                    = "Womb Capacity (ml)",
+    Sandbox_ZWBF_Womb_Max_Capacity_tooltip            = "The maximum amount of sperm that Womb can hold",
+}

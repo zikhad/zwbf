@@ -1,0 +1,17 @@
+VERSION = 1,
+option ZWBF.PregnancyRecovery {
+    type            = integer,
+    min             = 0,
+    max             = 56,
+    default         = 7,
+    page            = ZWBF,
+    translation     = ZWBF_Pregnancy_Recovery,
+}
+option ZWBF.WombMaxCapacity {
+    type            = integer,
+    min             = 100,
+    max             = 3000,
+    default         = 1000,
+    page            = ZWBF,
+    translation     = ZWBF_Womb_Max_Capacity,
+}

@@ -6,12 +6,20 @@ local Events = Events
 local BodyPartType = BodyPartType
 local HaloTextHelper = HaloTextHelper
 local getText = getText
+local SandboxVars = SandboxVars
+
+local SBVars = SandboxVars.ZWBF
 
 -- VARIABLES
 local Utils = require("ZWBF/ZWBFUtils")
 local Pregnancy = require("ZWBF/ZWBFPregnancy")
 
 local Womb = {}
+
+Womb.SBvars = {
+    PregnancyRecovery = 7, -- Number of days to recover after pregnancy,
+    WombMaxCapacity = 1000 -- Maximum amount of sperm the womb can hold
+}
 
 Womb.data = {
     SpermAmount = 0,
@@ -24,9 +32,7 @@ Womb.data = {
 
 -- CONSTANTS
 Womb.CONSTANTS = {
-    MAX_CAPACITY = 1000, -- Maximum amount of sperm the womb can hold
     SPERM_LEVEL = 17, -- Number of sperm levels (For UI)
-    PREGNANCY_RECOVERY_DAYS = 7, -- Number of days to recover after pregnancy
     WETNESS = { -- Wetness range for the groin
         MIN = 30,
         MAX = 100
@@ -68,7 +74,7 @@ local function sceneWomb()
     local animIndex
     local isPregnant = Pregnancy:getIsPregnant()
     local progress = isPregnant and Pregnancy:getProgress() or 0
-    local fullness = (data.SpermAmount > (Womb.CONSTANTS.MAX_CAPACITY / 2)) and "full" or "empty"
+    local fullness = (data.SpermAmount > (Womb.SBvars.WombMaxCapacity / 2)) and "full" or "empty"
 
     -- Number of repetitions (used for both pregnant and empty cases)
     local repetitions = 9
@@ -122,7 +128,7 @@ end
 --- @return string
 local function normalWomb()
     local data = Womb.data
-    local percentage = math.floor((data.SpermAmount / Womb.CONSTANTS.MAX_CAPACITY) * 100)
+    local percentage = math.floor((data.SpermAmount / Womb.SBvars.WombMaxCapacity) * 100)
     local imageIndex = Utils:percentageToNumber(percentage, Womb.CONSTANTS.SPERM_LEVEL)
 
     -- If any amount of sperm is present, give the first image
@@ -199,7 +205,7 @@ end
 local function onCheckPregnancy()
     local data = Womb.data
     if Pregnancy:getIsPregnant() then
-        data.CycleDay = -Womb.CONSTANTS.PREGNANCY_RECOVERY_DAYS
+        data.CycleDay = -Womb.SBvars.PregnancyRecovery
         if Pregnancy:getProgress() > 0.5 then
             data.SpermAmount = 0
         end
@@ -325,8 +331,8 @@ function Womb:update()
     local player = getPlayer()
     local data = Womb.data
 
-    if data.SpermAmount > Womb.CONSTANTS.MAX_CAPACITY then
-        data.SpermAmount = Womb.CONSTANTS.MAX_CAPACITY
+    if data.SpermAmount > Womb.SBvars.WombMaxCapacity then
+        data.SpermAmount = Womb.SBvars.WombMaxCapacity
     elseif data.SpermAmount < 0 then
         data.SpermAmount = 0
     end
@@ -335,8 +341,14 @@ end
 
 --- Initializes the Womb, This should be called on creation of player
 function Womb:init()
+
+    -- setup SandboxVars
+    Womb.SBvars.PregnancyRecovery = SBVars.PregnancyRecovery;
+    Womb.SBvars.WombMaxCapacity = SBVars.WombMaxCapacity
+
     local player = getPlayer()
     local data = player:getModData().ZWBFWomb or {}
+
     data.SpermAmount = data.SpermAmount or 0
     data.SpermAmountTotal = data.SpermAmountTotal or 0
     data.CycleDay = data.CycleDay or ZombRand(1, 28)
@@ -344,6 +356,8 @@ function Womb:init()
     Womb.data = data
 
     setFertility()
+    print("xxy " .. Womb.SBvars.PregnancyRecovery)
+    print("yyz " .. Womb.SBvars.WombMaxCapacity)
 end
 
 --- Update the UI, should be called every minute
