@@ -7,6 +7,7 @@ option ZWBF.PregnancyRecovery {
     page            = ZWBF,
     translation     = ZWBF_Pregnancy_Recovery,
 }
+
 option ZWBF.WombMaxCapacity {
     type            = integer,
     min             = 100,
@@ -14,4 +15,22 @@ option ZWBF.WombMaxCapacity {
     default         = 1000,
     page            = ZWBF,
     translation     = ZWBF_Womb_Max_Capacity,
+}
+
+option ZWBF.MilkCapacity {
+    type            = integer,
+    min             = 200,
+    max             = 5000,
+    default         = 1000,
+    page            = ZWBF,
+    translation     = ZWBF_Milk_Capacity,
+}
+
+option ZWBF.MilkExpiration {
+    type            = integer,
+    min             = 1,
+    max             = 365,
+    default         = 7,
+    page            = ZWBF,
+    translation     = ZWBF_Milk_Expiration,
 }

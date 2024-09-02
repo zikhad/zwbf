@@ -91,7 +91,7 @@ function ZWBFActionFeedBaby:perform()
 	feedBaby(self.baby)
 	Lactation:remove(Lactation:getBottleAmount())
     Lactation:setMultiplier(ZombRandFloat(0.1, 0.3))
-    Lactation:addExpiration(Lactation.CONSTANTS.EXPIRATION)
+    Lactation:addExpiration(Lactation.SBvars.MilkExpiration)
 end
 
 function ZWBFActionFeedBaby:new(character, baby)

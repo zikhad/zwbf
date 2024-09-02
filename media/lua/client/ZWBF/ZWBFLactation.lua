@@ -3,12 +3,20 @@ local getPlayer = getPlayer
 local Events = Events
 local ZombRand = ZombRand
 local isDebugEnabled = isDebugEnabled
+local SandboxVars = SandboxVars
+
+local SBVars = SandboxVars.ZWBF
 
 --- VARIABLES
 local Utils = require("ZWBF/ZWBFUtils")
 local Pregnancy = require("ZWBF/ZWBFPregnancy")
 
 local Lactation = {}
+
+Lactation.SBvars = {
+	MilkCapacity = 1000, -- Maximum amount of milk that can be stored
+	MilkExpiration = 7, -- Expiration in days
+}
 
 -- local representation of Lactation Data
 Lactation.data = {
@@ -26,7 +34,6 @@ Lactation.CONSTANTS = {
 	},
 	MAX_CAPACITY = 1000, -- Maximum amount of milk that can be stored
 	MAX_LEVEL = 5, -- Maximum level of milk
-	EXPIRATION = 7, -- Expiration in days
 }
 
 --- Updates the data
@@ -50,6 +57,11 @@ end
 
 --- Initializes the Lactation
 function Lactation:init()
+
+	-- setup SandboxVars
+	Lactation.SBvars.MilkCapacity = SBVars.MilkCapacity
+	Lactation.SBvars.MilkExpiration = SBVars.MilkExpiration
+
 	local player = getPlayer()
 	local data = player:getModData().ZWBFLactation or {}
 	
@@ -75,7 +87,7 @@ end
 function Lactation:getBoobImage()
     local data = Lactation.data
     local skinColor = Utils:getSkinColor()
-    local fullness = (data.MilkAmount > Lactation.CONSTANTS.MAX_CAPACITY / 2) and "full" or "empty"
+    local fullness = (data.MilkAmount > Lactation.SBvars.MilkCapacity / 2) and "full" or "empty"
     local basePath = string.format("media/ui/lactation/boobs/color-%s/", skinColor)
     local imageName = ""
 
@@ -93,7 +105,7 @@ end
 --- @return string
 function Lactation:getMilkLevelImage()
 	local data = Lactation.data
-	local amount = (data.MilkAmount / Lactation.CONSTANTS.MAX_CAPACITY) * 100
+	local amount = (data.MilkAmount / Lactation.SBvars.MilkCapacity) * 100
 	local index = Utils:percentageToNumber(amount, Lactation.CONSTANTS.MAX_LEVEL)
 	return string.format("media/ui/lactation/level/milk_level_%s.png", index)
 end
@@ -123,7 +135,7 @@ end
 --- Get the amount needed to make a bottle
 --- @return number
 function Lactation:getBottleAmount()
-	return Lactation.CONSTANTS.MAX_CAPACITY / Lactation.CONSTANTS.MAX_LEVEL
+	return Lactation.SBvars.MilkCapacity / Lactation.CONSTANTS.MAX_LEVEL
 end
 
 --- Clear the milk amount, useful for DEBUG
@@ -170,8 +182,8 @@ local function onEveryHour()
 	
 	if (data.MilkAmount < 0) then
 		data.MilkAmount = 0
-	elseif data.MilkAmount > Lactation.CONSTANTS.MAX_CAPACITY then
-		data.MilkAmount = Lactation.CONSTANTS.MAX_CAPACITY
+	elseif data.MilkAmount > Lactation.SBvars.MilkCapacity then
+		data.MilkAmount = Lactation.SBvars.MilkCapacity
 	end
 end
 
@@ -181,7 +193,7 @@ local function onCheckPregnancy()
 	if Pregnancy:getIsPregnant() and Pregnancy:getProgress() > 0.4 then
 		Lactation:set(true)
 		Lactation:setMultiplier(Pregnancy:getProgress())
-		Lactation:addExpiration(Lactation.CONSTANTS.EXPIRATION)
+		Lactation:addExpiration(Lactation.SBvars.MilkExpiration)
 	end
 end
 
