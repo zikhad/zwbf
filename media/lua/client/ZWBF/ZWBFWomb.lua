@@ -356,8 +356,6 @@ function Womb:init()
     Womb.data = data
 
     setFertility()
-    print("xxy " .. Womb.SBvars.PregnancyRecovery)
-    print("yyz " .. Womb.SBvars.WombMaxCapacity)
 end
 
 --- Update the UI, should be called every minute
