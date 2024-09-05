@@ -1,0 +1,15 @@
+Sandbox_EN = {
+    Sandbox_ZWBF                                              = "(ZWBF) Being Female",
+    
+    Sandbox_ZWBF_Pregnancy_Recovery                           = "Pregnancy Recovery Time",
+    Sandbox_ZWBF_Pregnancy_Recovery_tooltip                   = "How many days before menstrual cycle restart?",
+    
+    Sandbox_ZWBF_Womb_Max_Capacity                            = "Womb Capacity (ml)",
+    Sandbox_ZWBF_Womb_Max_Capacity_tooltip                    = "The maximum amount of sperm that Womb can hold",
+
+    Sandbox_ZWBF__Milk_Capacity                               = "Milk Capacity",
+    Sandbox_ZWBF__Milk_Capacity_tooltip                       = "The maximum amount of Milk that breasts can hold in ml",
+    
+    Sandbox_ZWBF__Milk_Expiration                             = "Milk Expiration",
+    Sandbox_ZWBF__Milk_Expiration_tooltip                     = "The number of days for lactation to expire if not used",
+}

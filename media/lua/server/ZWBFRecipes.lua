@@ -29,7 +29,7 @@ function ZWBFRecipes.OnCreate.BreastPump(items, result, player)
     print("ZWBF - Recipes - OnCreate - Breast Pump")
     Lactation:remove(Lactation:getBottleAmount())
     Lactation:setMultiplier(ZombRandFloat(0.1, 0.2))
-    Lactation:addExpiration(Lactation.CONSTANTS.EXPIRATION)
+    Lactation:addExpiration(Lactation.SBvars.MilkExpiration)
 end
 
 --- Run if the sperm can be cleanned
