@@ -49,6 +49,15 @@ function Womb:applyWetness(amount)
     Groin:setWetness(Groin:getWetness() + amount)
 end
 
+--- Apply bleeding to the groing
+--- @param time integer
+function Womb:applyBleeding(time)
+    local player = getPlayer()
+    local Groin = player:getBodyDamage():getBodyPart(BodyPartType.FromString("Groin"))
+    Groin:setBleeding(true)
+    Groin:setBleedingTime(time)
+end
+
 --- Adds sperm to the womb
 --- @param amount number
 function Womb:addSperm(amount)

@@ -71,6 +71,22 @@ local function onUpdateUI()
 	end
 end
 
+local function isUsingPad(player)
+    player = player or getPlayer()
+    local wornItems = player:getWornItems()
+    if not wornItems then return false end
+
+    for i = wornItems:size() - 1, 0, -1 do
+        local item = wornItems:get(i):getItem()
+        if item:IsClothing() and item:getName() == "Pad" then
+            return true
+        end
+    end
+    
+    return false
+end
+
+
 --- Create H-Status Context Menu Button
 --- @param player any
 --- @param context any
@@ -150,6 +166,13 @@ local function onCreateContextMenu(player, context, items)
 				function() Womb:setPregnancy(false) end
 			)
 		end
+
+		Utils:addOption(
+			submenu,
+			"Testing isUsingPad",
+			"aaa",
+			function() print("is using pad?" .. tostring(isUsingPad())) end
+		)
 	end
 end
 
