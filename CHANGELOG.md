@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/zikhad/zwbf/compare/v1.3.1...v1.4.0) (2024-09-13)
+
+
+### Features
+
+* **options:** add sandbox options for lactation ([ed828ca](https://github.com/zikhad/zwbf/commit/ed828cac0feb8c42a27d1490dd70c2be7399a130))
+* **options:** add sandbox options for womb ([da504bf](https://github.com/zikhad/zwbf/commit/da504bf4795fff67b828a9443f82e2682904ff62))
+
 ### [1.3.1](https://github.com/zikhad/zwbf/compare/v1.3.0...v1.3.1) (2024-08-31)
 
 ## [1.3.0](https://github.com/zikhad/zwbf/compare/v1.2.3...v1.3.0) (2024-08-31)
