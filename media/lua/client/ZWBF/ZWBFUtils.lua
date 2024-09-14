@@ -1,6 +1,7 @@
 local Utils = {}
 Utils.Table = {} -- Utility functions for tables
 Utils.Animation = {} -- Utility functions for animations
+Utils.Inventory = {} -- Utility functions related to Inventory
 
 -- Localized PZ Variables
 local ISToolTip = ISToolTip
@@ -118,6 +119,25 @@ function Utils.Animation:isAllowed(player, excludedTags)
         return false
     end
     return true
+end
+
+--- Returns the item if player is wearing it
+--- @param itemName string
+--- @param player any
+--- @return table | nil
+function Utils.Inventory:wearingItem(itemName, player)
+    player = player or getPlayer()
+    local wornItems = player:getWornItems()
+    if not wornItems then return nil end
+
+    for i = wornItems:size() - 1, 0, -1 do
+        local item = wornItems:get(i):getItem()
+        if item:IsClothing() and item:getName() == itemName then
+            return item
+        end
+    end
+    
+    return nil
 end
 
 return Utils
