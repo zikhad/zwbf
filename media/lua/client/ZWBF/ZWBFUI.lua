@@ -67,21 +67,6 @@ local function onUpdateUI()
 	UI["womb-pregnancy-info"]:setText(math.floor(Womb:getFertility() * 100) .. "%")
 end
 
-local function isUsingPad(player)
-    player = player or getPlayer()
-    local wornItems = player:getWornItems()
-    if not wornItems then return false end
-
-    for i = wornItems:size() - 1, 0, -1 do
-        local item = wornItems:get(i):getItem()
-        if item:IsClothing() and item:getName() == "Pad" then
-            return true
-        end
-    end
-    
-    return false
-end
-
 
 --- Create H-Status Context Menu Button
 --- @param player any
@@ -165,10 +150,24 @@ local function onCreateContextMenu(player, context, items)
 
 		Utils:addOption(
 			submenu,
-			"Testing isUsingPad",
+			"Testing isUsingTampon",
 			"aaa",
-			function() print("is using pad?" .. tostring(isUsingPad())) end
+			function() print("is using Tampon? " .. tostring(Utils.Inventory:wearingItem("Tampon"))) end
 		)
+
+		Utils:addOption(
+			submenu,
+			"Change tampon",
+			"aaa",
+			function()
+				local item = Utils.Inventory:wearingItem("Tampon")
+				if item then
+					local act = ISInventoryTransferAction:new(getPlayer(), item, item:getContainer())
+					act:removeItemOnCharacter()
+				end
+			end
+		)
+		
 	end
 end
 
