@@ -152,23 +152,23 @@ module ZWBF {
 		Icon				= condom_box,
 		StaticModel			= BoxOf45Auto,
 	}
-	item Pad
+	item Tampon
 	{
 		DisplayCategory		= FirstAid,
 		Type				= Clothing,
-		DisplayName			= Pad,
-		ClothingItem		= Pad,
+		DisplayName			= Tampon,
+		ClothingItem		= Tampon,
 		BodyLocation		= UnderwearExtra2,
 		Icon				= SpiffoTail,
 		Weight				= 0.05,
 		WorldStaticModel	= Garter_Ground,
 	}
-	item Pad_Dirty
+	item Tampon_Dirty
 	{
 		DisplayCategory		= FirstAid,
 		Type				= Clothing,
-		DisplayName			= Pad,
-		ClothingItem		= Pad,
+		DisplayName			= Tampon,
+		ClothingItem		= Tampon,
 		BodyLocation		= UnderwearExtra2,
 		Icon				= SpiffoTail,
 		Weight				= 0.05,
