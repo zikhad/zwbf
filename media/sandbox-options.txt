@@ -34,3 +34,12 @@ option ZWBF.MilkExpiration {
     page            = ZWBF,
     translation     = ZWBF_Milk_Expiration,
 }
+
+option ZWBF.FertilityBonus {
+    type            = integer,
+    min             = 0,
+    max             = 100,
+    default         = 50,
+    page            = ZWBF,
+    translation     = ZWBF_Fertility_Bonus,
+}
