@@ -39,7 +39,12 @@ end
 --- Handles impregnation
 local function impregnate()
 	local player = getPlayer()
-	if Pregnancy:getIsPregnant() or Womb:getOnContraceptive() then return end
+	if (
+		Pregnancy:getIsPregnant() or
+		Womb:getOnContraceptive() or
+		player:HasTrait("Infertile")
+	) then return end
+	
 	local fertility = Womb:getFertility()
 	if ZombRandFloat(0, 1) > (1 - fertility) then
 		local text = getText("IGUI_ZWBF_UI_Fertilized")
