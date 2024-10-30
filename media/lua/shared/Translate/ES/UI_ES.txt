@@ -1,0 +1,7 @@
+UI_ES = {
+    UI_Trait_Fertile = "Fértil",
+    UI_Trait_Fertile_Description = "Eres especialmente fértil <br>- Mayor probabilidad de quedar embarazada",
+
+    UI_Trait_Infertile = "Infértil",
+    UI_Trait_Infertile_Description = "Eres infértil<br>No puedes quedar embarazada",
+}

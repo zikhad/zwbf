@@ -1,0 +1,7 @@
+UI_FR = {
+    UI_Trait_Fertile = "Fertile",
+    UI_Trait_Fertile_Description = "Vous êtes particulièrement fertile <br>- Plus de chances de tomber enceinte",
+
+    UI_Trait_Infertile = "Infertile",
+    UI_Trait_Infertile_Description = "Vous êtes infertile<br>Vous ne pouvez pas tomber enceinte",
+}
