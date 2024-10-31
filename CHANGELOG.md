@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/zikhad/zwbf/compare/v1.4.0...v1.4.1) (2024-10-31)
+
+
+### Bug Fixes
+
+* **items:** changed distribution chances ([780d263](https://github.com/zikhad/zwbf/commit/780d263930e38a4c771e87c8c5d0618cc13da2ab))
+
 ## [1.4.0](https://github.com/zikhad/zwbf/compare/v1.3.1...v1.4.0) (2024-09-13)
 
 
