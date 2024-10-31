@@ -3,7 +3,6 @@ require("NPCS/MainCreationMethods")
 
 -- PZ Variables
 local TraitFactory = TraitFactory
--- local Perks = Perks
 local getText = getText
 local Events = Events
 
