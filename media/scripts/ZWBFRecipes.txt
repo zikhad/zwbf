@@ -63,4 +63,14 @@ module ZWBFRecipes
         OnCreate: ZWBFRecipes.OnCreate.ClearSperm,
         Prop2:  Source=1,
     }
+
+    recipe Open Condom Box
+    {
+        CondomBox,
+
+        Result: Condom=10,
+        Time: 20.0,
+        Category: Health,
+        Sound: OpenSeedPacket,
+    }
 }

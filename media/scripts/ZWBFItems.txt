@@ -115,4 +115,37 @@ module ZWBF {
 		WorldStaticModel 	= ZWBF.VaginalDouche,
 		ReplaceOnUse 		= VaginalDouche_empty,
 	}
+
+	item Condom
+	{
+		DisplayCategory		= FirstAid,
+		Weight				= 0.01,
+		DisplayName			= Condom,
+		Icon				= condom,
+		StaticModel			= PillBottle,
+	}
+
+	item CondomUsed
+	{
+		DisplayCategory		= FirstAid,
+		Weight				= 0.01,
+		DisplayName			= Used Condom,
+		Icon				= condom_used,
+		StaticModel			= PillBottle,
+		FoodType			= NoExplicit,
+		HungerChange		= -10,
+		Calories			= 25,
+		Carbohydrates		= 7,
+		Lipids				= 5,
+		Proteins			= 5,
+	}
+	
+	item CondomBox
+	{
+		DisplayCategory		= FirstAid,
+		Weight				= 0.1,
+		DisplayName			= Condom Box,
+		Icon				= condom_box,
+		StaticModel			= BoxOf45Auto,
+	}
 }
