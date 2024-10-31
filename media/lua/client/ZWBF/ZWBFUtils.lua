@@ -140,4 +140,22 @@ function Utils.Inventory:wearingItem(itemName, player)
     return nil
 end
 
+--- Returns true if the player have the item in inventory
+--- @param itemName any
+--- @return boolean
+function Utils.Inventory:hasItem(itemName, player)
+    player = player or getPlayer()
+    local iventory = player:getInventory()
+    local items = iventory:getItems()
+    if items then
+        for i = 0, items:size() - 1 do
+            local item = items:get(i)
+            if itemName == item:getFullType() then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 return Utils
