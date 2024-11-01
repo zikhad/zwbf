@@ -10,13 +10,13 @@ local Events = Events
 local TRAITS_LIST = {
     {
 		IdentifierType = "Fertile",
-		Cost = 2,
+		Cost = -2,
 		Profession = false,
 		MutualExclusives = {},
 	},
     {
 		IdentifierType = "Infertile",
-		Cost = -3,
+		Cost = 3,
 		Profession = false,
 		MutualExclusives = {"Fertile"},
 	},
