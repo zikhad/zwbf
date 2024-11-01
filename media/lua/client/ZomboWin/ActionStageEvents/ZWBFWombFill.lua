@@ -25,36 +25,47 @@ local Womb = require("ZWBF/ZWBFWomb")
 
 --- LOCAL FUNCTIONS
 
---- Inject sperm into the player's womb
-local function injectSperm()
-	local player = getPlayer()
-	
-	if not player:isFemale() then return end
-
-	local amount = ZombRand(MIN_AMOUNT, MAX_AMOUNT) -- Random amount between MIN and MAX
-	Womb:addSperm(amount)
-
-	-- show a Halo Text with the amount of sperm injected
-	local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
-	HaloTextHelper.addTextWithArrow(player, text, true, HaloTextHelper.getColorGreen())
-end
-
 --- Handles impregnation
 local function impregnate()
-	local player = getPlayer()
-	if not player:isFemale() then return end
+	local character = getPlayer()
 	if (
 		Pregnancy:getIsPregnant() or
 		Womb:getOnContraceptive() or
-		player:HasTrait("Infertile")
+		character:HasTrait("Infertile")
 	) then return end
 	
 	local fertility = Womb:getFertility()
 	if ZombRandFloat(0, 1) > (1 - fertility) then
 		local text = getText("IGUI_ZWBF_UI_Fertilized")
-		HaloTextHelper.addText(player, text, HaloTextHelper.getColorGreen())
+		HaloTextHelper.addText(character, text, HaloTextHelper.getColorGreen())
 		Pregnancy:start()
 	end
+end
+
+--- Inject sperm into the player's womb
+local function injectSperm()
+
+	local character = getPlayer()
+	
+	if not character:isFemale() then return end
+
+	local amount = ZombRand(MIN_AMOUNT, MAX_AMOUNT) -- Random amount between MIN and MAX
+		
+	-- show a Halo Text with the amount of sperm injected
+	local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
+	HaloTextHelper.addTextWithArrow(character, text, true, HaloTextHelper.getColorGreen())
+
+	-- TODO: test this!
+	if (Utils.Iventory:hasItem("Condom", character)) then
+		local iventory = character:getIventory()
+		iventory:Remove("Condom")
+		iventory:AddItem("CondomUsed", 1)
+	else
+		Womb:addSperm(amount)
+		impregnate()
+	end
+
+
 end
 
 --- Add the event to the ActionEvents
@@ -64,8 +75,7 @@ table.insert(
 		local character = action.character
 		if not character:isFemale() then return end
 		if Utils.Animation:isAllowed(character) then
-			injectSperm()    --- Inject sperm into the womb
-			impregnate()     --- Handle impregnation
+			injectSperm()
 		end
 	end
 )
