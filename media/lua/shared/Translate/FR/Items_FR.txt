@@ -9,6 +9,7 @@ Items_FR = {
 
     DisplayNameCondom               = "Préservatif",
     DisplayNameCondomUsed           = "Préservatif Usagé",
+    CustomContextMenuCondomUsed     = "Boire",
     DisplayNameCondomBox            = "Boîte de Préservatifs",
 
 }

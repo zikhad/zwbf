@@ -9,5 +9,6 @@ Items_EN {
     
     DisplayNameCondom               = "Condom",
     DisplayNameCondomUsed           = "Used Condom",
+    CustomContextMenuCondomUsed     = "Drink",
     DisplayNameCondomBox            = "Condom Box",
 }
