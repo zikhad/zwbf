@@ -119,6 +119,7 @@ module ZWBF {
 	item Condom
 	{
 		DisplayCategory		= FirstAid,
+		Type				= Normal,
 		Weight				= 0.01,
 		DisplayName			= Condom,
 		Icon				= condom,
@@ -133,7 +134,10 @@ module ZWBF {
 		Icon				= condom_used,
 		StaticModel			= PillBottle,
 		FoodType			= NoExplicit,
-		HungerChange		= -10,
+		Type				= Food,
+		CustomContextMenu 	= Drink,
+		CustomEatSound 		= DrinkingFromBottlePlastic,
+		HungerChange		= -5,
 		Calories			= 25,
 		Carbohydrates		= 7,
 		Lipids				= 5,
