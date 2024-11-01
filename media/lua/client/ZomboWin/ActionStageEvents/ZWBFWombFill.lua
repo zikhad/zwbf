@@ -29,6 +29,7 @@ local Womb = require("ZWBF/ZWBFWomb")
 local function impregnate()
 	local character = getPlayer()
 	if (
+		(not character:isFemale()) or
 		Pregnancy:getIsPregnant() or
 		Womb:getOnContraceptive() or
 		character:HasTrait("Infertile")
@@ -43,9 +44,7 @@ local function impregnate()
 end
 
 --- Inject sperm into the player's womb
-local function injectSperm()
-
-	local character = getPlayer()
+local function injectSperm(character)
 	
 	if not character:isFemale() then return end
 
@@ -55,17 +54,14 @@ local function injectSperm()
 	local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
 	HaloTextHelper.addTextWithArrow(character, text, true, HaloTextHelper.getColorGreen())
 
-	-- TODO: test this!
-	if (Utils.Iventory:hasItem("Condom", character)) then
-		local iventory = character:getIventory()
-		iventory:Remove("Condom")
-		iventory:AddItem("CondomUsed", 1)
+	if (Utils.Inventory:hasItem("ZWBF.Condom", character)) then
+		local inventory = character:getInventory()
+		inventory:Remove("Condom")
+		inventory:AddItem("ZWBF.CondomUsed", 1)
 	else
 		Womb:addSperm(amount)
 		impregnate()
 	end
-
-
 end
 
 --- Add the event to the ActionEvents
@@ -75,7 +71,7 @@ table.insert(
 		local character = action.character
 		if not character:isFemale() then return end
 		if Utils.Animation:isAllowed(character) then
-			injectSperm()
+			injectSperm(character)
 		end
 	end
 )
