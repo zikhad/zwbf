@@ -48,19 +48,18 @@ local function injectSperm(character)
 	
 	if not character:isFemale() then return end
 
-	local amount = ZombRand(MIN_AMOUNT, MAX_AMOUNT) -- Random amount between MIN and MAX
-		
-	-- show a Halo Text with the amount of sperm injected
-	local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
-	HaloTextHelper.addTextWithArrow(character, text, true, HaloTextHelper.getColorGreen())
-
 	if (Utils.Inventory:hasItem("ZWBF.Condom", character)) then
 		local inventory = character:getInventory()
 		inventory:Remove("Condom")
 		inventory:AddItem("ZWBF.CondomUsed", 1)
 	else
-		Womb:addSperm(amount)
-		impregnate()
+		-- show a Halo Text with the amount of sperm injected
+		local amount = ZombRand(MIN_AMOUNT, MAX_AMOUNT) -- Random amount between MIN and MAX
+		local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
+		HaloTextHelper.addTextWithArrow(character, text, true, HaloTextHelper.getColorGreen())
+		
+		Womb:addSperm(amount) -- add sperm to the womb
+		impregnate() -- handle pregnancy
 	end
 end
 
