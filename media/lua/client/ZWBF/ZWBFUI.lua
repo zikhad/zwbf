@@ -43,11 +43,13 @@ local function onCreateUI()
 	UI:addText("womb-cycle-info", "", _, "Center")
 	UI:nextLine()
 
-	-- Conception Chance
-	UI:addText("womb-pregnancy-chance", string.format("%s:", getText("IGUI_ZWBF_UI_Chance")), _, "Center")
-	UI:addProgressBar("womb-pregnancy-bar", 0, 0, 1)
-	UI:addText("womb-pregnancy-info", "", _, "Center")
-	UI:nextLine()
+	if not getPlayer():HasTrait("Infertile") then
+		-- Conception Chance
+		UI:addText("womb-pregnancy-chance", string.format("%s:", getText("IGUI_ZWBF_UI_Chance")), _, "Center")
+		UI:addProgressBar("womb-pregnancy-bar", 0, 0, 1)
+		UI:addText("womb-pregnancy-info", "", _, "Center")
+		UI:nextLine()
+	end
 
 	UI:setBorderToAllElements(true)
 	UI:saveLayout()
@@ -62,9 +64,11 @@ local function onUpdateUI()
 	UI["womb-sperm-total-amount"]:setText(string.format("%s ml", Womb:getSpermAmountTotal()))
 	UI["womb-image"]:setPath(Womb:getImage())
 	UI["womb-cycle-info"]:setText(getText(Womb:getCyclePhase()))
-	UI["womb-pregnancy-chance"]:setText(getText(Pregnancy:getIsPregnant() and "IGUI_ZWBF_UI_Pregnancy" or "IGUI_ZWBF_UI_Chance"))
-	UI["womb-pregnancy-bar"]:setValue(Womb:getFertility())
-	UI["womb-pregnancy-info"]:setText(math.floor(Womb:getFertility() * 100) .. "%")
+	if not getPlayer():HasTrait("Infertile") then
+		UI["womb-pregnancy-chance"]:setText(getText(Pregnancy:getIsPregnant() and "IGUI_ZWBF_UI_Pregnancy" or "IGUI_ZWBF_UI_Chance"))
+		UI["womb-pregnancy-bar"]:setValue(Womb:getFertility())
+		UI["womb-pregnancy-info"]:setText(math.floor(Womb:getFertility() * 100) .. "%")
+	end
 end
 
 --- Create H-Status Context Menu Button
