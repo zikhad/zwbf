@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/zikhad/zwbf/compare/v1.4.1...v1.5.0) (2024-11-02)
+
+
+### Features
+
+* **trait:** added Sandbox vars ([815cbba](https://github.com/zikhad/zwbf/commit/815cbba2c7c759382a2ffbfcb15733ff772f765b))
+* **trait:** added traits ([bae51d3](https://github.com/zikhad/zwbf/commit/bae51d35959245e8412174c1bce388912804eaf3))
+* **trait:** implement trait logic ([bba455e](https://github.com/zikhad/zwbf/commit/bba455e44646f8128198fa869838bbec1bc0dbd1))
+
+
+### Bug Fixes
+
+* **interactions:** prevent WombFill functions to be activated on male players ([bd2de6a](https://github.com/zikhad/zwbf/commit/bd2de6a44eac7217679014461f85cef3b8709f4d))
+* **traits:** corrected the folder of images ([fafa16f](https://github.com/zikhad/zwbf/commit/fafa16f1f2976462a77079339535e56ef9220013))
+* **traits:** corrected traits value ([8ae690a](https://github.com/zikhad/zwbf/commit/8ae690a29d4e51b8a5aa47ca6c851abcced6a405))
+
 ### [1.4.1](https://github.com/zikhad/zwbf/compare/v1.4.0...v1.4.1) (2024-10-31)
 
 
