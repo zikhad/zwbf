@@ -12,4 +12,8 @@ Sandbox_FR = {
     
     Sandbox_ZWBF__Milk_Expiration                             = "Expiration du Lait",
     Sandbox_ZWBF__Milk_Expiration_tooltip                     = "Le nombre de jours avant que le lait ne périme s'il n'est pas utilisé",
+
+    Sandbox_ZWBF_Fertility_Bonus                             = "Bonus de Fertilité",
+    Sandbox_ZWBF_Fertility_Bonus_tooltip                     = "Le montant du bonus de fertilité que donne le trait Fertile",
+
 }

@@ -12,4 +12,7 @@ Sandbox_EN = {
     
     Sandbox_ZWBF__Milk_Expiration                             = "Milk Expiration",
     Sandbox_ZWBF__Milk_Expiration_tooltip                     = "The number of days for lactation to expire if not used",
+
+    Sandbox_ZWBF_Fertility_Bonus                             = "Fertility Bonus",
+    Sandbox_ZWBF_Fertility_Bonus_tooltip                     = "The amount of fertility bonus that the Fertile trait gives",
 }

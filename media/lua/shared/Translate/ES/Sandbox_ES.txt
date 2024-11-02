@@ -12,4 +12,8 @@ Sandbox_ES = {
     
     Sandbox_ZWBF__Milk_Expiration                             = "Caducidad de la Leche",
     Sandbox_ZWBF__Milk_Expiration_tooltip                     = "El número de días para que la lactancia caduque si no se usa",
+
+    Sandbox_ZWBF_Fertility_Bonus                             = "Bono de Fertilidad",
+    Sandbox_ZWBF_Fertility_Bonus_tooltip                     = "La cantidad de bono de fertilidad que otorga el rasgo Fértil",
+
 }

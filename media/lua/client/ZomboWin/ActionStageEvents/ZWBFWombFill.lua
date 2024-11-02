@@ -27,11 +27,14 @@ local Womb = require("ZWBF/ZWBFWomb")
 
 --- Inject sperm into the player's womb
 local function injectSperm()
+	local player = getPlayer()
+	
+	if not player:isFemale() then return end
+
 	local amount = ZombRand(MIN_AMOUNT, MAX_AMOUNT) -- Random amount between MIN and MAX
 	Womb:addSperm(amount)
 
 	-- show a Halo Text with the amount of sperm injected
-	local player = getPlayer()
 	local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
 	HaloTextHelper.addTextWithArrow(player, text, true, HaloTextHelper.getColorGreen())
 end
@@ -39,7 +42,13 @@ end
 --- Handles impregnation
 local function impregnate()
 	local player = getPlayer()
-	if Pregnancy:getIsPregnant() or Womb:getOnContraceptive() then return end
+	if not player:isFemale() then return end
+	if (
+		Pregnancy:getIsPregnant() or
+		Womb:getOnContraceptive() or
+		player:HasTrait("Infertile")
+	) then return end
+	
 	local fertility = Womb:getFertility()
 	if ZombRandFloat(0, 1) > (1 - fertility) then
 		local text = getText("IGUI_ZWBF_UI_Fertilized")

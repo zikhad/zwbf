@@ -18,7 +18,8 @@ local Womb = {}
 
 Womb.SBvars = {
     PregnancyRecovery = 7, -- Number of days to recover after pregnancy,
-    WombMaxCapacity = 1000 -- Maximum amount of sperm the womb can hold
+    WombMaxCapacity = 1000, -- Maximum amount of sperm the womb can hold
+    FertilityBonus = 50 -- Fertility Bonus of Fertile Trait
 }
 
 Womb.data = {
@@ -176,11 +177,16 @@ end
 --- Set fertility based on the current cycle phase and conditions like pregnancy and contraceptives
 local function setFertility()
     local data = Womb.data
-    if (data.OnContraceptive) then
+    local player = getPlayer()
+    if (
+        data.OnContraceptive or
+        player:HasTrait("Infertile")
+    ) then
         data.Fertility = 0
+    elseif Pregnancy:getIsPregnant() then
+        data.Fertility = Pregnancy:getProgress() or 0
     else
         local fertility = {
-            ["Pregnant"] = Pregnancy:getIsPregnant() and Pregnancy:getProgress() or 0,
             ["Recovery"] = 0,
             ["Menstruation"] = ZombRandFloat(0, 0.3),
             ["Follicular"] = ZombRandFloat(0, 0.4),
@@ -188,6 +194,9 @@ local function setFertility()
             ["Luteal"] = ZombRandFloat(0, 0.3),
         }
         data.Fertility = fertility[data.CyclePhase] or 0;
+        if (data.Fertility > 0 and player:HasTrait("Fertile")) then
+            data.Fertility = data.Fertility * (1 + (Womb.SBvars.FertilityBonus / 100))
+        end
     end
 end
 
@@ -285,7 +294,7 @@ function Womb:getSpermAmountTotal()
     return Womb.data.SpermAmountTotal
 end
 
---- Get the current Fertility to be used in the UI
+--- Get the current Fertility
 --- @return number Womb.data.Fertility fertility percentage
 function Womb:getFertility()
     return Womb.data.Fertility
@@ -343,8 +352,9 @@ end
 function Womb:init()
 
     -- setup SandboxVars
-    Womb.SBvars.PregnancyRecovery = SBVars.PregnancyRecovery;
+    Womb.SBvars.PregnancyRecovery = SBVars.PregnancyRecovery
     Womb.SBvars.WombMaxCapacity = SBVars.WombMaxCapacity
+    Womb.SBvars.FertilityBonus = SBVars.FertilityBonus
 
     local player = getPlayer()
     local data = player:getModData().ZWBFWomb or {}
