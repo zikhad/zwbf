@@ -147,7 +147,7 @@ module ZWBF {
 	item CondomBox
 	{
 		DisplayCategory		= FirstAid,
-		Weight				= 0.1,
+		Weight				= 0.08,
 		DisplayName			= Condom Box,
 		Icon				= condom_box,
 		StaticModel			= BoxOf45Auto,

@@ -73,4 +73,13 @@ module ZWBFRecipes
         Category: Health,
         Sound: OpenSeedPacket,
     }
+
+    recipe Place Condoms in Box
+    {
+        Condom=10,
+
+        Result: CondomBox,
+        Time: 20.0,
+        Sound: PutItemInBag
+    }
 }
