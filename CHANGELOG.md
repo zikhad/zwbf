@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/zikhad/zwbf/compare/v1.5.0...v1.6.0) (2024-11-03)
+
+
+### Features
+
+* **animations:** added animation when using condom ([5daa431](https://github.com/zikhad/zwbf/commit/5daa4310e9e95a30d39f3bf09358521cd8b8fbfc))
+* **animations:** new womb animations ([19bf5be](https://github.com/zikhad/zwbf/commit/19bf5be23e476a8dbd96d967a455d691691af5c6))
+* **animations:** new womb kiss animation ([55f7a12](https://github.com/zikhad/zwbf/commit/55f7a12583cc3984bb65744dbfe8b4a0f3dd59c9))
+* **items:** added condom ([f148a93](https://github.com/zikhad/zwbf/commit/f148a930e033c71e707bab147287be37ca364e46))
+* **items:** added images ([cacafc0](https://github.com/zikhad/zwbf/commit/cacafc09af26407424493d92374bfb1cb85c1115))
+* **items:** added option to put condoms in a box ([9927fad](https://github.com/zikhad/zwbf/commit/9927fadf46b8af4f368afa9b5850c55e84d46af1))
+* **items:** Handling condom usage in Womb Fill ([73962b8](https://github.com/zikhad/zwbf/commit/73962b81b1c73183ca64b36fbb57068126c8e31f))
+
+
+### Bug Fixes
+
+* **items:** handling condom fix ([0119e83](https://github.com/zikhad/zwbf/commit/0119e83bf0f99f5a34512e976d77171ce93bee6b))
+* **items:** used condom drink option ([86fc1d2](https://github.com/zikhad/zwbf/commit/86fc1d24ba209acce669b996c0e9094c4baf1f62))
+* **womb:** removed Halo text when action happens with condom ([10c5fe9](https://github.com/zikhad/zwbf/commit/10c5fe9bb363c5396ad735b535482d55ccdeab68))
+
 ## [1.5.0](https://github.com/zikhad/zwbf/compare/v1.4.1...v1.5.0) (2024-11-02)
 
 
