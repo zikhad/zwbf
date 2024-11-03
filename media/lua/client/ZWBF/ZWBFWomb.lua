@@ -65,64 +65,72 @@ function Womb:clearAllSperm()
 end
 
 --- SCENES
-local animStep = 0 -- the current step of the animation
+local animStep = 0 -- the current step of the animation, incremented each call to animate
 
---- Returns the scene image depending on Womb's conditions
---- @return string
-local function sceneWomb()
-    local data = Womb.data
-    animStep = animStep + 0.1 -- always increment the anim step
-    local animIndex
-    local isPregnant = Pregnancy:getIsPregnant()
-    local progress = isPregnant and Pregnancy:getProgress() or 0
-    local fullness = (data.SpermAmount > (Womb.SBvars.WombMaxCapacity / 2)) and "full" or "empty"
-
-    -- Number of repetitions (used for both pregnant and empty cases)
-    local repetitions = 9
-
-    if isPregnant and progress > 0.6 then
-        -- Pregnant animation: 0 to 4 then 4 to 0, 'animReps' times before going 0 to 11
-        local loopIndex = math.floor(animStep) % 10
-        if loopIndex < 5 then
-            animIndex = loopIndex
-        else
-            animIndex = 9 - loopIndex
-        end
-
-        if math.floor(animStep / 10) >= repetitions then
-            animIndex = math.floor(animStep) - 10 * repetitions
-            animIndex = animIndex > 11 and 11 or animIndex
-        end
-
-        return string.format("media/ui/sex/pregnant/sex_%s.png", animIndex) -- return the scene image
-
-    elseif fullness == "empty" then
-        -- Not pregnant and fullness is empty: 0 to 4 then 4 to 0, 'animReps' times before going 0 to 9
-        local loopIndex = math.floor(animStep) % 10
-        if loopIndex < 5 then
-            animIndex = loopIndex
-        else
-            animIndex = 9 - loopIndex
-        end
-
-        if math.floor(animStep / 10) >= repetitions then
-            animIndex = math.floor(animStep) - 10 * repetitions
-            animIndex = animIndex > 9 and 9 or animIndex
-        end
-
+--- Helper function to calculate animation loop index, optionally reversing the sequence
+--- @param maxIndex integer: Maximum index to loop through
+--- @param isReversed boolean: Whether the loop should reverse direction
+--- @return integer: The calculated animation index for the current step
+local function calculateLoopIndex(maxIndex, isReversed)
+    -- Determine position in the loop; goes from 0 to maxIndex and back if reversed
+    local loopIndex = math.floor(animStep) % (maxIndex * 2)
+    if loopIndex < maxIndex then
+        return loopIndex -- Forward loop phase
     else
-        -- Not pregnant and fullness is full: 0 to 9 then 9 to 0 repeatedly
-        local loopIndex = math.floor(animStep) % 18
-        if loopIndex < 9 then
-            animIndex = loopIndex
-        else
-            animIndex = 17 - loopIndex
-        end
+        -- Reverse loop phase if 'isReversed' is true
+        return (isReversed and maxIndex - (loopIndex - maxIndex)) or maxIndex - loopIndex
     end
-
-    return string.format("media/ui/sex/normal/sex_%s_%s.png", fullness, animIndex) -- return the scene image
 end
 
+--- Determines fullness based on sperm amount in Womb data
+--- @param data table: Data related to womb status
+--- @return string: "full" or "empty" based on capacity threshold
+local function getFullness(data)
+    -- Checks if sperm amount is above half the womb's max capacity
+    return (data.SpermAmount > (Womb.SBvars.WombMaxCapacity / 2)) and "full" or "empty"
+end
+
+--- Main function to select the scene image based on womb and pregnancy conditions
+--- @return string: Path to the appropriate scene image
+local function sceneWomb()
+    animStep = animStep + 0.1 -- Increment animation step with each function call
+    local animIndex = 0 -- image index
+    local repetitions = 9 -- number of repetitions for loops
+    local isPregnant = Pregnancy:getIsPregnant() -- Check pregnancy status
+    local progress = isPregnant and Pregnancy:getProgress() or 0 -- Pregnancy progress (0 if not pregnant)
+    local fullness = getFullness(Womb.data) -- Determine fullness of the womb
+
+    -- Check for condom use case: animates from 0 to 6, then 6 to 0 in a repeating loop
+    if Utils.Inventory:hasItem("ZWBF.Condom") then
+        animIndex = calculateLoopIndex(6, true) -- Calculate loop index up to 6, then reverse
+        return string.format("media/ui/sex/womb/womb_%s.png", animIndex) -- Return image path for condom case
+    end
+
+    -- Pregnant case with high progress (> 0.6): loop 0 to 4 and back, then animate through final frames
+    if isPregnant and progress > 0.6 then
+        animIndex = calculateLoopIndex(4, true) -- Loop index from 0 to 4 and back
+        -- Check if the loop repetitions have completed; if so, proceed with final frames (0-11)
+        if math.floor(animStep / 10) >= repetitions then
+            animIndex = math.min(math.floor(animStep) - 10 * repetitions, 11) -- Constrain to max frame 11
+        end
+        return string.format("media/ui/sex/pregnant/sex_%s.png", animIndex) -- Return image path for pregnant case
+    end
+
+    -- Non-pregnant cases based on womb fullness
+    if fullness == "empty" then
+        -- Empty womb animation: loop 0 to 4 and back; after 'repetitions', animate through final frames (0-9)
+        animIndex = calculateLoopIndex(4, true) -- Loop index from 0 to 4 and back
+        if math.floor(animStep / 10) >= repetitions then
+            animIndex = math.min(math.floor(animStep) - 10 * repetitions, 9) -- Constrain to max frame 9
+        end
+    else
+        -- Full womb animation: loop 0 to 9 and back, repeating indefinitely
+        animIndex = calculateLoopIndex(9, true) -- Loop index from 0 to 9 and back
+    end
+
+    -- Return the image path based on fullness and calculated animIndex
+    return string.format("media/ui/sex/normal/sex_%s_%s.png", fullness, animIndex)
+end
 
 
 --- Returns the normal Womb image depending on Womb's conditions
@@ -151,7 +159,6 @@ local function normalWomb()
     end
     return string.format("media/ui/womb/%s/womb_%s_%s.png", status, status, imageIndex)
 end
---- // SCENES
 
 --- Set cycle phase based on the current day
 local function setCyclePhase()

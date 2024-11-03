@@ -6,6 +6,7 @@ module ZWBFRecipes
         Babies
     }
 
+    /************************ Milk ************************/
     recipe Fill Biberon
     {
         Empty_Biberon,
@@ -22,6 +23,7 @@ module ZWBFRecipes
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
         Prop1:  Source=2,
     }
+    
     recipe Fill Milk Bottle
     {
         WaterBottleEmpty,
@@ -38,6 +40,8 @@ module ZWBFRecipes
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
         Prop1:  Source=2
     }
+    
+    /************************ Vaginal Douche ************************/
     recipe Fill Vaginal Douche
     {
         VaginalDouche_empty,
@@ -49,6 +53,7 @@ module ZWBFRecipes
         OnGiveXP: Recipe.OnGiveXP.None,
         Prop1:  Source=1,
     }
+    
     recipe Clear Sperm
     {
         VaginalDouche_full,
@@ -62,5 +67,25 @@ module ZWBFRecipes
         OnTest: ZWBFRecipes.OnTest.ClearSperm,
         OnCreate: ZWBFRecipes.OnCreate.ClearSperm,
         Prop2:  Source=1,
+    }
+
+    /************************ Condoms ************************/
+    recipe Open Condom Box
+    {
+        CondomBox,
+
+        Result: Condom=10,
+        Time: 20.0,
+        Category: Health,
+        Sound: OpenSeedPacket,
+    }
+
+    recipe Place Condoms in Box
+    {
+        Condom=10,
+
+        Result: CondomBox,
+        Time: 20.0,
+        Sound: PutItemInBag
     }
 }
