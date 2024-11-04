@@ -154,17 +154,17 @@ local function onCreateContextMenu(player, context, items)
 
 		Utils:addOption(
 			submenu,
-			"Testing isUsingTampon",
+			"Testing isUsingSanitaryPad",
 			"aaa",
-			function() print("is using Tampon? " .. tostring(Utils.Inventory:wearingItem("Tampon"))) end
+			function() print("is using SanitaryPad? " .. tostring(Utils.Inventory:wearingItem("SanitaryPad"))) end
 		)
 
 		Utils:addOption(
 			submenu,
-			"Change tampon",
+			"Change SanitaryPad",
 			"aaa",
 			function()
-				local item = Utils.Inventory:wearingItem("Tampon")
+				local item = Utils.Inventory:wearingItem("SanitaryPad")
 				if item then
 					local act = ISInventoryTransferAction:new(getPlayer(), item, item:getContainer())
 					act:removeItemOnCharacter()

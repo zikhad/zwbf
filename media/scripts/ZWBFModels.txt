@@ -4,9 +4,22 @@ module ZWBF {
 		texture		= WorldItems/VaginalDouche,
 		scale		= 1
 	}
+
 	model BreastPump {
 		mesh 		= WorldItems/BreastPump,
 		texture		= WorldItems/BreastPump,
 		scale		= 1
+	}
+
+	model SanitaryPad {
+		mesh 		= WorldItems/SanitaryPad,
+		texture		= WorldItems/SanitaryPad,
+		scale		= 0.025
+	}
+
+	model SanitaryPadBox {
+		mesh 		= WorldItems/SanitaryPadBox,
+		texture		= WorldItems/SanitaryPadBox,
+		scale		= 0.025
 	}
 }
