@@ -158,11 +158,11 @@ module ZWBF {
 		DisplayCategory		= FirstAid,
 		Type				= Clothing,
 		DisplayName			= Sanitary Pad,
-		ClothingItem		= SanitaryPad,
+		ClothingItem 		= SanitaryPad,
 		BodyLocation		= UnderwearExtra2,
 		Icon				= SpiffoTail,
 		Weight				= 0.02,
-		StaticModel			= ZWBF.SanitaryPad,
+		CanHaveHoles 		= false,
 		WorldStaticModel	= ZWBF.SanitaryPad,
 	}
 
@@ -171,7 +171,6 @@ module ZWBF {
 		DisplayCategory		= FirstAid,
 		Type				= Clothing,
 		DisplayName			= Sanitary Pad,
-		ClothingItem		= SanitaryPad,
 		BodyLocation		= UnderwearExtra2,
 		Icon				= SpiffoTail,
 		Weight				= 0.02,
