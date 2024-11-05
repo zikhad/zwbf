@@ -46,6 +46,7 @@ module ZWBFRecipes
     {
         VaginalDouche_empty,
         Water;1,
+
         Result: VaginalDouche_full,
         Time: 100,
         Category: Health,
@@ -57,6 +58,7 @@ module ZWBFRecipes
     recipe Clear Sperm
     {
         VaginalDouche_full,
+
         Result: VaginalDouche_empty,
         Time: 500,
         Category: Health,
@@ -85,6 +87,26 @@ module ZWBFRecipes
         Condom=10,
 
         Result: CondomBox,
+        Time: 20.0,
+        Sound: PutItemInBag
+    }
+
+    /************************ SanitaryPad ************************/
+    recipe Open Sanitary Pad Box
+    {
+        SanitaryPadBox,
+
+        Result: SanitaryPad=20,
+        Time: 20.0,
+        Category: Health,
+        Sound: OpenSeedPacket,
+    }
+
+    recipe Place Sanitary Pads in Box
+    {
+        SanitaryPad=20,
+
+        Result: SanitaryPadBox,
         Time: 20.0,
         Sound: PutItemInBag
     }
