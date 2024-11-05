@@ -1,8 +1,13 @@
 Recipes_ES = {
     Recipe_Fill_Biberon = "Llenar Biberón",
     Recipe_Fill_Milk_Bottle = "Llenar Botella de Leche",
+
     Recipe_Fill_Vaginal_Douche = "Llenar Ducha Vaginal",
     Recipe_Clear_Sperm = "Limpiar Esperma",
+
     Recipe_Open_Condom_Box = "Abrir Caja de Condones",
-    Recipe_Place_Condoms_in_Box = "Colocar Condones en Caja",
+    Recipe_Place_Condoms_in_Box = "Colocar Condones en la Caja",
+
+    Recipe_Open_Sanitary_Pad_Box = "Abrir Caja de Toallas Sanitarias",
+    Recipe_Place_Sanitary_Pads_in_Box = "Colocar Toallas Sanitarias en la Caja"
 }
