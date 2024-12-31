@@ -20,6 +20,10 @@ local TRAITS_LIST = {
 		Profession = false,
 		MutualExclusives = {"Fertile"},
 	},
+    -- TODO: Add Hyperfertile trait +10 > +100% fertility, Halves the time before being ready to get pregnant again after birth, increases chance of successful delivery by 10%
+    -- TODO: Add Dairy Cow trait -6 > Increases milk production rate (+25%) and time lactating after pregnancy (+25%).
+    -- TODO: Add Baby Crazy trait -6 > Decreases Unhappiness, Boredom and Stress when breastfeeding and when getting pregnant. Reduces injuries by 10% when in the 2nd or 3rd trimester.
+    -- TODO: Add Dedicated Parent trait -10 > Reduces injuries, fatigue rate and endurance loss when a baby is equipped, by 20% (my bf has this)
 }
 
 local function initTraits()
