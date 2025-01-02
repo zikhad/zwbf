@@ -1,7 +1,10 @@
 UI_FR = {
     UI_Trait_Fertile = "Fertile",
-    UI_Trait_Fertile_Description = "Vous êtes particulièrement fertile <br>- Plus de chances de tomber enceinte",
+    UI_Trait_Fertile_Description = "Vous êtes particulièrement fertile <br>- Chances accrues de tomber enceinte",
 
     UI_Trait_Infertile = "Infertile",
     UI_Trait_Infertile_Description = "Vous êtes infertile<br>Vous ne pouvez pas tomber enceinte",
+    
+    UI_Trait_Hyperfertile = "Hyperfertile",
+    UI_Trait_Hyperfertile_Description = "Vous êtes HYPER fertile <br>- +100% de fertilité, réduit de moitié le temps avant d'être prête à tomber enceinte à nouveau après un accouchement",
 }
