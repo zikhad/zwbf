@@ -12,16 +12,28 @@ local TRAITS_LIST = {
 		IdentifierType = "Fertile",
 		Cost = -2,
 		Profession = false,
-		MutualExclusives = {},
+		MutualExclusives = {"Infertile", "Hyperfertile"},
 	},
     {
 		IdentifierType = "Infertile",
 		Cost = 3,
 		Profession = false,
-		MutualExclusives = {"Fertile"},
+		MutualExclusives = {"Fertile", "Hyperfertile"},
 	},
     -- TODO: Add Hyperfertile trait +10 > +100% fertility, Halves the time before being ready to get pregnant again after birth, increases chance of successful delivery by 10%
+    {
+        IdentifierType = "Hyperfertile",
+		Cost = -6,
+		Profession = false,
+		MutualExclusives = {"Fertile", "Infertile"},
+    },    
     -- TODO: Add Dairy Cow trait -6 > Increases milk production rate (+25%) and time lactating after pregnancy (+25%).
+    {
+        IdentifierType = "Dairy cow",
+		Cost = 4,
+		Profession = false,
+		MutualExclusives = {},
+    },
     -- TODO: Add Baby Crazy trait -6 > Decreases Unhappiness, Boredom and Stress when breastfeeding and when getting pregnant. Reduces injuries by 10% when in the 2nd or 3rd trimester.
     -- TODO: Add Dedicated Parent trait -10 > Reduces injuries, fatigue rate and endurance loss when a baby is equipped, by 20% (my bf has this)
 }

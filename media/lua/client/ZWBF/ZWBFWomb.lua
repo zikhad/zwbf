@@ -355,6 +355,18 @@ function Womb:update()
     player:getModData().ZWBFWomb = data
 end
 
+--- Modify the variables according to player Traits
+function Womb:applyTraits()
+    local player = getPlayer()
+    -- Hyperfertile
+    if player:HasTrait("Hyperfertile") then
+        -- +100% fertility
+        Womb.SBvars.FertilityBonus = SBVars.FertilityBonus * 2
+        -- Halves the time before being ready to get pregnant again after birth
+        Womb.SBvars.PregnancyRecovery = math.floor(SBVars.PregnancyRecovery / 2)
+    end
+end
+
 --- Initializes the Womb, This should be called on creation of player
 function Womb:init()
 
@@ -362,6 +374,8 @@ function Womb:init()
     Womb.SBvars.PregnancyRecovery = SBVars.PregnancyRecovery
     Womb.SBvars.WombMaxCapacity = SBVars.WombMaxCapacity
     Womb.SBvars.FertilityBonus = SBVars.FertilityBonus
+    -- Apply Traits that are related to the Womb
+    Womb:applyTraits()
 
     local player = getPlayer()
     local data = player:getModData().ZWBFWomb or {}
