@@ -1,10 +1,10 @@
 Moodles_EN {
-    Moodles_Engorged_Bad_lvl1 = "Slight",
-    Moodles_Engorged_Bad_desc_lvl1 = "",
-    Moodles_Engorged_Bad_lvl2 = "Firm",
-    Moodles_Engorged_Bad_desc_lvl2 = "",
-    Moodles_Engorged_Bad_lvl3 = "Very Firm",
-    Moodles_Engorged_Bad_desc_lvl3 = "",
-    Moodles_Engorged_Bad_lvl4 = "Tender",
-    Moodles_Engorged_Bad_desc_lvl4 = "",
+    Moodles_Engorgement_Bad_lvl1 = "Slight",
+    Moodles_Engorgement_Bad_desc_lvl1 = "Slight desc",
+    Moodles_Engorgement_Bad_lvl2 = "Firm",
+    Moodles_Engorgement_Bad_desc_lvl2 = "Firm desc",
+    Moodles_Engorgement_Bad_lvl3 = "Very Firm",
+    Moodles_Engorgement_Bad_desc_lvl3 = "Very Firm desc",
+    Moodles_Engorgement_Bad_lvl4 = "Tender",
+    Moodles_Engorgement_Bad_desc_lvl4 = "Tender desc",
 }
