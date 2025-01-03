@@ -12,13 +12,13 @@ local TRAITS_LIST = {
 		IdentifierType = "Fertile",
 		Cost = -2,
 		Profession = false,
-		MutualExclusives = {"Infertile", "Hyperfertile"},
+		MutualExclusives = {},
 	},
     {
 		IdentifierType = "Infertile",
 		Cost = 3,
 		Profession = false,
-		MutualExclusives = {"Fertile", "Hyperfertile"},
+		MutualExclusives = {"Fertile"},
 	},
     -- TODO: Add Hyperfertile trait +10 > +100% fertility, Halves the time before being ready to get pregnant again after birth, increases chance of successful delivery by 10%
     {
