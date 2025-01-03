@@ -88,6 +88,12 @@ function Lactation:getMilkAmount()
 	return data.MilkAmount
 end
 
+--- Returns the percentage 0-1 of current milk amount
+function Lactation:getMilkAmountPercentage()
+	local data = self.data
+	return data.MilkAmount / self.SBvars.MilkCapacity
+end
+
 --- Returns the image for the boobs
 --- @return string
 function Lactation:getBoobImage()
