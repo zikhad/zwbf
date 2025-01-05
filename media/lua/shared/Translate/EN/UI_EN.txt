@@ -4,4 +4,8 @@ UI_EN = {
 
     UI_Trait_Infertile = "Infertile",
     UI_Trait_Infertile_Description = "You are infertile<br>You Can't get pregnant",
+    
+    UI_Trait_Hyperfertile = "Hyperfertile",
+    UI_Trait_Hyperfertile_Description = "You are HYPER fertile <br>- +100% fertility, Halves the time before being ready to get pregnant again after birth",
+
 }

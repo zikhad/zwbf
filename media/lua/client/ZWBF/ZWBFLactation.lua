@@ -53,6 +53,12 @@ end
 function Lactation:addExpiration(days)
 	local data = Lactation.data
 	data.Expiration = 60 * 24 * days -- 60 minutes * 24 hours * days
+	local player = getPlayer()
+	
+	-- Add 25% of lactation time if player has "Dairy cow" Trait
+	if player:HasTrait("Dairy cow") then
+		data.Expiration = data.Expiration * 1.25;
+	end
 end
 
 --- Initializes the Lactation
@@ -117,7 +123,7 @@ function Lactation:getIsLactating()
 	return data.IsLactating
 end
 
---- Add Milk to the player, useful for DEBUG
+--- [DEBUG] Add Milk to the player
 --- @param amount any
 function Lactation:add(amount)
 	local data = Lactation.data
@@ -138,10 +144,13 @@ function Lactation:getBottleAmount()
 	return Lactation.SBvars.MilkCapacity / Lactation.CONSTANTS.MAX_LEVEL
 end
 
---- Clear the milk amount, useful for DEBUG
+--- Clear the milk amount
 function Lactation:clear()
 	local data = Lactation.data
 	data.MilkAmount = 0
+	data.MilkMultiplier = 0
+	data.Expiration = 0
+	
 end
 
 --- Set the lactation status
@@ -150,9 +159,7 @@ function Lactation:set(status)
 	local data = Lactation.data
 	data.IsLactating = status
 	if (not data.IsLactating) then
-		data.MilkAmount = 0
-		data.MilkMultiplier = 0
-		data.Expiration = 0
+		Lactation:clear()
 	end
 end
 
@@ -161,6 +168,12 @@ end
 function Lactation:setMultiplier(multiplier)
 	local data = Lactation.data
 	data.MilkMultiplier = multiplier
+	local player = getPlayer()
+	
+	-- Add  25% of bonus to the multiplier if player has "Dairy cow" Trait
+	if player:HasTrait("Dairy cow") then
+		data.MilkMultiplier = data.MilkMultiplier * 1.25;
+	end
 end
 
 --- Get The Milk Multiplier amount
