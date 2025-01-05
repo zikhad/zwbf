@@ -11,6 +11,29 @@ ZWBFRecipes = {
 local Lactation = require("ZWBF/ZWBFLactation")
 local Womb = require("ZWBF/ZWBFWomb")
 
+-- Test if Player can Hand Express
+-- The main difference is the Hand expression uses double of the Pump amount
+--- @param items any
+--- @param result any
+--- @param player any
+--- @return boolean
+function ZWBFRecipes.OnTest.HandExpress(items, result, player)
+    local playerObj = getPlayer()
+    return playerObj:isFemale() and Lactation:getMilkAmount() >= Lactation:getBottleAmount() * 2
+end
+
+--- Run after the Hand Expression is used
+--- @param items any
+--- @param result any
+--- @param player any
+function ZWBFRecipes.OnCreate.HandExpress(items, result, player)
+    print("ZWBF - Recipes - OnCreate - Hand Express")
+    Lactation:remove(Lactation:getBottleAmount() * 2)
+    Lactation:setMultiplier(ZombRandFloat(0.05, 0.1))
+    Lactation:addExpiration(Lactation.SBvars.MilkExpiration)
+end
+
+
 --- Test if the Breast Pump can be used
 --- @param items any
 --- @param result any
