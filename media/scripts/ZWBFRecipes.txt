@@ -7,6 +7,34 @@ module ZWBFRecipes
     }
 
     /************************ Milk ************************/
+    recipe Hand Expression in Bottle
+    {
+        WaterBottleEmpty,
+        
+        Result: MilkBottle,
+        Category: Cooking,
+        Time: 800.0,
+        AnimNode: Yonchi_breastpump,
+        Sound: PourWaterIntoObject,
+        OnGiveXP: Recipe.OnGiveXP.None,
+        OnTest: ZWBFRecipes.OnTest.HandExpress,
+        OnCreate: ZWBFRecipes.OnCreate.HandExpress,
+    }
+
+    recipe Hand Expression in Biberon
+    {
+        Empty_Biberon,
+        
+        Result: Biberon_milk,
+        Category: Cooking,
+        Time: 800.0,
+        AnimNode: Yonchi_breastpump,
+        Sound: PourWaterIntoObject,
+        OnGiveXP: Recipe.OnGiveXP.None,
+        OnTest: ZWBFRecipes.OnTest.HandExpress,
+        OnCreate: ZWBFRecipes.OnCreate.HandExpress,
+    }
+
     recipe Fill Biberon
     {
         Empty_Biberon,
@@ -14,11 +42,10 @@ module ZWBFRecipes
 
         Result: Biberon_milk,
         Time: 500.0,
+        Category: Cooking,
         AnimNode: Yonchi_breastpump,
-        Category: Cooking,
-        OnGiveXP: Recipe.OnGiveXP.None,
-        Category: Cooking,
         Sound: PourWaterIntoObject,
+        OnGiveXP: Recipe.OnGiveXP.None,
         OnTest: ZWBFRecipes.OnTest.BreastPump,
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
         Prop1:  Source=2,
@@ -31,11 +58,10 @@ module ZWBFRecipes
 
         Result: MilkBottle,
         Time: 500.0,
-        AnimNode: Yonchi_breastpump,
-        Category: Cooking,
-        OnGiveXP: Recipe.OnGiveXP.None,
         Category: Cooking,
         Sound: PourWaterIntoObject,
+        AnimNode: Yonchi_breastpump,
+        OnGiveXP: Recipe.OnGiveXP.None,
         OnTest: ZWBFRecipes.OnTest.BreastPump,
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
         Prop1:  Source=2
@@ -46,6 +72,7 @@ module ZWBFRecipes
     {
         VaginalDouche_empty,
         Water;1,
+        
         Result: VaginalDouche_full,
         Time: 100,
         Category: Health,
@@ -60,8 +87,8 @@ module ZWBFRecipes
         Result: VaginalDouche_empty,
         Time: 500,
         Category: Health,
-        StopOnWalk: true,
         Sound: PourWaterIntoObject,
+        StopOnWalk: true,
         AnimNode: blabla_standing_cleans_herself,
         OnGiveXP: Recipe.OnGiveXP.None,
         OnTest: ZWBFRecipes.OnTest.ClearSperm,
