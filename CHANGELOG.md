@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/zikhad/zwbf/compare/v1.6.0...v1.7.0) (2025-01-05)
+
+
+### Features
+
+* **moodles:** add engorgement moodle (WIP) ([ad99dad](https://github.com/zikhad/zwbf/commit/ad99dad65619dce71488f830d766a0cc46be27a3))
+* **moodles:** adding engorgement moodle ([5db47eb](https://github.com/zikhad/zwbf/commit/5db47eb8e48c3159c11e938576de2c5e298d2d09))
+* **moodles:** adding logic to engorgement moodle ([f5c7a4f](https://github.com/zikhad/zwbf/commit/f5c7a4f1e50de4026216c8846dc8963726b93f4f))
+* **moodles:** make engorgement inflict pain (WIP) ([8a94225](https://github.com/zikhad/zwbf/commit/8a94225e9709f80d78af9a4d58f574739e8f9ba8))
+* **recipes:** adding more recipes ([8067a88](https://github.com/zikhad/zwbf/commit/8067a8847b164701f35b6e570b88f4a6cd5d5a8c))
+* **trait:** added two more traits ([403eb66](https://github.com/zikhad/zwbf/commit/403eb66193868786c2753a1544ca17463d4428ae))
+* **trait:** adding new traits ([f8452cd](https://github.com/zikhad/zwbf/commit/f8452cd4497deacee29b9b5ec42ccf4c21477573))
+
+
+### Bug Fixes
+
+* **traits:** adjust the exclusives ([24e7e26](https://github.com/zikhad/zwbf/commit/24e7e26cdef14e0c75f8207fc68ae4507592b726))
+
 ## [1.6.0](https://github.com/zikhad/zwbf/compare/v1.5.0...v1.6.0) (2024-11-03)
 
 
