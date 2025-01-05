@@ -4,6 +4,8 @@ local SandboxVars = SandboxVars
 local Events = Events
 local ZombRand = ZombRand
 local isDebugEnabled = isDebugEnabled
+local LuaEventManager = LuaEventManager
+local triggerEvent = triggerEvent
 
 --- VARIABLES
 local SBvars = SandboxVars.Pregnancy
@@ -86,17 +88,6 @@ local function beforeRestartUpdate()
 	info()
 end
 
---- This function will check about the Birth outcome
---- This will be checked every minute ultil player receive the Traits "PregnancySuccess" or "PregnancyFail"
-local function onBirthOutcome()
-	local player = getPlayer()
-	if player:HasTrait("PregnancySuccess") then
-		player:getInventory():AddItem("Babies." .. pickRandomBaby())
-		Events.EveryOneMinute.Remove(onBirthOutcome)
-	elseif player:HasTrait("PregnancyFail") then
-		Events.EveryOneMinute.Remove(onBirthOutcome)
-	end
-end
 
 --- This function will check if the player is in labor
 local function onCheckLabor()
@@ -105,7 +96,8 @@ local function onCheckLabor()
 	local modData = player:getModData().Pregnancy or {}
 	if modData.CurrentLaborDuration >= modData.ExpectedLaborDuration then
 		Events.EveryOneMinute.Remove(onCheckLabor)
-		Events.EveryOneMinute.Add(onBirthOutcome)
+		triggerEvent("ZWBFPregnancyBirth")
+		-- Events.EveryOneMinute.Add(onBirthOutcome)
 	end
 end
 
@@ -221,7 +213,22 @@ function Pregnancy:init()
 	end
 end
 
+--- ZWBF Pregnancy Events API
+--- This will allow other mods to listen to intereact with Birth Outcome
+LuaEventManager.AddEvent("ZWBFPregnancyBirth")
+
+
 --- Hook up event listeners
 Events.OnCreatePlayer.Add(Pregnancy.init)
+
+-- Birth Event
+Events.ZWBFPregnancyBirth.Add(
+	function()
+		local player = getPlayer()
+		if player:HasTrait("PregnancySuccess") then
+			player:getInventory():AddItem("Babies." .. pickRandomBaby())
+		end
+	end
+)
 
 return Pregnancy

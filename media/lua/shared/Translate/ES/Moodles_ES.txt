@@ -1,0 +1,10 @@
+Moodles_ES = {
+    Moodles_Engorgement_Bad_lvl1 = "Leve",
+    Moodles_Engorgement_Bad_desc_lvl1 = "Tus pechos se sienten cálidos",
+    Moodles_Engorgement_Bad_lvl2 = "Pechos Firmes",
+    Moodles_Engorgement_Bad_desc_lvl2 = "Tus pechos se sienten más firmes a cada minuto",
+    Moodles_Engorgement_Bad_lvl3 = "Pechos Muy Firmes",
+    Moodles_Engorgement_Bad_desc_lvl3 = "Puedes sentir algo chapoteando dentro",
+    Moodles_Engorgement_Bad_lvl4 = "¡Llenos a reventar!",
+    Moodles_Engorgement_Bad_desc_lvl4 = "¡Tan llenos que duelen!",
+}

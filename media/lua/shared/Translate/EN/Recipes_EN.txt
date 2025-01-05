@@ -1,8 +1,12 @@
 Recipes_EN = {
-    Recipe_Fill_Biberon = "Fill Biberon",
-    Recipe_Fill_Milk_Bottle = "Fill Milk Bottle",
+    Recipe_Hand_Expression_in_Bottle = "Fill Milk Bottle (Hand Expression)",
+    Recipe_Hand_Expression_in_Biberon = "Fill Biberon (Hand Expression)",
+    Recipe_Fill_Biberon = "Fill Biberon (Breast Pump)",
+    Recipe_Fill_Milk_Bottle = "Fill Milk Bottle (Breast Pump)",
+    
     Recipe_Fill_Vaginal_Douche = "Fill Vaginal Douche",
     Recipe_Clear_Sperm = "Clear Sperm",
+    
     Recipe_Open_Condom_Box = "Open Condom Box",
     Recipe_Place_Condoms_in_Box = "Place Condoms in Box",
 }

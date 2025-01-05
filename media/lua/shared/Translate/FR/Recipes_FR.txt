@@ -1,8 +1,12 @@
 Recipes_FR = {
-    Recipe_Fill_Biberon = "Remplir le Biberon",
-    Recipe_Fill_Milk_Bottle = "Remplir la Bouteille de Lait",
-    Recipe_Fill_Vaginal_Douche = "Remplir la Douche Vaginale",
+    Recipe_Hand_Expression_in_Bottle = "Remplir Bouteille de Lait (Expression Manuelle)",
+    Recipe_Hand_Expression_in_Biberon = "Remplir Biberon (Expression Manuelle)",
+    Recipe_Fill_Biberon = "Remplir Biberon (Tire-Lait)",
+    Recipe_Fill_Milk_Bottle = "Remplir Bouteille de Lait (Tire-Lait)",
+
+    Recipe_Fill_Vaginal_Douche = "Remplir Douche Vaginale",
     Recipe_Clear_Sperm = "Nettoyer le Sperme",
+
     Recipe_Open_Condom_Box = "Ouvrir la Boîte de Préservatifs",
-    Recipe_Place_Condoms_in_Box = "Mettre les Préservatifs dans la Boîte",
+    Recipe_Place_Condoms_in_Box = "Placer les Préservatifs dans la Boîte",
 }
