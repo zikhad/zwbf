@@ -59,9 +59,13 @@ end
 --- Get the fullness level from the percentage.
 --- This will determine the moodle AND the amount of additional pain
 --- @param percentage number
---- @return number
+--- @return number moodleLevel 0.5 | 0.4 | 0.3 | 0.2 | 0.1
 function EngorgementClass:getLevelFromPercentage(percentage)
-	-- Define level mapping
+	 -- Make sure percentage is in acceptable range
+	 percentage = percentage > 1 and 1 or percentage
+	 percentage = percentage < 0 and 0 or percentage
+	
+	 -- Define level mapping
 	local levelMapping = {
 		{0.5, 0.5},
 		{0.6, 0.4},
@@ -85,30 +89,20 @@ end
 --- This method will handle the moodle text with MoodleFramework
 --- otherwise it will call the fallback
 --- @param percentage number The percentage for the moodle text
-function EngorgementClass:moodle(percentage)
-    -- Make sure percentage is in acceptable range
-    percentage = percentage > 1 and 1 or percentage
-	percentage = percentage < 0 and 0 or percentage
-
-	-- Get the level from the percentage
-	local lvl = self:getLevelFromPercentage(percentage)
-
-    -- Log the moodle update
-    print("Updating moodle with percentage: " .. percentage .. ", level: " .. lvl)
-
+function EngorgementClass:moodle(level)
     -- Update moodle based on framework availability
 	if not self.isMF then
-        self:noMoodleFramework(lvl)
+        self:noMoodleFramework(level)
         return
     end
 
     local moodle = MF.getMoodle("Engorgement")
-    moodle:setValue(lvl)
+    moodle:setValue(level)
 end
 
 --- Inflict Pain in Upper Torso based on fullness
 --- @param fullness number Percentage of Milk fullness
-function EngorgementClass:inflictPain(fullness)
+function EngorgementClass:inflictPain(level)
 	-- Get the player and torso
 	local player = getPlayer()
 	local torso = player:getBodyDamage():getBodyPart(BodyPartType.FromString("Torso_Upper"))
@@ -122,9 +116,11 @@ function EngorgementClass:inflictPain(fullness)
 	   	["0.1"] = 1
 	}
 	
-	local lvl = self:getLevelFromPercentage(fullness)
-	
-	torso:setAdditionalPain(torso:getAdditionalPain() + painLevel[tostring(lvl)])
+	-- inflict pain until the limit of 50 (pain)
+	if (torso:getAdditionalPain() < 50)
+	then
+		torso:setAdditionalPain(torso:getAdditionalPain() + painLevel[tostring(level)])
+	end
 end
 
 --- Update engorgement
@@ -138,22 +134,22 @@ function EngorgementClass:update()
 	)  then return end
 
 	local fullness = self.Lactation:getMilkAmountPercentage()
-	self:moodle(fullness)
-	self:inflictPain(fullness);
+	local level = self:getLevelFromPercentage(fullness)
+	self:moodle(level)
+	self:inflictPain(level)
 	
 	--- Trigger the event for other mods to listen
-	triggerEvent("ZWBFEngorgementUpdate", fullness);
+	triggerEvent("ZWBFEngorgementUpdate", level, fullness);
 
 end
 
 --- ZWBFEngorgement Events API
 --- This will allow other mods to listen to the Engorgement pain infliction
 LuaEventManager.AddEvent("ZWBFEngorgementUpdate")
-
 --[[
 	-- Example usage:
-	Events.ZWBFEngorgementUpdate.Add(function(fullness)
-		print("Engorgement Pain inflicted with fullness: " .. fullness)
+	Events.ZWBFEngorgementUpdate.Add(function(level, fullness)
+		print("Engorgement Pain inflicted with level: " .. level .. " fullness: " .. fullness)
 	end)
 ]]
 
