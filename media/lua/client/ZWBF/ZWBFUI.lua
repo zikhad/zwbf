@@ -1,6 +1,3 @@
-require "ISUI/ISPanelJoypad"
-require "ISCharacterInfoWindow_AddTab"
-
 --- Localized global functions from PZ
 local getText = getText
 local getPlayer = getPlayer
@@ -8,14 +5,9 @@ local getSpecificPlayer = getSpecificPlayer
 local isDebugEnabled = isDebugEnabled
 local Events = Events
 local ISContextMenu = ISContextMenu
-local ISPanelJoypad = ISPanelJoypad
+
 
 local NewUI = NewUI
-
-
-ISCharacterHPanel = ISPanelJoypad:derive("ISCharacterHPanel")
-
-addCharacterPageTab("HPanel", ISCharacterHPanel)
 
 -- VARIABLES
 local UI
@@ -63,8 +55,6 @@ local function onCreateUI()
 	UI:setBorderToAllElements(true)
 	UI:saveLayout()
 	UI:close()
-
-	ISPanelJoypad.initialise(UI)
 end
 
 --- Handles the UI update
