@@ -27,9 +27,9 @@ local TRAITS_LIST = {
 		Profession = false,
 		MutualExclusives = {"Fertile", "Infertile"},
     },    
-    -- TODO: Add Dairy Cow trait -6 > Increases milk production rate (+25%) and time lactating after pregnancy (+25%).
+    -- TODO: Add Dairy Cow trait -6 > Increases milk production rate (+25%) and time lactating (+25%).
     {
-        IdentifierType = "Dairy cow",
+        IdentifierType = "DairyCow",
 		Cost = 4,
 		Profession = false,
 		MutualExclusives = {},

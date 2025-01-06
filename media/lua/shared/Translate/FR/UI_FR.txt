@@ -7,4 +7,7 @@ UI_FR = {
     
     UI_Trait_Hyperfertile = "Hyperfertile",
     UI_Trait_Hyperfertile_Description = "Vous êtes HYPER fertile <br>- +100% de fertilité, réduit de moitié le temps avant d'être prête à tomber enceinte à nouveau après un accouchement",
+
+    UI_Trait_DairyCow = "Vache laitière",
+    UI_Trait_DairyCow_Description = "Augmente le taux de production de lait (+25%) et la durée de lactation (+25%)",
 }

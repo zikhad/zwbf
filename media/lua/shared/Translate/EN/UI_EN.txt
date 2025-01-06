@@ -8,4 +8,7 @@ UI_EN = {
     UI_Trait_Hyperfertile = "Hyperfertile",
     UI_Trait_Hyperfertile_Description = "You are HYPER fertile <br>- +100% fertility, Halves the time before being ready to get pregnant again after birth",
 
+    UI_Trait_DairyCow = "Dairy Cow",
+    UI_Trait_DairyCow_Description = "Increases milk production rate (+25%) and time lactating (+25%)",
+
 }
