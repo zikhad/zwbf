@@ -88,7 +88,7 @@ end
 
 --- This method will handle the moodle text with MoodleFramework
 --- otherwise it will call the fallback
---- @param percentage number The percentage for the moodle text
+--- @param level number The percentage for the moodle text
 function EngorgementClass:moodle(level)
     -- Update moodle based on framework availability
 	if not self.isMF then
@@ -101,7 +101,7 @@ function EngorgementClass:moodle(level)
 end
 
 --- Inflict Pain in Upper Torso based on fullness
---- @param fullness number Percentage of Milk fullness
+--- @param level number Percentage of Milk fullness
 function EngorgementClass:inflictPain(level)
 	-- Get the player and torso
 	local player = getPlayer()
