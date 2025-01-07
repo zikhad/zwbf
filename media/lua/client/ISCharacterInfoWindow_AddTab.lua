@@ -7,9 +7,15 @@ function addCharacterPageTab(tabName,pageType)
     function ISCharacterInfoWindow:createChildren()
         upperLayer_ISCharacterInfoWindow_createChildren(self)
         
-        self[viewName] = pageType:new(0, 8, self.width, self.height-8, self.playerNum)
-        self[viewName]:initialise()
+        -- self[viewName] = pageType:new(0, 8, self.width, self.height-8, self.playerNum)
+        self[viewName] = pageType
+        -- TODO: maybe this should be set as 0,0
+        self[viewName]:setPositionPixel(-10,0)
+        self[viewName]:setWidthPixel(self.width,self.height)
+        -- self[viewName]:initialise()
+        self[viewName]:isSubOf(self.panel)
         self[viewName].infoText = getText("UI_"..tabName.."Panel");--UI_<tabName>Panel is full text of tooltip
+        -- TODO: maybe we can just add the UI here? instead of the self[viewName]
         self.panel:addView(getText("UI_"..tabName), self[viewName])--UI_<tabName> is short text of tab
     end
 

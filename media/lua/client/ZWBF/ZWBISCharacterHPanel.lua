@@ -130,4 +130,4 @@ end
 
 ]]
 
-addCharacterPageTab("HPanel", ISCharacterHPanel)
+-- addCharacterPageTab("HPanel", ISCharacterHPanel)

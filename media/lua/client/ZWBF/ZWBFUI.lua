@@ -1,3 +1,5 @@
+require "ISCharacterInfoWindow_AddTab"
+
 --- Localized global functions from PZ
 local getText = getText
 local getPlayer = getPlayer
@@ -52,9 +54,11 @@ local function onCreateUI()
 		UI:nextLine()
 	end
 
-	UI:setBorderToAllElements(true)
+	-- UI:setBorderToAllElements(true)
 	UI:saveLayout()
-	UI:close()
+	-- UI:close()
+
+	addCharacterPageTab("HPanel", UI)
 end
 
 --- Handles the UI update
