@@ -16,13 +16,33 @@ local UI
 local Utils = require("ZWBF/ZWBFUtils")
 local Womb = require("ZWBF/ZWBFWomb")
 local Pregnancy = require("ZWBF/ZWBFPregnancy")
+local Lactation = require("ZWBF/ZWBFLactation")
 
 --- Creates the UI for the Womb Handler
 local function onCreateUI()
 	UI = NewUI()
 	UI:setWidthPercent(0.10)
-	UI:setTitle(getText("ContextMenu_H_Status"))
+	-- UI:setTitle(getText("ContextMenu_H_Status"))
 
+	--- Milk ---
+	-- title
+	UI:addText("", string.format("%s:", getText("IGUI_ZWBF_UI_Milk_title")), _, "Center")
+	UI:nextLine()
+
+	-- image
+	UI:addImage("boobs-image", "media/ui/lactation/boobs/color-0/normal_empty.png")
+    UI:nextLine()
+	
+	-- level
+	UI:addText("", string.format("%s:", getText("IGUI_ZWBF_UI_Milk_Amount")), _, "Center")
+	UI:addImage("milk-level-image", "media/ui/lactation/level/milk_level_0.png")
+	UI:nextLine()
+	
+	--- Womb ---
+	-- Title
+	UI:addText("", string.format("%s:", getText("IGUI_ZWBF_UI_Womb_title")), _, "Center")
+	UI:nextLine()
+	
 	-- Image
 	UI:addImage("womb-image", "media/ui/womb/normal/womb_normal_0.png")
 	UI:nextLine()
@@ -48,13 +68,12 @@ local function onCreateUI()
 
 	if not getPlayer():HasTrait("Infertile") then
 		-- Conception Chance
-		UI:addText("womb-pregnancy-chance", string.format("%s:", getText("IGUI_ZWBF_UI_Chance")), _, "Center")
+		UI:addText("womb-pregnancy-chance", string.format("%s:", getText("IGUI_ZWBF_UI_Fertility")), _, "Center")
 		UI:addProgressBar("womb-pregnancy-bar", 0, 0, 1)
 		UI:addText("womb-pregnancy-info", "", _, "Center")
 		UI:nextLine()
-	end
+	end	
 
-	-- TODO: Add Lactation UI to create a single tab for all
 	UI:saveLayout()
 	UI:setBorderToAllElements(true)
 
@@ -65,15 +84,21 @@ end
 local function onUpdateUI()
 	if not UI.isUIVisible then return end
 
+	-- Milk
+    UI["boobs-image"]:setPath(Lactation:getBoobImage())
+	UI["milk-level-image"]:setPath(Lactation:getMilkLevelImage())
+
+	-- Womb
 	UI["womb-sperm-amount"]:setText(string.format("%s ml", Womb:getSpermAmount()))
 	UI["womb-sperm-total-amount"]:setText(string.format("%s ml", Womb:getSpermAmountTotal()))
 	UI["womb-image"]:setPath(Womb:getImage())
 	UI["womb-cycle-info"]:setText(getText(Womb:getCyclePhase()))
 	if not getPlayer():HasTrait("Infertile") then
-		UI["womb-pregnancy-chance"]:setText(getText(Pregnancy:getIsPregnant() and "IGUI_ZWBF_UI_Pregnancy" or "IGUI_ZWBF_UI_Chance"))
+		UI["womb-pregnancy-chance"]:setText(getText(Pregnancy:getIsPregnant() and "IGUI_ZWBF_UI_Pregnancy" or "IGUI_ZWBF_UI_Fertility"))
 		UI["womb-pregnancy-bar"]:setValue(Womb:getFertility())
 		UI["womb-pregnancy-info"]:setText(math.floor(Womb:getFertility() * 100) .. "%")
 	end
+
 	-- TODO: Alternatively we can prevent mouse drag here
 	-- UI:setX(0)
 	-- UI:setY(0)

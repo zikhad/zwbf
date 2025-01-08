@@ -31,20 +31,19 @@ function AddCharacterPageTab(tabName, ui)
         -- Prevent the tab content from being dragged
         self[viewName].onMouseDown = function()
             self[viewName]:setX(0)
-            self[viewName]:setX(ISWindow.TitleBarHeight)
+            self[viewName]:setY(ISWindow.TitleBarHeight)
         end
 
         self.panel:addView(getText("UI_"..tabName), self[viewName]) --UI_<tabName> is short text of tab
     end
 
     -- Controls tab switching
-    local upperLayer_ISCharacterInfoWindow_onTabTornOff = ISCharacterInfoWindow.onTabTornOff
+    local original_ISCharacterInfoWindow_onTabTornOff = ISCharacterInfoWindow.onTabTornOff
     function ISCharacterInfoWindow:onTabTornOff(view, window)
         if self.playerNum == 0 and view == self[viewName] then
             ISLayoutManager.RegisterWindow('charinfowindow.'..tabName, ISCollapsableWindow, window)
         end
-        upperLayer_ISCharacterInfoWindow_onTabTornOff(self, view, window)
-
+        original_ISCharacterInfoWindow_onTabTornOff(self, view, window)
     end
 
     -- Make sure the table exists in the panel
