@@ -25,8 +25,11 @@ function AddCharacterPageTab(tabName, ui)
         self[viewName].closeButton:setVisible(false)
         
         -- TODO: set the height, the following is not working
-        self.panel:setHeightAndParentHeight(ISWindow.TitleBarHeight + self[viewName]:getHeight())
-        self.panel:setScrollHeight(ISWindow.TitleBarHeight + self[viewName]:getHeight())
+        print('the height is' .. tostring(self[viewName]:getHeight()))
+        -- self[viewName]:setHeightAndParentHeight(ISWindow.TitleBarHeight + self[viewName]:getHeight())
+        -- self[viewName]:setScrollHeight(ISWindow.TitleBarHeight + self[viewName]:getHeight())
+        -- self[viewName]:setScrollChildren(true)
+        -- self[viewName]:addScrollBars()
         
         -- Prevent the tab content from being dragged
         self[viewName].onMouseDown = function()
@@ -35,13 +38,14 @@ function AddCharacterPageTab(tabName, ui)
         end
 
         self.panel:addView(getText("UI_"..tabName), self[viewName]) --UI_<tabName> is short text of tab
+        self:setHeight(ISWindow.TitleBarHeight + self[viewName]:getHeight())
     end
 
     -- Controls tab switching
     local original_ISCharacterInfoWindow_onTabTornOff = ISCharacterInfoWindow.onTabTornOff
     function ISCharacterInfoWindow:onTabTornOff(view, window)
         if self.playerNum == 0 and view == self[viewName] then
-            ISLayoutManager.RegisterWindow('charinfowindow.'..tabName, ISCollapsableWindow, window)
+            ISLayoutManager.RegisterWindow('charinfowindow.'..tabName, ISCharacterInfoWindow, window)
         end
         original_ISCharacterInfoWindow_onTabTornOff(self, view, window)
     end
