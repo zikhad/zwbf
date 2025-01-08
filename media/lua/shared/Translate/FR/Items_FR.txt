@@ -4,12 +4,12 @@ Items_FR = {
     DisplayNameMilkBottle           = "Bouteille de lait",
     DisplayNameMilkBottle_rotten    = "Bouteille de lait (pourri)",
     
-    DisplayNameVaginalDouche_Empty  = "Poire Ã  lavement (Vide)",
-    DisplayNameVaginalDouche_Full   = "Poire Ã  lavement (Pleine)",
+    DisplayNameVaginalDouche_Empty  = "Poire à lavement (Vide)",
+    DisplayNameVaginalDouche_Full   = "Poire à lavement (Pleine)",
 
-    DisplayNameCondom               = "PrÃ©servatif",
-    DisplayNameCondomUsed           = "PrÃ©servatif UsagÃ©",
+    DisplayNameCondom               = "Préservatif",
+    DisplayNameCondomUsed           = "Préservatif Usagé",
     CustomContextMenuCondomUsed     = "Boire",
-    DisplayNameCondomBox            = "BoÃ®te de PrÃ©servatifs",
+    DisplayNameCondomBox            = "Boîte de Préservatifs",
 
 }

@@ -1,13 +1,13 @@
 UI_ES = {
-    UI_Trait_Fertile = "FÃ©rtil",
-    UI_Trait_Fertile_Description = "Eres especialmente fÃ©rtil <br>- Mayor probabilidad de quedar embarazada",
+    UI_Trait_Fertile = "Fértil",
+    UI_Trait_Fertile_Description = "Eres especialmente fértil <br>- Mayor probabilidad de quedar embarazada",
 
-    UI_Trait_Infertile = "InfÃ©rtil",
-    UI_Trait_Infertile_Description = "Eres infÃ©rtil<br>No puedes quedar embarazada",
+    UI_Trait_Infertile = "Infértil",
+    UI_Trait_Infertile_Description = "Eres infértil<br>No puedes quedar embarazada",
     
-    UI_Trait_Hyperfertile = "HiperfÃ©rtil",
-    UI_Trait_Hyperfertile_Description = "Eres HIPER fÃ©rtil <br>- +100% de fertilidad, reduce a la mitad el tiempo necesario para estar lista para quedar embarazada de nuevo despuÃ©s del parto",
+    UI_Trait_Hyperfertile = "Hiperfértil",
+    UI_Trait_Hyperfertile_Description = "Eres HIPER fértil <br>- +100% de fertilidad, reduce a la mitad el tiempo necesario para estar lista para quedar embarazada de nuevo después del parto",
 
     UI_Trait_DairyCow = "Vaca lechera",
-    UI_Trait_DairyCow_Description = "Aumenta la tasa de producciÃ³n de leche (+25%) y el tiempo de lactancia (+25%)",
+    UI_Trait_DairyCow_Description = "Aumenta la tasa de producción de leche (+25%) y el tiempo de lactancia (+25%)",
 }
