@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.2](https://github.com/zikhad/zwbf/compare/v1.7.1...v1.7.2) (2025-01-08)
+
+
+### Bug Fixes
+
+* **translations:** fix some enconding issues ([97c052e](https://github.com/zikhad/zwbf/commit/97c052e6a222932906f21ed2411755a2e4d585a8))
+
 ### [1.7.1](https://github.com/zikhad/zwbf/compare/v1.7.0...v1.7.1) (2025-01-06)
 
 
