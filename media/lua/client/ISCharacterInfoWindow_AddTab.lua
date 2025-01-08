@@ -1,24 +1,43 @@
+--- Localized global functions from PZ
+local ISCharacterInfoWindow = ISCharacterInfoWindow
+local ISWindow = ISWindow
+local ISLayoutManager = ISLayoutManager
+local ISCollapsableWindow = ISCollapsableWindow
+local getText = getText
 
-function addCharacterPageTab(tabName,pageType)
+-- TODO: Maybe move it to Utils?
+--- Adds a new tab to the Character Info Window
+---@param tabName string The name of the tab
+---@param ui unknown The UI to be added to the tab
+function AddCharacterPageTab(tabName, ui)
 
     local viewName = tabName.."View"
 
-    local upperLayer_ISCharacterInfoWindow_createChildren = ISCharacterInfoWindow.createChildren
+    -- Create the tab
+    local original_ISCharacterInfoWindow_createChildren = ISCharacterInfoWindow.createChildren
     function ISCharacterInfoWindow:createChildren()
-        upperLayer_ISCharacterInfoWindow_createChildren(self)
+        original_ISCharacterInfoWindow_createChildren(self)
         
-        -- self[viewName] = pageType:new(0, 8, self.width, self.height-8, self.playerNum)
-        self[viewName] = pageType
-        -- TODO: maybe this should be set as 0,0
-        self[viewName]:setPositionPixel(-10,0)
+        self[viewName] = ui
+        self[viewName]:setPositionPixel(0,0)
         self[viewName]:setWidthPixel(self.width,self.height)
-        -- self[viewName]:initialise()
-        self[viewName]:isSubOf(self.panel)
         self[viewName].infoText = getText("UI_"..tabName.."Panel");--UI_<tabName>Panel is full text of tooltip
-        -- TODO: maybe we can just add the UI here? instead of the self[viewName]
-        self.panel:addView(getText("UI_"..tabName), self[viewName])--UI_<tabName> is short text of tab
+        self[viewName].closeButton:setVisible(false)
+        
+        -- TODO: set the height, the following is not working
+        self.panel:setHeightAndParentHeight(ISWindow.TitleBarHeight + self[viewName]:getHeight())
+        self.panel:setScrollHeight(ISWindow.TitleBarHeight + self[viewName]:getHeight())
+        
+        -- Prevent the tab content from being dragged
+        self[viewName].onMouseDown = function()
+            self[viewName]:setX(0)
+            self[viewName]:setX(ISWindow.TitleBarHeight)
+        end
+
+        self.panel:addView(getText("UI_"..tabName), self[viewName]) --UI_<tabName> is short text of tab
     end
 
+    -- Controls tab switching
     local upperLayer_ISCharacterInfoWindow_onTabTornOff = ISCharacterInfoWindow.onTabTornOff
     function ISCharacterInfoWindow:onTabTornOff(view, window)
         if self.playerNum == 0 and view == self[viewName] then
@@ -28,13 +47,10 @@ function addCharacterPageTab(tabName,pageType)
 
     end
 
-    --I do not understand this. but as it does not work for porotection, I guess this is no big deal. let's test without.
-    --function ISCharacterInfoWindow:RestoreLayout(name, layout)
-    --end
-
-    local upperLayer_ISCharacterInfoWindow_SaveLayout = ISCharacterInfoWindow.SaveLayout
+    -- Make sure the table exists in the panel
+    local original_ISCharacterInfoWindow_SaveLayout = ISCharacterInfoWindow.SaveLayout
     function ISCharacterInfoWindow:SaveLayout(name, layout)
-        upperLayer_ISCharacterInfoWindow_SaveLayout(self,name,layout)
+        original_ISCharacterInfoWindow_SaveLayout(self,name,layout)
         
         local addTabName = false
         local subSelf = self[viewName]

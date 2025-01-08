@@ -54,11 +54,11 @@ local function onCreateUI()
 		UI:nextLine()
 	end
 
-	-- UI:setBorderToAllElements(true)
+	-- TODO: Add Lactation UI to create a single tab for all
 	UI:saveLayout()
-	-- UI:close()
+	UI:setBorderToAllElements(true)
 
-	addCharacterPageTab("HPanel", UI)
+	AddCharacterPageTab("HPanel", UI)
 end
 
 --- Handles the UI update
@@ -74,6 +74,9 @@ local function onUpdateUI()
 		UI["womb-pregnancy-bar"]:setValue(Womb:getFertility())
 		UI["womb-pregnancy-info"]:setText(math.floor(Womb:getFertility() * 100) .. "%")
 	end
+	-- TODO: Alternatively we can prevent mouse drag here
+	-- UI:setX(0)
+	-- UI:setY(0)
 end
 
 --- Create H-Status Context Menu Button
