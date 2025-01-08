@@ -1,7 +1,7 @@
 Recipes_ES = {
-    Recipe_Hand_Expression_in_Bottle = "Llenar Botella de Leche (Extracci贸n Manual)",
-    Recipe_Hand_Expression_in_Biberon = "Llenar Biber贸n (Extracci贸n Manual)",
-    Recipe_Fill_Biberon = "Llenar Biber贸n (Sacaleches)",
+    Recipe_Hand_Expression_in_Bottle = "Llenar Botella de Leche (Extracci髇 Manual)",
+    Recipe_Hand_Expression_in_Biberon = "Llenar Biber髇 (Extracci髇 Manual)",
+    Recipe_Fill_Biberon = "Llenar Biber髇 (Sacaleches)",
     Recipe_Fill_Milk_Bottle = "Llenar Botella de Leche (Sacaleches)",
 
     Recipe_Fill_Vaginal_Douche = "Llenar Ducha Vaginal",

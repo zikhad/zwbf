@@ -1,19 +1,19 @@
 Sandbox_ES = {
     Sandbox_ZWBF                                              = "(ZWBF) Being Female",
     
-    Sandbox_ZWBF_Pregnancy_Recovery                           = "Tiempo de RecuperaciÃ³n del Embarazo",
-    Sandbox_ZWBF_Pregnancy_Recovery_tooltip                   = "Â¿CuÃ¡ntos dÃ­as antes de que se reinicie el ciclo menstrual?",
+    Sandbox_ZWBF_Pregnancy_Recovery                           = "Tiempo de Recuperación del Embarazo",
+    Sandbox_ZWBF_Pregnancy_Recovery_tooltip                   = "¿Cuántos días antes de que se reinicie el ciclo menstrual?",
     
-    Sandbox_ZWBF_Womb_Max_Capacity                            = "Capacidad del Ãštero (ml)",
-    Sandbox_ZWBF_Womb_Max_Capacity_tooltip                    = "La cantidad mÃ¡xima de esperma que puede contener el Ãºtero",
+    Sandbox_ZWBF_Womb_Max_Capacity                            = "Capacidad del Útero (ml)",
+    Sandbox_ZWBF_Womb_Max_Capacity_tooltip                    = "La cantidad máxima de esperma que puede contener el útero",
 
     Sandbox_ZWBF__Milk_Capacity                               = "Capacidad de Leche",
-    Sandbox_ZWBF__Milk_Capacity_tooltip                       = "La cantidad mÃ¡xima de leche que pueden contener los senos en ml",
+    Sandbox_ZWBF__Milk_Capacity_tooltip                       = "La cantidad máxima de leche que pueden contener los senos en ml",
     
     Sandbox_ZWBF__Milk_Expiration                             = "Caducidad de la Leche",
-    Sandbox_ZWBF__Milk_Expiration_tooltip                     = "El nÃºmero de dÃ­as para que la lactancia caduque si no se usa",
+    Sandbox_ZWBF__Milk_Expiration_tooltip                     = "El número de días para que la lactancia caduque si no se usa",
 
     Sandbox_ZWBF_Fertility_Bonus                             = "Bono de Fertilidad",
-    Sandbox_ZWBF_Fertility_Bonus_tooltip                     = "La cantidad de bono de fertilidad que otorga el rasgo FÃ©rtil",
+    Sandbox_ZWBF_Fertility_Bonus_tooltip                     = "La cantidad de bono de fertilidad que otorga el rasgo Fértil",
 
 }

@@ -7,6 +7,6 @@ Recipes_FR = {
     Recipe_Fill_Vaginal_Douche = "Remplir Douche Vaginale",
     Recipe_Clear_Sperm = "Nettoyer le Sperme",
 
-    Recipe_Open_Condom_Box = "Ouvrir la BoÃ®te de PrÃ©servatifs",
-    Recipe_Place_Condoms_in_Box = "Placer les PrÃ©servatifs dans la BoÃ®te",
+    Recipe_Open_Condom_Box = "Ouvrir la Boîte de Préservatifs",
+    Recipe_Place_Condoms_in_Box = "Placer les Préservatifs dans la Boîte",
 }
