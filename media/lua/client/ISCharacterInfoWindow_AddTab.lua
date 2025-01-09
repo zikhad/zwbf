@@ -30,6 +30,9 @@ function AddCharacterPageTab(tabName, ui)
         -- self[viewName]:setScrollHeight(ISWindow.TitleBarHeight + self[viewName]:getHeight())
         -- self[viewName]:setScrollChildren(true)
         -- self[viewName]:addScrollBars()
+        -- self:setScrollChildren(true)
+        -- self:addScrollBars()
+        -- self[viewName]:setHeightAndParentHeight(200)
         
         -- Prevent the tab content from being dragged
         self[viewName].onMouseDown = function()
@@ -38,7 +41,9 @@ function AddCharacterPageTab(tabName, ui)
         end
 
         self.panel:addView(getText("UI_"..tabName), self[viewName]) --UI_<tabName> is short text of tab
-        self:setHeight(ISWindow.TitleBarHeight + self[viewName]:getHeight())
+        -- self:setHeight(ISWindow.TitleBarHeight + self[viewName]:getHeight())
+        -- self:setHeight(200)
+        -- self[viewName]:setHeight(300)
     end
 
     -- Controls tab switching
@@ -50,10 +55,23 @@ function AddCharacterPageTab(tabName, ui)
         original_ISCharacterInfoWindow_onTabTornOff(self, view, window)
     end
 
-    -- Make sure the table exists in the panel
+    local original_ISCharacterInfoWindow_render = ISCharacterInfoWindow.render
+    function ISCharacterInfoWindow:render()
+        print("how many times it is called? - render")
+        
+        original_ISCharacterInfoWindow_render(self)
+        --[[ if self[viewName] and self[viewName].visible then
+            self[viewName]:render()
+        end ]]
+    end
+
+    -- Make sure the tab exists in the panel
     local original_ISCharacterInfoWindow_SaveLayout = ISCharacterInfoWindow.SaveLayout
     function ISCharacterInfoWindow:SaveLayout(name, layout)
+        -- print("how many times it is called?")
         original_ISCharacterInfoWindow_SaveLayout(self,name,layout)
+        -- layout.height = nil
+        -- layout.height = 200
         
         local addTabName = false
         local subSelf = self[viewName]

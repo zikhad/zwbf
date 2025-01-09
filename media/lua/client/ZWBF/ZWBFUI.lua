@@ -98,6 +98,7 @@ local function onUpdateUI()
 		UI["womb-pregnancy-bar"]:setValue(Womb:getFertility())
 		UI["womb-pregnancy-info"]:setText(math.floor(Womb:getFertility() * 100) .. "%")
 	end
+	-- UI:setHeightAndParentHeight(200)
 
 	-- TODO: Alternatively we can prevent mouse drag here
 	-- UI:setX(0)
