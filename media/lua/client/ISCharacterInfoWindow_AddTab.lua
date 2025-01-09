@@ -17,23 +17,13 @@ function AddCharacterPageTab(tabName, ui)
     local original_ISCharacterInfoWindow_createChildren = ISCharacterInfoWindow.createChildren
     function ISCharacterInfoWindow:createChildren()
         original_ISCharacterInfoWindow_createChildren(self)
-        
+
         self[viewName] = ui
         self[viewName]:setPositionPixel(0,0)
         self[viewName]:setWidthPixel(self.width,self.height)
         self[viewName].infoText = getText("UI_"..tabName.."Panel");--UI_<tabName>Panel is full text of tooltip
         self[viewName].closeButton:setVisible(false)
-        
-        -- TODO: set the height, the following is not working
-        print('the height is' .. tostring(self[viewName]:getHeight()))
-        -- self[viewName]:setHeightAndParentHeight(ISWindow.TitleBarHeight + self[viewName]:getHeight())
-        -- self[viewName]:setScrollHeight(ISWindow.TitleBarHeight + self[viewName]:getHeight())
-        -- self[viewName]:setScrollChildren(true)
-        -- self[viewName]:addScrollBars()
-        -- self:setScrollChildren(true)
-        -- self:addScrollBars()
-        -- self[viewName]:setHeightAndParentHeight(200)
-        
+
         -- Prevent the tab content from being dragged
         self[viewName].onMouseDown = function()
             self[viewName]:setX(0)
@@ -41,9 +31,6 @@ function AddCharacterPageTab(tabName, ui)
         end
 
         self.panel:addView(getText("UI_"..tabName), self[viewName]) --UI_<tabName> is short text of tab
-        -- self:setHeight(ISWindow.TitleBarHeight + self[viewName]:getHeight())
-        -- self:setHeight(200)
-        -- self[viewName]:setHeight(300)
     end
 
     -- Controls tab switching
@@ -55,24 +42,19 @@ function AddCharacterPageTab(tabName, ui)
         original_ISCharacterInfoWindow_onTabTornOff(self, view, window)
     end
 
-    local original_ISCharacterInfoWindow_render = ISCharacterInfoWindow.render
-    function ISCharacterInfoWindow:render()
-        print("how many times it is called? - render")
-        
-        original_ISCharacterInfoWindow_render(self)
-        --[[ if self[viewName] and self[viewName].visible then
-            self[viewName]:render()
-        end ]]
+    local original_ISCharacterInfoWindow_prerender = ISCharacterInfoWindow.prerender
+    function ISCharacterInfoWindow:prerender()
+        original_ISCharacterInfoWindow_prerender(self)
+        if (self[viewName] == self.panel:getActiveView()) then
+            self:setHeight((ISWindow.TitleBarHeight * 2) + self[viewName]:getHeight())
+        end
     end
 
     -- Make sure the tab exists in the panel
     local original_ISCharacterInfoWindow_SaveLayout = ISCharacterInfoWindow.SaveLayout
     function ISCharacterInfoWindow:SaveLayout(name, layout)
-        -- print("how many times it is called?")
         original_ISCharacterInfoWindow_SaveLayout(self,name,layout)
-        -- layout.height = nil
-        -- layout.height = 200
-        
+
         local addTabName = false
         local subSelf = self[viewName]
         if subSelf and subSelf.parent == self.panel then
@@ -83,7 +65,7 @@ function AddCharacterPageTab(tabName, ui)
         end
         if addTabName then
             if not layout.tabs then
-                layout.tabs = tabName 
+                layout.tabs = tabName
             else
                 layout.tabs = layout.tabs .. ',' .. tabName
             end
