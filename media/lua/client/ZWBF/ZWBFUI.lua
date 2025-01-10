@@ -1,4 +1,4 @@
-require "ISCharacterInfoWindow_AddTab"
+-- require "ISCharacterInfoWindow_AddTab"
 
 --- Localized global functions from PZ
 local getText = getText
@@ -7,9 +7,12 @@ local getSpecificPlayer = getSpecificPlayer
 local isDebugEnabled = isDebugEnabled
 local Events = Events
 local ISContextMenu = ISContextMenu
+local ISCharacterInfoWindow = ISCharacterInfoWindow
 
 
 local NewUI = NewUI
+
+local CharacterInfoTabManager = require("ZWBF/ZWBFISCharacterInfoWindow")
 
 -- VARIABLES
 local UI
@@ -17,6 +20,8 @@ local Utils = require("ZWBF/ZWBFUtils")
 local Womb = require("ZWBF/ZWBFWomb")
 local Pregnancy = require("ZWBF/ZWBFPregnancy")
 local Lactation = require("ZWBF/ZWBFLactation")
+
+local CharacterInfoTabManager = CharacterInfoTabManager:new(ISCharacterInfoWindow)
 
 --- Creates the UI for the Womb Handler
 local function onCreateUI()
@@ -77,7 +82,7 @@ local function onCreateUI()
 	UI:saveLayout()
 	UI:setBorderToAllElements(true)
 
-	AddCharacterPageTab("HPanel", UI)
+	CharacterInfoTabManager:addTab("HPanel", UI)
 end
 
 --- Handles the UI update
