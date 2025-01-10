@@ -18,7 +18,7 @@ end
 
 --- Adds a new tab
 --- @param tabName string The name for the tab
----@param ui any UI component to show
+--- @param ui any UI component to show
 function ZWBFCharacterInfoTabManagerClass:addTab(tabName, ui)
     local viewName = tabName .. "View"
 
