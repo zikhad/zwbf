@@ -96,7 +96,8 @@ local function onCheckLabor()
 	local modData = player:getModData().Pregnancy or {}
 	if modData.CurrentLaborDuration >= modData.ExpectedLaborDuration then
 		Events.EveryOneMinute.Remove(onCheckLabor)
-		triggerEvent("ZWBFPregnancyBirth")
+		local outcome = player:HasTrait("PregnancySuccess")
+		triggerEvent("ZWBFPregnancyBirth", player, outcome)
 		-- Events.EveryOneMinute.Add(onBirthOutcome)
 	end
 end
@@ -221,14 +222,15 @@ LuaEventManager.AddEvent("ZWBFPregnancyBirth")
 --- Hook up event listeners
 Events.OnCreatePlayer.Add(Pregnancy.init)
 
--- Birth Event
-Events.ZWBFPregnancyBirth.Add(
-	function()
-		local player = getPlayer()
-		if player:HasTrait("PregnancySuccess") then
-			player:getInventory():AddItem("Babies." .. pickRandomBaby())
-		end
+--- Pregnancy Birth Event
+--- @param player any
+--- @param outcome boolean
+function OnPregnancyBirth(player, outcome)
+	if outcome then
+		player:getInventory():AddItem("Babies." .. pickRandomBaby())
 	end
-)
+end
+-- Birth Event
+Events.ZWBFPregnancyBirth.Add(OnPregnancyBirth)
 
 return Pregnancy
