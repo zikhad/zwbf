@@ -2,7 +2,6 @@
 local ISCharacterInfoWindow = ISCharacterInfoWindow
 local ISWindow = ISWindow
 local ISLayoutManager = ISLayoutManager
-local ISCollapsableWindow = ISCollapsableWindow
 local getText = getText
 
 -- TODO: Maybe move it to Utils?
@@ -20,8 +19,8 @@ function AddCharacterPageTab(tabName, ui)
 
         self[viewName] = ui
         self[viewName]:setPositionPixel(0,0)
-        self[viewName]:setWidthPixel(self.width,self.height)
-        self[viewName].infoText = getText("UI_"..tabName.."Panel");--UI_<tabName>Panel is full text of tooltip
+        -- self[viewName]:setWidthPixel(self.width,self.height)
+        self[viewName].infoText = getText("UI_"..tabName.."Panel");
         self[viewName].closeButton:setVisible(false)
 
         -- Prevent the tab content from being dragged
@@ -30,7 +29,7 @@ function AddCharacterPageTab(tabName, ui)
             self[viewName]:setY(ISWindow.TitleBarHeight)
         end
 
-        self.panel:addView(getText("UI_"..tabName), self[viewName]) --UI_<tabName> is short text of tab
+        self.panel:addView(getText("UI_"..tabName), self[viewName])
     end
 
     -- Controls tab switching
@@ -46,6 +45,7 @@ function AddCharacterPageTab(tabName, ui)
     function ISCharacterInfoWindow:prerender()
         original_ISCharacterInfoWindow_prerender(self)
         if (self[viewName] == self.panel:getActiveView()) then
+            self:setWidth(self[viewName]:getWidth())
             self:setHeight((ISWindow.TitleBarHeight * 2) + self[viewName]:getHeight())
         end
     end
