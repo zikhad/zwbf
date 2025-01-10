@@ -1,5 +1,3 @@
--- require "ISCharacterInfoWindow_AddTab"
-
 --- Localized global functions from PZ
 local getText = getText
 local getPlayer = getPlayer
@@ -7,12 +5,11 @@ local getSpecificPlayer = getSpecificPlayer
 local isDebugEnabled = isDebugEnabled
 local Events = Events
 local ISContextMenu = ISContextMenu
-local ISCharacterInfoWindow = ISCharacterInfoWindow
 
 
 local NewUI = NewUI
 
-local CharacterInfoTabManager = require("ZWBF/ZWBFISCharacterInfoWindow")
+local CharacterInfoTabManager = require("ZWBF/ZWBFCharacterInfoTabManager")
 
 -- VARIABLES
 local UI
@@ -21,13 +18,13 @@ local Womb = require("ZWBF/ZWBFWomb")
 local Pregnancy = require("ZWBF/ZWBFPregnancy")
 local Lactation = require("ZWBF/ZWBFLactation")
 
-local CharacterInfoTabManager = CharacterInfoTabManager:new(ISCharacterInfoWindow)
+local CharacterInfoTabManager = CharacterInfoTabManager:new()
 
 --- Creates the UI for the Womb Handler
 local function onCreateUI()
 	UI = NewUI()
 	UI:setWidthPercent(0.10)
-	-- UI:setTitle(getText("ContextMenu_H_Status"))
+	UI:setTitle(getText("IGUI_ZWBF_UI_Panel"))
 
 	--- Milk ---
 	-- title
@@ -103,18 +100,13 @@ local function onUpdateUI()
 		UI["womb-pregnancy-bar"]:setValue(Womb:getFertility())
 		UI["womb-pregnancy-info"]:setText(math.floor(Womb:getFertility() * 100) .. "%")
 	end
-	-- UI:setHeightAndParentHeight(200)
-
-	-- TODO: Alternatively we can prevent mouse drag here
-	-- UI:setX(0)
-	-- UI:setY(0)
 end
 
 --- Create H-Status Context Menu Button
 --- @param player any
 --- @param context any
 --- @param items any
-local function onCreateContextMenu(player, context, items)
+local function onCreateWombDebugContextMenu(player, context, items)
 	-- this mod is only applicable for Female characters
 	local specificPlayer = getSpecificPlayer(player)
 	if not specificPlayer:isFemale() or specificPlayer:isAsleep() or specificPlayer:getVehicle() then return end
@@ -126,20 +118,8 @@ local function onCreateContextMenu(player, context, items)
 	local submenu = ISContextMenu:getNew(context)
 	context:addSubMenu(option, submenu)
 
-	--- Create Check H-Status Menu
-	Utils:addOption(
-		submenu,
-		getText("ContextMenu_Check_Status"),
-		getText("ContextMenu_Check_Status_Description"),
-		function()
-			onUpdateUI()
-			UI:toggle()
-		end
-	)
-
 	--- Debug options
-	if isDebugEnabled() then
-		Utils:addOption(
+	Utils:addOption(
 			submenu,
 			getText("ContextMenu_Add_Sperm_Title"),
 			getText("ContextMenu_Add_Description"),
@@ -189,10 +169,44 @@ local function onCreateContextMenu(player, context, items)
 				function() Womb:setPregnancy(false) end
 			)
 		end
-	end
+end
+
+--- Create Milk Context Menu Button
+local function onCreateMilkDebugContextMenu(player, context)
+    -- this mod is only applicable for Female characters
+    local specificPlayer = getSpecificPlayer(player)
+    if not specificPlayer:isFemale() or specificPlayer:isAsleep() or specificPlayer:getVehicle() then return end
+
+    local option = context:addOption(getText("ContextMenu_Milk"))
+    local submenu = ISContextMenu:getNew(context)
+    context:addSubMenu(option, submenu)
+    
+    Utils:addOption(
+            submenu,
+            getText("ContextMenu_Milk_Toggle_Lactation_Title"),
+            getText("ContextMenu_Milk_Toggle_Lactation_Description"),
+            function() Lactation:set(not Lactation:getIsLactating()) end
+        )
+        if Lactation:getIsLactating() then
+            Utils:addOption(
+                submenu,
+                getText("ContextMenu_Milk_Add_Milk_Title"),
+                getText("ContextMenu_Milk_Add_Milk_Description"),
+                function() Lactation:add(200) end
+            )
+            Utils:addOption(
+                submenu,
+                getText("ContextMenu_Milk_Clear_Milk_Title"),
+                getText("ContextMenu_Milk_Clear_Milk_Description"),
+                function() Lactation:clear() end
+            )
+        end
 end
 
 --- Hook up event listeners
 Events.OnCreateUI.Add(onCreateUI)
 Events.OnPostRender.Add(onUpdateUI)
-Events.OnFillWorldObjectContextMenu.Add(onCreateContextMenu)
+if isDebugEnabled() then
+	Events.OnFillWorldObjectContextMenu.Add(onCreateWombDebugContextMenu)
+	Events.OnFillWorldObjectContextMenu.Add(onCreateMilkDebugContextMenu)
+end

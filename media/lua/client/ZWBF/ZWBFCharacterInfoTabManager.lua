@@ -4,37 +4,39 @@ local ISWindow = ISWindow
 local ISLayoutManager = ISLayoutManager
 local getText = getText
 
-local CharacterInfoTabManager = {}
-CharacterInfoTabManager.__index = CharacterInfoTabManager
+local ZWBFCharacterInfoTabManagerClass = {}
+ZWBFCharacterInfoTabManagerClass.__index = ZWBFCharacterInfoTabManagerClass
 
--- Static table to store tabs
-CharacterInfoTabManager.tabs = {}
+--- Static table to store tabs
+ZWBFCharacterInfoTabManagerClass.tabs = {}
 
--- Constructor
-function CharacterInfoTabManager:new()
+--- Constructor
+function ZWBFCharacterInfoTabManagerClass:new()
     local instance = setmetatable({}, self)
     return instance
 end
 
--- Adds a new tab
-function CharacterInfoTabManager:addTab(tabName, ui)
+--- Adds a new tab
+--- @param tabName string The name for the tab
+---@param ui any UI component to show
+function ZWBFCharacterInfoTabManagerClass:addTab(tabName, ui)
     local viewName = tabName .. "View"
 
     -- Store tab information
-    CharacterInfoTabManager.tabs[tabName] = {
+    ZWBFCharacterInfoTabManagerClass.tabs[tabName] = {
         viewName = viewName,
         ui = ui,
     }
 
     -- Override methods only once
-    if not CharacterInfoTabManager.methodsOverridden then
+    if not ZWBFCharacterInfoTabManagerClass.methodsOverridden then
         self:overrideISCharacterInfoWindowMethods()
-        CharacterInfoTabManager.methodsOverridden = true
+        ZWBFCharacterInfoTabManagerClass.methodsOverridden = true
     end
 end
 
--- Overrides necessary methods in ISCharacterInfoWindow
-function CharacterInfoTabManager:overrideISCharacterInfoWindowMethods()
+--- Overrides necessary methods in ISCharacterInfoWindow
+function ZWBFCharacterInfoTabManagerClass:overrideISCharacterInfoWindowMethods()
     local originalCreateChildren = ISCharacterInfoWindow.createChildren
     local originalOnTabTornOff = ISCharacterInfoWindow.onTabTornOff
     local originalPrerender = ISCharacterInfoWindow.prerender
@@ -44,7 +46,7 @@ function CharacterInfoTabManager:overrideISCharacterInfoWindowMethods()
     function ISCharacterInfoWindow:createChildren()
         originalCreateChildren(self)
 
-        for tabName, tabInfo in pairs(CharacterInfoTabManager.tabs) do
+        for tabName, tabInfo in pairs(ZWBFCharacterInfoTabManagerClass.tabs) do
             local viewName = tabInfo.viewName
             local ui = tabInfo.ui
 
@@ -65,7 +67,7 @@ function CharacterInfoTabManager:overrideISCharacterInfoWindowMethods()
 
     -- Extend onTabTornOff
     function ISCharacterInfoWindow:onTabTornOff(view, window)
-        for tabName, tabInfo in pairs(CharacterInfoTabManager.tabs) do
+        for tabName, tabInfo in pairs(ZWBFCharacterInfoTabManagerClass.tabs) do
             if self.playerNum == 0 and view == self[tabInfo.viewName] then
                 ISLayoutManager.RegisterWindow('charinfowindow.' .. tabName, ISCharacterInfoWindow, window)
             end
@@ -76,7 +78,7 @@ function CharacterInfoTabManager:overrideISCharacterInfoWindowMethods()
     -- Extend prerender
     function ISCharacterInfoWindow:prerender()
         originalPrerender(self)
-        for _, tabInfo in pairs(CharacterInfoTabManager.tabs) do
+        for _, tabInfo in pairs(ZWBFCharacterInfoTabManagerClass.tabs) do
             local viewName = tabInfo.viewName
             if self[viewName] == self.panel:getActiveView() then
                 self:setWidth(self[viewName]:getWidth())
@@ -89,7 +91,7 @@ function CharacterInfoTabManager:overrideISCharacterInfoWindowMethods()
     function ISCharacterInfoWindow:SaveLayout(name, layout)
         originalSaveLayout(self, name, layout)
 
-        for tabName, tabInfo in pairs(CharacterInfoTabManager.tabs) do
+        for tabName, tabInfo in pairs(ZWBFCharacterInfoTabManagerClass.tabs) do
             local subSelf = self[tabInfo.viewName]
             if subSelf and subSelf.parent == self.panel then
                 if not layout.tabs then
@@ -105,4 +107,4 @@ function CharacterInfoTabManager:overrideISCharacterInfoWindowMethods()
     end
 end
 
-return CharacterInfoTabManager
+return ZWBFCharacterInfoTabManagerClass
