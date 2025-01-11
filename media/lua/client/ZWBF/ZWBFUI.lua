@@ -15,7 +15,7 @@ local CharacterInfoTabManager = require("ZWBF/ZWBFCharacterInfoTabManager")
 local UI
 local Utils = require("ZWBF/ZWBFUtils")
 local Womb = require("ZWBF/ZWBFWomb")
-local Pregnancy = require("ZWBF/ZWBFPregnancy")
+local Pregnancy = require("ZWBF/ZWBFPregnancyClass")
 local Lactation = require("ZWBF/ZWBFLactation")
 
 local CharacterInfoTabManager = CharacterInfoTabManager:new()
