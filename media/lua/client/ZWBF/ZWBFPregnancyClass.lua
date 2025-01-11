@@ -12,16 +12,28 @@ PregnancyClass.__index = PregnancyClass
 
 function PregnancyClass:new(name)
     local instance = setmetatable({}, PregnancyClass)
+    local player = getPlayer()
     instance.name = name or "Pregnancy"
-    instance.player = getPlayer()
-
-    instance.data = instance.player:getModData().ZWBFPregnancy or {}
-    instance.data.IsPregnant = instance.data.IsPregnant or false
-    instance.data.PregnancyDuration = instance.data.PregnancyDuration or SBVars.PregnancyDuration * 24 -- HOURS
-    instance.data.PregnancyCurrent = instance.data.PregnancyCurrent or 0
     -- instance.data.LaborDuration = instance.data.LaborDuration or SBVars.LaborMinimumDuration * 60 -- MINUTES
     -- instance.data.LaborDuration = instance.data.LaborDuration or 0
+    -- player:getModData().ZWBFPregnancy = instance.data
     return instance
+end
+
+function PregnancyClass:init()
+    print("ZWBF PregnancyClass:init()")
+    local player = getPlayer()
+    
+    self.player = player
+
+    self.data = self.player:getModData().ZWBFPregnancy or {}
+    self.data.IsPregnant = self.data.IsPregnant or false
+    self.data.PregnancyDuration = self.data.PregnancyDuration or SBVars.PregnancyDuration * 24 -- HOURS
+    self.data.PregnancyCurrent = self.data.PregnancyCurrent or 0
+    
+    if player:HasTrait("Pregnancy") then
+        Events.EveryHours.Add(self.onCheckLabor)
+    end
 end
 
 function PregnancyClass:getIsPregnant()
@@ -72,12 +84,8 @@ function PregnancyClass:onFinishRecovery()
     print("REMOVE")
 end
 
-local Pregnancy = {}
-Events.OnCreatePlayer.Add(
-    function ()
-        Pregnancy = PregnancyClass:new()
-    end
-)
+local Pregnancy = PregnancyClass:new()
+Events.OnCreatePlayer.Add(Pregnancy.init)
 
 LuaEventManager.AddEvent("ZWBFPregnancyLabor")
 Events.ZWBFPregnancyLabor.Add(
