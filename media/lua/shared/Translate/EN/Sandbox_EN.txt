@@ -1,6 +1,9 @@
 Sandbox_EN = {
     Sandbox_ZWBF                                              = "(ZWBF) Being Female",
     
+    Sandbox_ZWBF_Pregnancy_Duration                           = "Pregnancy Duration",
+    Sandbox_ZWBF_Pregnancy_Duration_tooltip                   = "How many days the pregnancy will last",
+    
     Sandbox_ZWBF_Pregnancy_Recovery                           = "Pregnancy Recovery Time",
     Sandbox_ZWBF_Pregnancy_Recovery_tooltip                   = "How many days before menstrual cycle restart?",
     
