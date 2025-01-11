@@ -18,7 +18,7 @@ local TRAITS_LIST = {
 		IdentifierType = "Infertile",
 		Cost = 3,
 		Profession = false,
-		MutualExclusives = {"Fertile"},
+		MutualExclusives = {"Fertile", "Pregnancy"},
 	},
     -- TODO: Add Hyperfertile trait +10 > +100% fertility, Halves the time before being ready to get pregnant again after birth, increases chance of successful delivery by 10%
     {
@@ -26,7 +26,13 @@ local TRAITS_LIST = {
 		Cost = -6,
 		Profession = false,
 		MutualExclusives = {"Fertile", "Infertile"},
-    },    
+    },
+    {
+        IdentifierType = "Pregnancy",
+		Cost = -8,
+		Profession = false,
+		MutualExclusives = {},
+    },
     -- TODO: Add Dairy Cow trait -6 > Increases milk production rate (+25%) and time lactating (+25%).
     {
         IdentifierType = "DairyCow",
