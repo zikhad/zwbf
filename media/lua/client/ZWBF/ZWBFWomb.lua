@@ -12,7 +12,7 @@ local SBVars = SandboxVars.ZWBF
 
 -- VARIABLES
 local Utils = require("ZWBF/ZWBFUtils")
-local Pregnancy = require("ZWBF/ZWBFPregnancyClass")
+local Pregnancy = require("ZWBF/ZWBFPregnancy")
 
 local Womb = {}
 
@@ -170,7 +170,6 @@ local function setCyclePhase()
         data.CyclePhase = "Recovery"
         data.Fertility = 0
     elseif data.CycleDay < 6 then
-        Pregnancy:onFinishRecovery()
         data.CyclePhase = "Menstruation"
     elseif data.CycleDay < 13 then
         data.CyclePhase = "Follicular"

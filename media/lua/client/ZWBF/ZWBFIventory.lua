@@ -7,7 +7,7 @@ local getSpecificPlayer = getSpecificPlayer
 local Events = Events
 
 local Womb = require("ZWBF/ZWBFWomb")
-local Pregnancy = require("ZWBF/ZWBFPregnancyClass")
+local Pregnancy = require("ZWBF/ZWBFPregnancy")
 local Lactation = require("ZWBF/ZWBFLactation")
 
 --- Common function to handle item actions

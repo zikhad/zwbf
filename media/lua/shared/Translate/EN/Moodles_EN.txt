@@ -2,7 +2,7 @@ Moodles_EN {
     Moodles_Engorgement_Bad_lvl1 = "Slight",
     Moodles_Engorgement_Bad_desc_lvl1 = "Your Breasts feels warm",
     Moodles_Engorgement_Bad_lvl2 = "Firm Breasts",
-    Moodles_Engorgement_Bad_desc_lvl2 = "Your Breasts feel more firm by the minute",
+    Moodles_Engorgement_Bad_desc_lvl2 = "Your Breasts feels warm and more firm",
     Moodles_Engorgement_Bad_lvl3 = "Very Firm Breasts",
     Moodles_Engorgement_Bad_desc_lvl3 = "You can feel something sloshing inside",
     Moodles_Engorgement_Bad_lvl4 = "Full to bursting!",

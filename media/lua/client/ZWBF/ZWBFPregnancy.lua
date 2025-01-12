@@ -1,236 +1,178 @@
---- Localized global functions from PZ
+-- Localized global functions from PZ
 local getPlayer = getPlayer
 local SandboxVars = SandboxVars
 local Events = Events
-local ZombRand = ZombRand
-local isDebugEnabled = isDebugEnabled
 local LuaEventManager = LuaEventManager
 local triggerEvent = triggerEvent
+local ZombRand = ZombRand
+local ISTimedActionQueue = ISTimedActionQueue
 
---- VARIABLES
-local SBvars = SandboxVars.Pregnancy
-local Pregnancy = {}
+-- Sandbox Variables
+local SBVars = SandboxVars.ZWBF
 
-local function pickRandomBaby()
-	local babies = {
-		"Baby_01_b", "Baby_02", "Baby_02_b", "Baby_03", "Baby_03_b", "Baby_07",
-		"Baby_07_b", "Baby_08", "Baby_08_b", "Baby_09", "Baby_09_b", "Baby_10",
-		"Baby_10_b", "Baby_11", "Baby_11_b", "Baby_12", "Baby_12_b", "Baby_13",
-		"Baby_14"
-	}
-	return babies[ZombRand(1, #babies)]
+-- ZWBF PregnancyClass
+--- Class responsible for handling pregnancy mechanics in the game.
+PregnancyClass = {}
+PregnancyClass.__index = PregnancyClass
+
+-- TODO: Add pregnancy-related moodles
+
+--- Constructor
+--- Creates a new PregnancyClass instance.
+--- @param name string | nil Name of the pregnancy system instance (default: "Pregnancy").
+function PregnancyClass:new(name)
+    local instance = setmetatable({}, PregnancyClass)
+    instance.name = name or "Pregnancy"
+    return instance
 end
 
---- PREGRNANCY MOD FUNCTIONS
---- These functions are used to manage the pregnancy mod.
---- Since that mod only apply itself in the game start
---- We need to replicate the needed values to enable the mod
---- until the next restart.
+--- Initializes pregnancy data and hooks event listeners as needed.
+function PregnancyClass:init()
+    self.data = self.player:getModData().ZWBFPregnancy or {}
+    self.data.PregnancyDuration = self.data.PregnancyDuration or (SBVars.PregnancyDuration * 24) -- HOURS
+    self.data.PregnancyCurrent = self.data.PregnancyCurrent or 0
+    self.data.InLabor = self.data.InLabor or false
+    self.data.LaborProgress = 0
 
---- Pregnancy duration is randomized to a value between the PregnancyDuration and PregnancyDurationRandomization
---- @return number
-local function randomizePregnancyDuration()
-	local duration = SBvars.PregnancyDuration * 24
-	if SBvars.PregnancyDuration <= SBvars.PregnancyDurationRandomization then
-		return duration
-	end
-	duration = duration - SBvars.PregnancyDurationRandomization * 24
-	local randomValue = ZombRand(SBvars.PregnancyDurationRandomization * 2 * 24)
-	return duration + randomValue
+    if self.player:HasTrait("Pregnancy") then
+        Events.EveryHours.Add(OnCheckLabor)
+    end
 end
 
---- Labor duration is randomized to a value between the LaborMinimumDuration and LaborMaximumDuration
---- @return number
-local function randomizeLaborDuration()
-	local duration = SBvars.LaborMinimumDuration * 60
-	if SBvars.LaborMaximumDuration <= SBvars.LaborMinimumDuration then
-		return duration
-	end
-	local randomDuration = SBvars.LaborMaximumDuration - SBvars.LaborMinimumDuration
-	local randomValue = ZombRand(randomDuration * 60)
-	return duration + randomValue
+--- Updates pregnancy data in the player's mod data.
+function PregnancyClass:update()
+    self.player:getModData().ZWBFPregnancy = self.data
 end
 
---- Labor second stage duration is randomized to a value between the LaborSecondStageMinimumDuration and LaborSecondStageMaximumDuration
---- @return number
-local function randomizeLaborSecondStageDuration()
-	local duration = SBvars.LaborSecondStageMinimumDuration
-	if SBvars.LaborSecondStageMaximumDuration <= SBvars.LaborSecondStageMinimumDuration then
-		return duration
-	end
-	local randomDuration = SBvars.LaborSecondStageMaximumDuration - SBvars.LaborSecondStageMinimumDuration
-	local randomValue = ZombRand(randomDuration)
-	return duration + randomValue
+--- Called when a player is created, initializes the pregnancy system for that player.
+function PregnancyClass:onCreatePlayer()
+    self.player = getPlayer()
+    self:init()
 end
 
---- (DEBUG) Print the pregnancy mod data
-local function info()
-	if isDebugEnabled() then
-		local player = getPlayer()
-		local modData = player:getModData().Pregnancy or {}
-		print("--------------")
-		print("HoursToLabor:" .. (modData.HoursToLabor or 0))
-		print("CurrentLaborDuration: " .. (modData.CurrentLaborDuration or 0))
-		print("ExpectedLaborDuration: " .. (modData.ExpectedLaborDuration or 0))
-		print("InitialPregnancyDuration: " .. (modData.InitialPregnancyDuration or 0))
-		print("Progress: " .. 1 - (modData.HoursToLabor or 0) / (modData.InitialPregnancyDuration or 1))
-	end
+--- Checks if the player is pregnant.
+--- @return boolean pregnancy True if the player is pregnant, false otherwise.
+function PregnancyClass:getIsPregnant()
+    return self.player:HasTrait("Pregnancy")
 end
 
---- This function is called every hour to update the pregnancy mod data ultil the next restart
-local function beforeRestartUpdate()
-	local player = getPlayer()
-	local modData = player:getModData().Pregnancy or {}
-	if modData.HoursToLabor < 48 then
-		modData.HoursToLabor = 48
-	end
-	modData.HoursToLabor = modData.HoursToLabor - 1
-	info()
+--- Gets the current pregnancy progress as a percentage.
+--- @return number Pregnancy progress (0-1).
+function PregnancyClass:getProgress()
+    return self.data.PregnancyCurrent / self.data.PregnancyDuration
 end
 
-
---- This function will check if the player is in labor
-local function onCheckLabor()
-	info()
-	local player = getPlayer()
-	local modData = player:getModData().Pregnancy or {}
-	if modData.CurrentLaborDuration >= modData.ExpectedLaborDuration then
-		Events.EveryOneMinute.Remove(onCheckLabor)
-		local outcome = player:HasTrait("PregnancySuccess")
-		triggerEvent("ZWBFPregnancyBirth", player, outcome)
-		-- Events.EveryOneMinute.Add(onBirthOutcome)
-	end
+--- Checks if the player is in labor.
+--- @return boolean True if in labor, false otherwise.
+function PregnancyClass:getInLabor()
+    return self.data.InLabor
 end
 
---- This function will check if the player is in labor
---- @return boolean
-function Pregnancy:getInLabor()
-	local player = getPlayer()
-	local modData = player:getModData().Pregnancy or {}
-	return modData.InLabor
+--- Checks if the pregnancy duration has been reached, triggers labor if so.
+function PregnancyClass:onCheckLabor()
+    if not self.data then return end
+    self.data.PregnancyCurrent = self.data.PregnancyCurrent + 1
+
+    if self:getProgress() >= 1 then
+        Events.EveryHours.Remove(OnCheckLabor)
+        triggerEvent("ZWBFPregnancyLabor", self)
+    else
+        triggerEvent("ZWBFPregnancyProgress", self:getProgress())
+    end
+    self:update()
 end
 
---- This function will return the labor progress (useful for UI changes)
---- @return number
-function Pregnancy:getLaborProgress()
-	local player = getPlayer()
-	local modData = player:getModData().Pregnancy or {}
-	return modData.CurrentLaborDuration / modData.ExpectedLaborDuration
+--- Handles the start of labor.
+function PregnancyClass:onLabor()
+    self.data.InLabor = true
+    self.data.PregnancyCurrent = 0
+    ISTimedActionQueue.add(ZWBFActionBirth:new(self.player, self))
 end
 
---- This function will return the pregnancy progress (useful for UI changes)
---- @return number
-function Pregnancy:getProgress()
-	local player = getPlayer()
-	local modData = player:getModData().Pregnancy
-	info()
-	return 1 - modData.HoursToLabor / modData.InitialPregnancyDuration
+--- Handles the birth process, removes pregnancy trait, and gives the player a baby item.
+function PregnancyClass:onBirth()
+    self.data.InLabor = false
+    self.data.LaborProgress = 0
+    local babies = {
+        "Baby_01_b", "Baby_02", "Baby_02_b", "Baby_03", "Baby_03_b", "Baby_07",
+        "Baby_07_b", "Baby_08", "Baby_08_b", "Baby_09", "Baby_09_b", "Baby_10",
+        "Baby_10_b", "Baby_11", "Baby_11_b", "Baby_12", "Baby_12_b", "Baby_13",
+        "Baby_14"
+    }
+    local baby = babies[ZombRand(1, #babies)]
+    self.player:getInventory():AddItem("Babies." .. baby)
+    self.player:getTraits():remove("Pregnancy")
 end
 
---- This function will return if the player is pregnant
---- @return boolean
-function Pregnancy:getIsPregnant()
-	local player = getPlayer()
-	return player:HasTrait("Pregnancy")
+--- Starts the pregnancy process, adding the "Pregnancy" trait and initializing the system.
+function PregnancyClass:start()
+    self.player:getTraits():add("Pregnancy")
+    self:init()
+    Events.EveryHours.Add(OnCheckLabor)
 end
 
---- (DEBUG) Advance the pregnancy by x hours
---- @param hours integer
-function Pregnancy:advancePregnancy(hours)
-	local player = getPlayer()
-	local modData = player:getModData().Pregnancy or {}
-	if modData.HoursToLabor > 24 then
-		print("ZWBF - Pregnancy - Advance 24h")
-		modData.HoursToLabor = modData.HoursToLabor - 24
-	else
-		print("ZWBF - Pregnancy - Too close to labor to advance 24h")
-	end
+--- Stops the pregnancy process, resetting all related data.
+function PregnancyClass:stop()
+    self.player:getTraits():remove("Pregnancy")
+    self.data.PregnancyCurrent = 0
+    self.data.InLabor = false
+    self.data.LaborProgress = 0
+    self:update()
+    Events.EveryHours.Remove(OnCheckLabor)
 end
 
---- (DEBUG) Advance the pregnancy to labor
-function Pregnancy:advanceToLabor()
-	local player = getPlayer()
-	local modData = player:getModData().Pregnancy or {}
-	modData.HoursToLabor = 1
-	print("ZWBF - Pregnancy - Advanced to 24h prior labor")
+--- (DEBUG) Advances pregnancy progress by a specified number of hours.
+--- @param hours number Number of hours to advance.
+function PregnancyClass:advancePregnancy(hours)
+    self.data.PregnancyCurrent = self.data.PregnancyCurrent + hours
 end
 
---- This function will remove the Traits "PregnancySuccess" and "PregnancyFail" from the player
---- Should be called after the recovery time
-function Pregnancy:onFinishRecovery()
-	local player = getPlayer()
-	if player:HasTrait("PregnancySuccess") or player:HasTrait("PregnancyFail") then
-		player:getTraits():remove("PregnancyFail")
-		player:getTraits():remove("PregnancySuccess")
-	end
+--- (DEBUG) Advances pregnancy progress to just before labor.
+function PregnancyClass:advanceToLabor()
+    self.data.PregnancyCurrent = self.data.PregnancyDuration - 1
 end
 
---- This function will start the Pregnancy
---- It is the same as Pregnancy Mod, since the mod only works in when the game starts
-function Pregnancy:start()
-	local player = getPlayer()
-	local modData = player:getModData().Pregnancy or {}
-	modData.HoursToLabor = randomizePregnancyDuration()
-	modData.InitialPregnancyDuration = modData.HoursToLabor
-	modData.InLabor = false
-	modData.CurrentLaborDuration = 0
-	modData.ExpectedLaborDuration = randomizeLaborDuration()
-	modData.SecondStageStart = modData.ExpectedLaborDuration - randomizeLaborSecondStageDuration()
-	
-	modData.timeSinceLastScream = 0
-	modData.chanceToScream = 5
-	
-	modData.MentalStateLastHour = {}
-	modData.MentalStateLast24Hours = {}
-	
-	modData.ConsumedAlcohol = false
-	modData.Smoked = false
-	
-	modData.DelayedFitnessHoursLeft = 24 * 14 + ZombRand(24 * 14)
-
-	player:getTraits():add("Pregnancy")
-	Events.EveryOneMinute.Add(onCheckLabor)
-	Events.EveryHours.Add(beforeRestartUpdate)
-	player:getModData().Pregnancy = modData
-	print("ZWBF - Pregnancy - Trait added")
-	info()
+--- Sets labor progress.
+--- @param progress number Labor progress (0-1).
+function PregnancyClass:setLaborProgress(progress)
+    self.data.LaborProgress = progress
 end
 
---- (DEBUG) This function will stop the Pregnancy
-function Pregnancy:stop()
-	local player = getPlayer()
-	player:getTraits():remove("Pregnancy")
-	Events.EveryHours.Remove(beforeRestartUpdate)
-	Events.EveryOneMinute.Remove(onCheckLabor)
-	print("ZWBF - Pregnancy - Trait removed")
+--- Gets labor progress.
+--- @return number Labor progress (0-1).
+function PregnancyClass:getLaborProgress()
+    return self.data.LaborProgress
 end
 
---- Initialize the Pregnancy track for ZWBF
---- Useful if the Pregnancy:start is called or when the game starts
-function Pregnancy:init()
-	local player = getPlayer()
-	if player:HasTrait("Pregnancy") then
-		Events.EveryOneMinute.Add(onCheckLabor)
-	end
+-- Instantiate Pregnancy class
+local Pregnancy = PregnancyClass:new()
+
+-- Local Functions
+--- Checks labor status periodically.
+function OnCheckLabor()
+    Pregnancy:onCheckLabor()
 end
 
---- ZWBF Pregnancy Events API
---- This will allow other mods to listen to intereact with Birth Outcome
--- LuaEventManager.AddEvent("ZWBFPregnancyBirth")
+-- Hookup Events
+Events.OnCreatePlayer.Add(function()
+    Pregnancy:onCreatePlayer()
+end)
 
+-- Pregnancy Events
+LuaEventManager.AddEvent("ZWBFPregnancyProgress")
+Events.ZWBFPregnancyProgress.Add(function(progress)
+    print("Pregnancy Progress: " .. progress)
+    -- TODO: Add pregnancy changes in body / player status here
+end)
 
---- Hook up event listeners
--- Events.OnCreatePlayer.Add(Pregnancy.init)
+LuaEventManager.AddEvent("ZWBFPregnancyLabor")
+Events.ZWBFPregnancyLabor.Add(function(pregnancy)
+    pregnancy:onLabor()
+end)
 
---- Pregnancy Birth Event
---- @param player any
---- @param outcome boolean
-function OnPregnancyBirth(player, outcome)
-	if outcome then
-		player:getInventory():AddItem("Babies." .. pickRandomBaby())
-	end
-end
--- Birth Event
--- Events.ZWBFPregnancyBirth.Add(OnPregnancyBirth)
+LuaEventManager.AddEvent("ZWBFPregnancyBirth")
+Events.ZWBFPregnancyBirth.Add(function(pregnancy)
+    pregnancy:onBirth()
+end)
 
--- return Pregnancy
+return Pregnancy
