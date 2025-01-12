@@ -1,4 +1,5 @@
 UI_EN = {
+    UI_HPanel = "Being Female",
     UI_Trait_Fertile = "Fertile",
     UI_Trait_Fertile_Description = "You are specialy fertile <br>- Higher chance of getting pregnant",
 

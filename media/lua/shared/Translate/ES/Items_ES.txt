@@ -1,14 +1,14 @@
-Items_ES {
+Items_EN {
     DisplayNameContraceptive        = "Anticonceptivo",
     
-    DisplayNameMilkBottle           = "Biber髇",
-    DisplayNameMilkBottle_rotten    = "Biber髇 (podrido)",
+    DisplayNameMilkBottle           = "Biber贸n",
+    DisplayNameMilkBottle_rotten    = "Biber贸n (podrido)",
     
-    DisplayNameVaginalDouche_Empty  = "Ducha vaginal (vac韆)",
+    DisplayNameVaginalDouche_Empty  = "Ducha vaginal (vac铆a)",
     DisplayNameVaginalDouche_Full   = "Ducha vaginal (completa)",
 
-    DisplayNameCondom               = "Cond髇",
-    DisplayNameCondomUsed           = "Cond髇 Usado",
+    DisplayNameCondom               = "Cond贸n",
+    DisplayNameCondomUsed           = "Cond贸n Usado",
     CustomContextMenuCondomUsed     = "Beber",
     DisplayNameCondomBox            = "Caja de Condones",
 

@@ -1,4 +1,4 @@
-ContextMenu_ES = {
+ContextMenu_EN = {
 	ContextMenu_H_Status									= "Estado H",
 	ContextMenu_Check_Status								= "Verificar Estado H",
 	ContextMenu_Check_Status_Description					= "Verifica tu estado privado",
