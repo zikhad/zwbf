@@ -219,7 +219,7 @@ end
 --- Update that should occur every minute
 local function onEveryMinute()
 	Lactation:update()
-	if isDebugEnabled() then
+	--[[ if isDebugEnabled() then
 		local data = Lactation.data
 		print("----------")
 		print("ZWBF - Lactation - onEveryMinute")
@@ -227,7 +227,7 @@ local function onEveryMinute()
 		print("MilkAmount: " .. tostring(data.MilkAmount))
 		print("MilkMultiplier: " .. tostring(data.MilkMultiplier))
 		print("Expiration: " .. tostring(data.Expiration))
-	end
+	end ]]
 end
 
 --- Check if the expiration is over and remove lactation if it is

@@ -216,11 +216,11 @@ end
 
 --- ZWBF Pregnancy Events API
 --- This will allow other mods to listen to intereact with Birth Outcome
-LuaEventManager.AddEvent("ZWBFPregnancyBirth")
+-- LuaEventManager.AddEvent("ZWBFPregnancyBirth")
 
 
 --- Hook up event listeners
-Events.OnCreatePlayer.Add(Pregnancy.init)
+-- Events.OnCreatePlayer.Add(Pregnancy.init)
 
 --- Pregnancy Birth Event
 --- @param player any
@@ -231,6 +231,6 @@ function OnPregnancyBirth(player, outcome)
 	end
 end
 -- Birth Event
-Events.ZWBFPregnancyBirth.Add(OnPregnancyBirth)
+-- Events.ZWBFPregnancyBirth.Add(OnPregnancyBirth)
 
-return Pregnancy
+-- return Pregnancy
