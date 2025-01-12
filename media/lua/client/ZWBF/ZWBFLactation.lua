@@ -9,7 +9,7 @@ local SBVars = SandboxVars.ZWBF
 
 --- VARIABLES
 local Utils = require("ZWBF/ZWBFUtils")
-local Pregnancy = require("ZWBF/ZWBFPregnancyClass")
+local Pregnancy = require("ZWBF/ZWBFPregnancy")
 
 local Lactation = {}
 

@@ -20,7 +20,7 @@ local ActionEvents = ZomboWin.AnimationHandler.ActionEvents
 local Utils = require("ZWBF/ZWBFUtils")
 
 --- VARIABLES
-local Pregnancy = require("ZWBF/ZWBFPregnancyClass")
+local Pregnancy = require("ZWBF/ZWBFPregnancy")
 local Womb = require("ZWBF/ZWBFWomb")
 
 --- LOCAL FUNCTIONS
