@@ -4,8 +4,11 @@ local SandboxVars = SandboxVars
 local Events = Events
 local LuaEventManager = LuaEventManager
 local triggerEvent = triggerEvent
+local ZombRand = ZombRand
 
 local SBVars = SandboxVars.ZWBF
+
+
 
 PregnancyClass = {}
 PregnancyClass.__index = PregnancyClass
@@ -22,18 +25,26 @@ end
 
 function PregnancyClass:init()
     print("ZWBF PregnancyClass:init()")
-    local player = getPlayer()
-    
-    self.player = player
+    if not self.player then
+        print("why player does not exist?")
+        return
+     end
 
     self.data = self.player:getModData().ZWBFPregnancy or {}
-    self.data.IsPregnant = self.data.IsPregnant or false
     self.data.PregnancyDuration = self.data.PregnancyDuration or SBVars.PregnancyDuration * 24 -- HOURS
     self.data.PregnancyCurrent = self.data.PregnancyCurrent or 0
+    self.data.InLabor = self.data.InLabor or false
     
-    if player:HasTrait("Pregnancy") then
-        Events.EveryHours.Add(self.onCheckLabor)
+    if self.player:HasTrait("Pregnancy") then
+        Events.EveryOneMinute.Add(OnCheckLabor)
     end
+    print("ZWBF PregnancyClass:init() - END")
+end
+
+function PregnancyClass:onCreatePlayer()
+    local player = getPlayer()
+    self.player = player
+    self:init()
 end
 
 function PregnancyClass:getIsPregnant()
@@ -44,26 +55,57 @@ function PregnancyClass:getProgress()
     return self.data.PregnancyCurrent / self.data.PregnancyDuration
 end
 
+function PregnancyClass:getInLabor()
+    return self.data.InLabor;
+end
+
 function PregnancyClass:onCheckLabor()
+    print("ZWBFPregnancy - AAAA")
+    print("ZWBF Pregnancy" .. tostring(self))
+    if not self.data then return end
+    print("Current: ", self.data.PregnancyCurrent)
+    print("Duration: ", self.data.PregnancyDuration)
+    print("InLabor: ", self.data.InLabor)
+    self.data.PregnancyCurrent = self.data.PregnancyCurrent + 1
+
     if self.data.PregnancyCurrent > self.data.PregnancyDuration then
         self.player:getTraits():remove("Pregnancy")
-        Events.EveryHours.Remove(self.onCheckLabor)
+        Events.EveryOneMinute.Remove(OnCheckLabor)
         triggerEvent("ZWBFPregnancyLabor", self)
     end
+    self.player:getModData().ZWBFPregnancy = self.data
 end
 
 function PregnancyClass:onLabor()
-    print("PregnancyClass:onLabor()")
+    self.data.InLabor = true
+    self.data.PregnancyCurrent = 0
+    print("ZWBF Pregnancy - PregnancyClass:onLabor() - animation should go here")
+end
+
+function PregnancyClass:onBirth()
+    self.data.InLabor = false
+    local babies = {
+		"Baby_01_b", "Baby_02", "Baby_02_b", "Baby_03", "Baby_03_b", "Baby_07",
+		"Baby_07_b", "Baby_08", "Baby_08_b", "Baby_09", "Baby_09_b", "Baby_10",
+		"Baby_10_b", "Baby_11", "Baby_11_b", "Baby_12", "Baby_12_b", "Baby_13",
+		"Baby_14"
+	}
+	local baby = babies[ZombRand(1, #babies)]
+    self.player:getInventory():AddItem("Babies." .. baby)
+    print("ZWBF Pregnancy - PregnancyClass:onBirth() - birth should go here")
 end
 
 function PregnancyClass:start()
+    print("PregnancyClass:start()")
     self.player:getTraits():add("Pregnancy")
-    Events.EveryHours.Add(self.onCheckLabor)
+    self:init()
+    -- self.player:getModData().ZWBFPregnancy = self.data
+    Events.EveryHours.Add(OnCheckLabor)
 end
 
 function PregnancyClass:stop()
     self.player:getTraits():remove("Pregnancy")
-    Events.EveryHours.Remove(self.onCheckLabor)
+    Events.EveryHours.Remove(OnCheckLabor)
 end
 
 function PregnancyClass:advancePregnancy(hours)
@@ -81,11 +123,20 @@ end
 
 -- TODO: remove?
 function PregnancyClass:onFinishRecovery()
-    print("REMOVE")
+    print("ZWBF Pregnancy - REMOVE")
 end
 
 local Pregnancy = PregnancyClass:new()
-Events.OnCreatePlayer.Add(Pregnancy.init)
+function OnCheckLabor()
+    Pregnancy:onCheckLabor()
+end
+
+Events.OnCreatePlayer.Add(
+    function ()
+        print("ZWBF Pregnancy - OnCreatePlayer")
+        Pregnancy:onCreatePlayer()
+    end
+)
 
 LuaEventManager.AddEvent("ZWBFPregnancyLabor")
 Events.ZWBFPregnancyLabor.Add(
