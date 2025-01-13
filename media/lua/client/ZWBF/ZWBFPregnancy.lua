@@ -6,6 +6,8 @@ local LuaEventManager = LuaEventManager
 local triggerEvent = triggerEvent
 local ZombRand = ZombRand
 local ISTimedActionQueue = ISTimedActionQueue
+local getActivatedMods = getActivatedMods
+local getTexture = getTexture
 
 -- Sandbox Variables
 local SBVars = SandboxVars.ZWBF
@@ -23,6 +25,12 @@ PregnancyClass.__index = PregnancyClass
 function PregnancyClass:new(name)
     local instance = setmetatable({}, PregnancyClass)
     instance.name = name or "Pregnancy"
+    instance.isMF = false
+    if getActivatedMods():contains("MoodleFramework") == true then
+        require "MF_ISMoodle"
+        instance.isMF = true
+        MF.createMoodle("Pregnancy")
+    end
     return instance
 end
 
@@ -77,7 +85,7 @@ function PregnancyClass:onCheckLabor()
         Events.EveryHours.Remove(OnCheckLabor)
         triggerEvent("ZWBFPregnancyLabor", self)
     else
-        triggerEvent("ZWBFPregnancyProgress", self:getProgress())
+        triggerEvent("ZWBFPregnancyProgress", self)
     end
     self:update()
 end
@@ -144,6 +152,24 @@ function PregnancyClass:getLaborProgress()
     return self.data.LaborProgress
 end
 
+--- Handle the MoodleFramework
+---@param level number | nil
+function PregnancyClass:moodle(level)
+    level = level or self:getProgress()
+    if not self.isMF then
+        -- TODO: Add no moodle framework support
+        return
+    end
+    local moodle = MF.getMoodle("Pregnancy")
+    moodle:setThresholds(nil, nil, nil, nil, 0.3, 0.6, 0.9, 0.98)
+    moodle:setPicture(
+        moodle:getGoodBadNeutral(),
+        moodle:getLevel(),
+        getTexture("media/ui/Moodles/Pregnancy.png")
+    );
+    moodle:setValue(level)
+end
+
 -- Instantiate Pregnancy class
 local Pregnancy = PregnancyClass:new()
 
@@ -160,9 +186,11 @@ end)
 
 -- Pregnancy Events
 LuaEventManager.AddEvent("ZWBFPregnancyProgress")
-Events.ZWBFPregnancyProgress.Add(function(progress)
-    print("Pregnancy Progress: " .. progress)
+Events.ZWBFPregnancyProgress.Add(function(pregnancy)
+    print("Pregnancy Progress: " .. pregnancy:getProgress())
+    pregnancy:moodle()
     -- TODO: Add pregnancy changes in body / player status here
+    
 end)
 
 LuaEventManager.AddEvent("ZWBFPregnancyLabor")
