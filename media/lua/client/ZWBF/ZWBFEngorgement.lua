@@ -7,6 +7,7 @@ local Events = Events
 local BodyPartType = BodyPartType
 local LuaEventManager = LuaEventManager
 local triggerEvent = triggerEvent
+local getTexture = getTexture
 
 local Lactation = require("ZWBF/ZWBFLactation")
 
@@ -98,6 +99,11 @@ function EngorgementClass:moodle(level)
 
     local moodle = MF.getMoodle("Engorgement")
     moodle:setValue(level)
+	moodle:setPicture(
+	moodle:getGoodBadNeutral(),
+		moodle:getLevel(),
+		getTexture("media/ui/Moodles/Engorgement.png")
+	);
 end
 
 --- Inflict Pain in Upper Torso based on fullness

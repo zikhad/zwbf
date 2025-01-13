@@ -1,4 +1,5 @@
 Moodles_EN {
+    /** ENGORGEMENT **/
     Moodles_Engorgement_Bad_lvl1 = "Slight",
     Moodles_Engorgement_Bad_desc_lvl1 = "Your Breasts feels warm",
     Moodles_Engorgement_Bad_lvl2 = "Firm Breasts",
@@ -7,4 +8,15 @@ Moodles_EN {
     Moodles_Engorgement_Bad_desc_lvl3 = "You can feel something sloshing inside",
     Moodles_Engorgement_Bad_lvl4 = "Full to bursting!",
     Moodles_Engorgement_Bad_desc_lvl4 = "So Full that it is painfull!",
+    
+    /** Pregnancy **/
+    Moodles_Pregnancy_Good_lvl1 = "2nd trimester",
+    Moodles_Pregnancy_Good_desc_lvl1 = "2nd trimester of Pregnancy.",
+	Moodles_Pregnancy_Good_lvl2 = "3rd trimester",
+    Moodles_Pregnancy_Good_desc_lvl2 = "3rd trimester of Pregnancy.",
+	Moodles_Pregnancy_Good_lvl3 = "Close to labor",
+    Moodles_Pregnancy_Good_desc_lvl3 = "You're close to labor!",
+	Moodles_Pregnancy_Good_lvl4 = "Very close to labor",
+    Moodles_Pregnancy_Good_desc_lvl4 = "You will give birth at any moment!<br>Find a secure place!",
+
 }
