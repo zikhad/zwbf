@@ -41,15 +41,13 @@ end
 --- Initializes pregnancy data and hooks event listeners as needed.
 function PregnancyClass:init()
     self.data = self.player:getModData().ZWBFPregnancy or {}
-    self.data.PregnancyDuration = self.data.PregnancyDuration or (SBVars.PregnancyDuration * 24) -- HOURS
+    self.data.PregnancyDuration = self.data.PregnancyDuration or (SBVars.PregnancyDuration * 24 * 60) -- MINUTES
     self.data.PregnancyCurrent = self.data.PregnancyCurrent or 0
     self.data.InLabor = self.data.InLabor or false
     self.data.LaborProgress = 0
 
     if self.player:HasTrait("Pregnancy") then
-        Events.EveryHours.Add(OnCheckLabor)
-        -- TODO: add logic to morning sickness here
-        -- TODO: add logic to consume extra calories and water here
+        Events.EveryOneMinute.Add(OnCheckLabor)
     end
 end
 
@@ -88,7 +86,7 @@ function PregnancyClass:onCheckLabor()
     self.data.PregnancyCurrent = self.data.PregnancyCurrent + 1
 
     if self:getProgress() >= 1 then
-        Events.EveryHours.Remove(OnCheckLabor)
+        Events.EveryOneMinute.Remove(OnCheckLabor)
         triggerEvent("ZWBFPregnancyLaborStart", self)
     else
         triggerEvent("ZWBFPregnancyProgress", self)
@@ -123,6 +121,12 @@ function PregnancyClass:onLaborUpdate()
     end
 end
 
+function PregnancyClass:onProgressUpate()
+    -- Update moodle
+    self:moodle()
+    -- TODO: consume extra calories and water
+end
+
 --- Handles the birth process, removes pregnancy trait, and gives the player a baby item.
 function PregnancyClass:onBirth()
     self.data.InLabor = false
@@ -138,11 +142,20 @@ function PregnancyClass:onBirth()
     self.player:getTraits():remove("Pregnancy")
 end
 
+--- Handler the Dawn event
+function PregnancyClass:onDawn()
+    -- Morning sickness
+    if not self:getIsPregnant() then return end
+    if self:getProgress() >= 0.05 and self:getProgress() <= 0.33 then
+        self.player:getBodyDamage():setFoodSicknessLevel(50 + ZombRand(50))
+    end
+end
+
 --- Starts the pregnancy process, adding the "Pregnancy" trait and initializing the system.
 function PregnancyClass:start()
     self.player:getTraits():add("Pregnancy")
     self:init()
-    Events.EveryHours.Add(OnCheckLabor)
+    Events.EveryOneMinute.Add(OnCheckLabor)
 end
 
 --- Stops the pregnancy process, resetting all related data.
@@ -152,7 +165,7 @@ function PregnancyClass:stop()
     self.data.InLabor = false
     self.data.LaborProgress = 0
     self:update()
-    Events.EveryHours.Remove(OnCheckLabor)
+    Events.EveryOneMinute.Remove(OnCheckLabor)
 end
 
 --- (DEBUG) Advances pregnancy progress by a specified number of hours.
@@ -210,12 +223,16 @@ Events.OnCreatePlayer.Add(function()
     Pregnancy:onCreatePlayer()
 end)
 
+Events.OnDawn.Add(function ()
+    Pregnancy:onDawn()
+end)
+
 -- Pregnancy Events
 LuaEventManager.AddEvent("ZWBFPregnancyProgress")
 Events.ZWBFPregnancyProgress.Add(function(pregnancy)
     print("Pregnancy Progress: " .. pregnancy:getProgress())
-    pregnancy:moodle()
-    -- TODO: Add pregnancy changes in body / player status here
+    pregnancy:onProgressUpate()
+    -- TODO: add logic to consume extra calories and water here
 end)
 
 LuaEventManager.AddEvent("ZWBFPregnancyLaborStart")
