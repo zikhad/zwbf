@@ -8,6 +8,9 @@ local ZombRand = ZombRand
 local ISTimedActionQueue = ISTimedActionQueue
 local getActivatedMods = getActivatedMods
 local getTexture = getTexture
+local Perks = Perks
+local zombRand = ZombRand
+local getText = getText
 
 -- Sandbox Variables
 local SBVars = SandboxVars.ZWBF
@@ -16,6 +19,7 @@ local SBVars = SandboxVars.ZWBF
 --- Class responsible for handling pregnancy mechanics in the game.
 PregnancyClass = {}
 PregnancyClass.__index = PregnancyClass
+PregnancyClass.SCREAM_CHANCE = 5
 
 -- TODO: Add pregnancy-related moodles
 
@@ -100,8 +104,23 @@ function PregnancyClass:onLaborStart()
 end
 
 function PregnancyClass:onLaborUpdate()
-    -- TODO: Add birth effects here
-    -- depending on char stats, check the chance to screen at random interval during the birth
+    local player = self.player
+    local stats = player:getStats()
+
+    -- Add pain to the labor
+    stats:setPain(math.min(100, stats:getPain() + 5));
+    
+    -- scream depending on parks and chance
+    local modifier = (
+        player:getPerkLevel(Perks.Strength) +
+        player:getPerkLevel(Perks.Fitness) +
+        player:getPerkLevel(Perks.Sneak)
+    ) * 3
+    local chanceToScream = self.SCREAM_CHANCE + math.floor(stats:getPain() / self.SCREAM_CHANCE)
+    local chance = math.floor(self.SCREAM_CHANCE * (1 - (modifier / 100)))
+    if (zombRand(100) <= chance) then
+        player:SayShout(getText('IGUI_ZWBF_UI_Scream'))
+    end
 end
 
 --- Handles the birth process, removes pregnancy trait, and gives the player a baby item.
