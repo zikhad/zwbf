@@ -19,11 +19,13 @@ function ZWBFActionBirth:update()
     -- print("ZWBFActionBirth:update()" .. tostring())
 	-- self.pregnancy:setJobDelta(self:getJobDelta())
     self.pregnancy:setLaborProgress(self:getJobDelta())
+	triggerEvent("ZWBFPregnancyLaborUpdate", self.pregnancy)
 end
 
 function ZWBFActionBirth:start()
 	-- self.pills:setJobType(getText("ContextMenu_Take_Contraceptive"))
 	-- self.pregnancy:setJobDelta(0.0)
+	-- TODO: Add custom animation here
 	self:setActionAnim(--[[ CharacterActionAnims.TakePills]] "Yonchi_breastpump")
     -- TODO: Add the custom animation
 	-- self:setOverrideHandModels(nil, self.pills)
