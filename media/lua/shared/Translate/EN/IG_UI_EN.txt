@@ -18,4 +18,5 @@ IGUI_EN = {
 	IGUI_ZWBF_UI_Milk_title			= "Milk",
 	IGUI_ZWBF_UI_Milk_Amount		= "Amount",
 	IGUI_ZWBF_UI_Baby_Vomits		= "The baby vomits on you",
+	IGUI_ZWBF_UI_Scream				= "*Scream*",
 }
