@@ -44,6 +44,8 @@ function PregnancyClass:init()
 
     if self.player:HasTrait("Pregnancy") then
         Events.EveryHours.Add(OnCheckLabor)
+        -- TODO: add logic to morning sickness here
+        -- TODO: add logic to consume extra calories and water here
     end
 end
 
@@ -83,7 +85,7 @@ function PregnancyClass:onCheckLabor()
 
     if self:getProgress() >= 1 then
         Events.EveryHours.Remove(OnCheckLabor)
-        triggerEvent("ZWBFPregnancyLabor", self)
+        triggerEvent("ZWBFPregnancyLaborStart", self)
     else
         triggerEvent("ZWBFPregnancyProgress", self)
     end
@@ -91,10 +93,15 @@ function PregnancyClass:onCheckLabor()
 end
 
 --- Handles the start of labor.
-function PregnancyClass:onLabor()
+function PregnancyClass:onLaborStart()
     self.data.InLabor = true
     self.data.PregnancyCurrent = 0
     ISTimedActionQueue.add(ZWBFActionBirth:new(self.player, self))
+end
+
+function PregnancyClass:onLaborUpdate()
+    -- TODO: Add birth effects here
+    -- depending on char stats, check the chance to screen at random interval during the birth
 end
 
 --- Handles the birth process, removes pregnancy trait, and gives the player a baby item.
@@ -190,12 +197,15 @@ Events.ZWBFPregnancyProgress.Add(function(pregnancy)
     print("Pregnancy Progress: " .. pregnancy:getProgress())
     pregnancy:moodle()
     -- TODO: Add pregnancy changes in body / player status here
-    
 end)
 
-LuaEventManager.AddEvent("ZWBFPregnancyLabor")
-Events.ZWBFPregnancyLabor.Add(function(pregnancy)
-    pregnancy:onLabor()
+LuaEventManager.AddEvent("ZWBFPregnancyLaborStart")
+Events.ZWBFPregnancyLaborStart.Add(function(pregnancy)
+    pregnancy:onLaborStart()
+end)
+LuaEventManager.AddEvent("ZWBFPregnancyLaborUpdate")
+Events.ZWBFPregnancyLaborUpdate.Add(function(pregnancy)
+    pregnancy:onLaborUpdate()
 end)
 
 LuaEventManager.AddEvent("ZWBFPregnancyBirth")
