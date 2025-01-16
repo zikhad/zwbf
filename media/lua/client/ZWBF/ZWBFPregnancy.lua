@@ -231,6 +231,8 @@ end)
 LuaEventManager.AddEvent("ZWBFPregnancyProgress")
 Events.ZWBFPregnancyProgress.Add(function(pregnancy)
     print("Pregnancy Progress: " .. pregnancy:getProgress())
+    print("Pregnancy Current: " .. pregnancy.data.PregnancyCurrent)
+    print("Pregnancy Duration: " .. pregnancy.data.PregnancyDuration)
     pregnancy:onProgressUpate()
     -- TODO: add logic to consume extra calories and water here
 end)
