@@ -54,12 +54,23 @@ end
 --- Updates pregnancy data in the player's mod data.
 function PregnancyClass:update()
     self.player:getModData().ZWBFPregnancy = self.data
+    self:moodle()
 end
 
 --- Called when a player is created, initializes the pregnancy system for that player.
 function PregnancyClass:onCreatePlayer()
     self.player = getPlayer()
-    self:init()
+    -- self:init()
+    self.data = self.player:getModData().ZWBFPregnancy or {}
+    self.data.PregnancyDuration = self.data.PregnancyDuration or (SBVars.PregnancyDuration * 24 * 60) -- MINUTES
+    self.data.PregnancyCurrent = self.data.PregnancyCurrent or 0
+    self.data.InLabor = self.data.InLabor or false
+    self.data.LaborProgress = 0
+
+    if self.player:HasTrait("Pregnancy") then
+        Events.EveryOneMinute.Add(OnCheckLabor)
+    end
+    self:update()
 end
 
 --- Checks if the player is pregnant.
@@ -97,7 +108,6 @@ end
 --- Handles the start of labor.
 function PregnancyClass:onLaborStart()
     self.data.InLabor = true
-    self.data.PregnancyCurrent = 0
     ISTimedActionQueue.add(ZWBFActionBirth:new(self.player, self))
 end
 
@@ -123,7 +133,7 @@ end
 
 function PregnancyClass:onProgressUpate()
     -- Update moodle
-    self:moodle()
+    -- self:moodle()
     -- TODO: consume extra calories and water
 end
 
@@ -140,6 +150,8 @@ function PregnancyClass:onBirth()
     local baby = babies[ZombRand(1, #babies)]
     self.player:getInventory():AddItem("Babies." .. baby)
     self.player:getTraits():remove("Pregnancy")
+    self.data.PregnancyCurrent = 0
+    self:moodle(nil)
 end
 
 --- Handler the Dawn event
@@ -154,7 +166,12 @@ end
 --- Starts the pregnancy process, adding the "Pregnancy" trait and initializing the system.
 function PregnancyClass:start()
     self.player:getTraits():add("Pregnancy")
-    self:init()
+    -- self:init()
+    self.data.PregnancyCurrent = 0
+    self.data.PregnancyDuration = (SBVars.PregnancyDuration * 24 * 60) -- MINUTES
+    self.data.InLabor = false
+    self.data.LaborProgress = 0
+    self:update()
     Events.EveryOneMinute.Add(OnCheckLabor)
 end
 
