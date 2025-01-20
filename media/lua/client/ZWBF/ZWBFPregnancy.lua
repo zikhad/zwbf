@@ -135,7 +135,7 @@ end
 
 --- Updates pregnancy progress.
 function PregnancyClass:onProgressUpdate()
-    self:moodle()
+    -- self:moodle()
     -- TODO: Consume extra calories and water here.
 end
 
@@ -145,6 +145,8 @@ function PregnancyClass:onBirth()
     local baby = BABY_LIST[ZombRand(1, #BABY_LIST)]
     self.player:getInventory():AddItem("Babies." .. baby)
     self.player:getTraits():remove("Pregnancy")
+    self.data.PregnancyCurrent = 0
+    self:moodle(nil)
 end
 
 --- Handles morning sickness during early pregnancy.
@@ -161,6 +163,11 @@ end
 function PregnancyClass:start()
     self.player:getTraits():add("Pregnancy")
     self:init()
+    self.data.PregnancyCurrent = 0
+    self.data.PregnancyDuration = (SBVars.PregnancyDuration * 24 * 60) -- MINUTES
+    self.data.InLabor = false
+    self.data.LaborProgress = 0
+    self:update()
     Events.EveryOneMinute.Add(OnCheckLabor)
 end
 
