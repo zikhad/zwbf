@@ -181,12 +181,12 @@ end
 
 --- Advances pregnancy progress by a specified number of hours (DEBUG).
 function PregnancyClass:advancePregnancy(hours)
-    self.data.PregnancyCurrent = self.data.PregnancyCurrent + hours
+    self.data.PregnancyCurrent = self.data.PregnancyCurrent + (hours * 60)
 end
 
 --- Advances pregnancy to just before labor (DEBUG).
 function PregnancyClass:advanceToLabor()
-    self.data.PregnancyCurrent = self.data.PregnancyDuration - 1
+    self.data.PregnancyCurrent = self.data.PregnancyDuration - 60
 end
 
 --- Sets labor progress.

@@ -106,13 +106,13 @@ end
 --- @param player any
 --- @param context any
 --- @param items any
-local function onCreateWombDebugContextMenu(player, context, items)
+local function onCreateDebugContextMenu(player, context, items)
 	-- this mod is only applicable for Female characters
 	local specificPlayer = getSpecificPlayer(player)
 	if not specificPlayer:isFemale() or specificPlayer:isAsleep() or specificPlayer:getVehicle() then return end
 
 	--- Create an option in the right-click menu
-	local option = context:addOption(getText("ContextMenu_H_Status"))
+	local option = context:addOption(getText("ContextMenu_ZWBF_Being_Female"))
 
 	-- Create a submenu for that
 	local submenu = ISContextMenu:getNew(context)
@@ -120,93 +120,80 @@ local function onCreateWombDebugContextMenu(player, context, items)
 
 	--- Debug options
 	Utils:addOption(
+		submenu,
+		getText("ContextMenu_Add_Sperm_Title"),
+		getText("ContextMenu_Add_Description"),
+		function() Womb:addSperm(100) end
+	)
+	Utils:addOption(
+		submenu,
+		getText("ContextMenu_Remove_Title"),
+		getText("ContextMenu_Remove_Description"),
+		function() Womb:setSpermAmount(0) end
+	)
+	Utils:addOption(
+		submenu,
+		getText("ContextMenu_Remove_Total_Title"),
+		getText("ContextMenu_Remove_Total_Description"),
+		function() Womb:clearAllSperm() end
+	)
+	Utils:addOption(
+		submenu,
+		getText("ContextMenu_Add_Cycle_Day_Title"),
+		getText("ContextMenu_Add_Cycle_Day_Description"),
+		function() Womb:addCycleDay() end
+	)
+	Utils:addOption(
+		submenu,
+		getText("ContextMenu_Add_Pregnancy_Title"),
+		getText("ContextMenu_Add_Pregnancy_Description"),
+		function() Womb:setPregnancy(true) end
+	)
+	if Pregnancy:getIsPregnant() then
+		Utils:addOption(
 			submenu,
-			getText("ContextMenu_Add_Sperm_Title"),
-			getText("ContextMenu_Add_Description"),
-			function() Womb:addSperm(100) end
+			getText("ContextMenu_Advance_Pregnancy_Title"),
+			getText("ContextMenu_Advance_Pregnancy_Description"),
+			function() Womb:advancePregnancy() end
 		)
 		Utils:addOption(
 			submenu,
-			getText("ContextMenu_Remove_Title"),
-			getText("ContextMenu_Remove_Description"),
-			function() Womb:setSpermAmount(0) end
+			getText("ContextMenu_Advance_Pregnancy_Labor_Title"),
+			getText("ContextMenu_Advance_Pregnancy_Labor_Description"),
+			function() Pregnancy:advanceToLabor() end
 		)
 		Utils:addOption(
 			submenu,
-			getText("ContextMenu_Remove_Total_Title"),
-			getText("ContextMenu_Remove_Total_Description"),
-			function() Womb:clearAllSperm() end
+			getText("ContextMenu_Remove_Pregnancy_Title"),
+			getText("ContextMenu_Remove_Pregnancy_Description"),
+			function() Womb:setPregnancy(false) end
+		)
+	end
+	Utils:addOption(
+		submenu,
+		getText("ContextMenu_Milk_Toggle_Lactation_Title"),
+		getText("ContextMenu_Milk_Toggle_Lactation_Description"),
+		function() Lactation:set(not Lactation:getIsLactating()) end
+	)
+	if Lactation:getIsLactating() then
+		Utils:addOption(
+			submenu,
+			getText("ContextMenu_Milk_Add_Milk_Title"),
+			getText("ContextMenu_Milk_Add_Milk_Description"),
+			function() Lactation:add(200) end
 		)
 		Utils:addOption(
 			submenu,
-			getText("ContextMenu_Add_Cycle_Day_Title"),
-			getText("ContextMenu_Add_Cycle_Day_Description"),
-			function() Womb:addCycleDay() end
+			getText("ContextMenu_Milk_Clear_Milk_Title"),
+			getText("ContextMenu_Milk_Clear_Milk_Description"),
+			function() Lactation:clear() end
 		)
-		Utils:addOption(
-			submenu,
-			getText("ContextMenu_Add_Pregnancy_Title"),
-			getText("ContextMenu_Add_Pregnancy_Description"),
-			function() Womb:setPregnancy(true) end
-		)
-		if Pregnancy:getIsPregnant() then
-			Utils:addOption(
-				submenu,
-				getText("ContextMenu_Advance_Pregnancy_Title"),
-				getText("ContextMenu_Advance_Pregnancy_Description"),
-				function() Womb:advancePregnancy() end
-			)
-			Utils:addOption(
-				submenu,
-				getText("ContextMenu_Advance_Pregnancy_Labor_Title"),
-				getText("ContextMenu_Advance_Pregnancy_Labor_Description"),
-				function() Pregnancy:advanceToLabor() end
-			)
-			Utils:addOption(
-				submenu,
-				getText("ContextMenu_Remove_Pregnancy_Title"),
-				getText("ContextMenu_Remove_Pregnancy_Description"),
-				function() Womb:setPregnancy(false) end
-			)
-		end
-end
-
---- Create Milk Context Menu Button
-local function onCreateMilkDebugContextMenu(player, context)
-    -- this mod is only applicable for Female characters
-    local specificPlayer = getSpecificPlayer(player)
-    if not specificPlayer:isFemale() or specificPlayer:isAsleep() or specificPlayer:getVehicle() then return end
-
-    local option = context:addOption(getText("ContextMenu_Milk"))
-    local submenu = ISContextMenu:getNew(context)
-    context:addSubMenu(option, submenu)
-    
-    Utils:addOption(
-            submenu,
-            getText("ContextMenu_Milk_Toggle_Lactation_Title"),
-            getText("ContextMenu_Milk_Toggle_Lactation_Description"),
-            function() Lactation:set(not Lactation:getIsLactating()) end
-        )
-        if Lactation:getIsLactating() then
-            Utils:addOption(
-                submenu,
-                getText("ContextMenu_Milk_Add_Milk_Title"),
-                getText("ContextMenu_Milk_Add_Milk_Description"),
-                function() Lactation:add(200) end
-            )
-            Utils:addOption(
-                submenu,
-                getText("ContextMenu_Milk_Clear_Milk_Title"),
-                getText("ContextMenu_Milk_Clear_Milk_Description"),
-                function() Lactation:clear() end
-            )
-        end
+	end
 end
 
 --- Hook up event listeners
 Events.OnCreateUI.Add(onCreateUI)
 Events.OnPostRender.Add(onUpdateUI)
 if isDebugEnabled() then
-	Events.OnFillWorldObjectContextMenu.Add(onCreateWombDebugContextMenu)
-	Events.OnFillWorldObjectContextMenu.Add(onCreateMilkDebugContextMenu)
+	Events.OnFillWorldObjectContextMenu.Add(onCreateDebugContextMenu)
 end
