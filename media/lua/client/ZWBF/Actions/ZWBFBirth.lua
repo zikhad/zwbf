@@ -21,7 +21,7 @@ function ZWBFActionBirth:update()
 end
 
 function ZWBFActionBirth:start()
-	self:setActionAnim(--[[ CharacterActionAnims.TakePills]] "Yonchi_breastpump")
+	self:setActionAnim(--[[ CharacterActionAnims.TakePills]] "Birthing")
 end
 
 function ZWBFActionBirth:stop()
