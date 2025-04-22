@@ -40,7 +40,7 @@ function ZWBFActionBirth:new(pregnancy)
     print("ZWBFActionBirth:new()")
 	local instance = setmetatable({}, self)
 	self.__index = self
-	instance.character = pregnancy.character
+	instance.character = pregnancy.player
     instance.pregnancy = pregnancy
 	instance.maxTime = 1000
 	instance.stopOnWalk = false
