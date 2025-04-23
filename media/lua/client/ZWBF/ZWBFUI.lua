@@ -9,7 +9,7 @@ local ISContextMenu = ISContextMenu
 
 local NewUI = NewUI
 
-local CharacterInfoTabManager = require("ZWBF/ZWBFCharacterInfoTabManager")
+local ZWBFCharacterInfoTabManagerClass = require("ZWBF/ZWBFCharacterInfoTabManager")
 
 -- VARIABLES
 local UI
@@ -18,12 +18,13 @@ local Womb = require("ZWBF/ZWBFWomb")
 local Pregnancy = require("ZWBF/ZWBFPregnancy")
 local Lactation = require("ZWBF/ZWBFLactation")
 
-local CharacterInfoTabManager = CharacterInfoTabManager:new()
+local CharacterInfoTabManager = ZWBFCharacterInfoTabManagerClass:new()
 
 --- Creates the UI for the Womb Handler
 local function onCreateUI()
 	UI = NewUI()
-	UI:setWidthPercent(0.10)
+	-- UI:setWidthPercent(0.15)
+	UI:setWidthPixel(200)
 	UI:setTitle(getText("IGUI_ZWBF_UI_Panel"))
 
 	--- Milk ---
@@ -34,17 +35,17 @@ local function onCreateUI()
 	-- image
 	UI:addImage("boobs-image", "media/ui/lactation/boobs/color-0/normal_empty.png")
     UI:nextLine()
-	
+
 	-- level
 	UI:addText("", string.format("%s:", getText("IGUI_ZWBF_UI_Milk_Amount")), _, "Center")
 	UI:addImage("milk-level-image", "media/ui/lactation/level/milk_level_0.png")
 	UI:nextLine()
-	
+
 	--- Womb ---
 	-- Title
 	UI:addText("", string.format("%s:", getText("IGUI_ZWBF_UI_Womb_title")), _, "Center")
 	UI:nextLine()
-	
+
 	-- Image
 	UI:addImage("womb-image", "media/ui/womb/normal/womb_normal_0.png")
 	UI:nextLine()
@@ -66,15 +67,14 @@ local function onCreateUI()
 	-- Phase
 	UI:addText("", string.format("%s:", getText("IGUI_ZWBF_UI_Phase")), _, "Center")
 	UI:addText("womb-cycle-info", "", _, "Center")
-	UI:nextLine()
 
 	if not getPlayer():HasTrait("Infertile") then
+		UI:nextLine()
 		-- Conception Chance
 		UI:addText("womb-pregnancy-chance", string.format("%s:", getText("IGUI_ZWBF_UI_Fertility")), _, "Center")
 		UI:addProgressBar("womb-pregnancy-bar", 0, 0, 1)
 		UI:addText("womb-pregnancy-info", "", _, "Center")
-		UI:nextLine()
-	end	
+	end
 
 	UI:saveLayout()
 	UI:setBorderToAllElements(true)
