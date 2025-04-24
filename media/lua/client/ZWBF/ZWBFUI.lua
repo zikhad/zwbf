@@ -120,7 +120,7 @@ function ZWBFUI:onCreateUI()
 	self.UI:addImage("lactation-level-image", "media/ui/lactation/level/milk_level_0.png")
 
 	-- The height of the lactation UI needs to take in consideration the title bar height
-	self.heights.lactation = self.UI.yAct + self.UI:titleBarHeight()
+	self.heights.lactation = self.UI.yAct + (self.UI:titleBarHeight() * 2)
 
 	self.UI:setBorderToAllElements(true)
 	self.UI:saveLayout()
@@ -133,7 +133,7 @@ function ZWBFUI:onUpdateUI()
 	if not self.UI.isUIVisible then return end
 
 	-- Milk --
-	if self.activePanels == "lactation" then
+	if self.activePanels.lactation then
 		self.UI["lactation-image"]:setPath(self.Lactation:getBoobImage())
 		self.UI["lactation-level-image"]:setPath(self.Lactation:getMilkLevelImage())
 	end
