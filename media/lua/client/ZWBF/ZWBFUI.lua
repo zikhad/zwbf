@@ -4,21 +4,25 @@ ZWBFUI.__index = ZWBFUI
 --- Constructor
 function ZWBFUI:new()
 	local self = setmetatable({}, ZWBFUI)
-	self.UI = nil
-
-	--[[ self.WombUI = nil
-	self.LactationUI = nil ]]
 
 	self.CharacterInfoTabManager = require("ZWBF/ZWBFCharacterInfoTabManager"):new()
 	self.Utils = require("ZWBF/ZWBFUtils")
 	self.Womb = require("ZWBF/ZWBFWomb")
 	self.Pregnancy = require("ZWBF/ZWBFPregnancy")
 	self.Lactation = require("ZWBF/ZWBFLactation")
-	self.selectedPanel = nil
+
+	self.UI = nil
+	self.activePanels = {
+		lactation = true,
+		womb = true
+	}
+	self.heights = {
+		lactation = 0,
+		womb = 0
+	}
 
 	self.UIElements = {
 		lactation = {
-			title = "lactation-title",
 			image = "lactation-image",
 			levelTitle = "lactation-level-title",
 			levelImage = "lactation-level-image"
@@ -43,23 +47,27 @@ end
 
 
 function ZWBFUI:togglePanel(selected)
-	if self.selectedPanel == selected then
-		self.selectedPanel = nil
-	else
-		self.selectedPanel = selected
+
+	if selected == "lactation" then
+		self.activePanels.lactation = not self.activePanels.lactation
 	end
+	if selected == "womb" then
+		self.activePanels.womb = not self.activePanels.womb
+	end
+
+	-- Update UI visibility
 	for key, value in pairs(self.UIElements) do
 		for _, element in pairs(value) do
-			if self.selectedPanel == nil then
-				self.UI[element]:setVisible(false)
-			else
-				self.UI[element]:setVisible(key == self.selectedPanel)
-			end
+			self.UI[element]:setVisible(self.activePanels[key])
 		end
 	end
-	--[[ if self.UI then
-		self.UI:saveLayout()
-	end ]]
+
+	-- Update UI height (only lactation can be toggled)
+	if self.activePanels.lactation then
+		self.UI:setHeight(self.heights.lactation)
+	else
+		self.UI:setHeight(self.heights.womb)
+	end
 end
 
 --- Creates the UI for the Womb Handler
@@ -67,32 +75,6 @@ function ZWBFUI:onCreateUI()
 	self.UI = NewUI()
 	self.UI:setWidthPixel(200)
 	self.UI:setTitle(getText("IGUI_ZWBF_UI_Panel"))
-
-	--- controls ---
-	self.UI:addImageButton(
-			"testing",
-			"media/ui/Moodles/Pregnancy.png",
-			function()
-				self:togglePanel("womb")
-			end
-	)
-	self.UI:addImageButton(
-			"testing2",
-			"media/ui/Moodles/Engorgement.png",
-			function()
-				self:togglePanel("lactation")
-			end
-	)
-	self.UI:nextLine()
-
-	--- Milk ---
-	self.UI:addText("lactation-title", string.format("%s:", getText("IGUI_ZWBF_UI_Milk_title")), _, "Center")
-	self.UI:nextLine()
-	self.UI:addImage("lactation-image", "media/ui/lactation/boobs/color-0/normal_empty.png")
-	self.UI:nextLine()
-	self.UI:addText("lactation-level-title", string.format("%s:", getText("IGUI_ZWBF_UI_Milk_Amount")), _, "Center")
-	self.UI:addImage("lactation-level-image", "media/ui/lactation/level/milk_level_0.png")
-	self.UI:nextLine()
 
 	--- Womb ---
 	self.UI:addText("womb-title", string.format("%s:", getText("IGUI_ZWBF_UI_Womb_title")), _, "Center")
@@ -109,17 +91,40 @@ function ZWBFUI:onCreateUI()
 	self.UI:nextLine()
 	self.UI:addText("womb-cycle-info-title", string.format("%s:", getText("IGUI_ZWBF_UI_Phase")), _, "Center")
 	self.UI:addText("womb-cycle-info", "", _, "Center")
+	self.UI:nextLine()
 
 	if not getPlayer():HasTrait("Infertile") then
-		self.UI:nextLine()
 		self.UI:addText("womb-pregnancy-chance", string.format("%s:", getText("IGUI_ZWBF_UI_Fertility")), _, "Center")
 		self.UI:addProgressBar("womb-pregnancy-bar", 0, 0, 1)
 		self.UI:addText("womb-pregnancy-info", "", _, "Center")
+		self.UI:nextLine()
 	end
 
-	-- self.UI:setCollapse(true)
-	self.UI:saveLayout()
+	-- The height of the womb UI needs to take in consideration the title bar height
+	self.heights.womb = self.UI.yAct + self.UI:titleBarHeight()
+
+	--- Milk ---
+	--- controls
+	self.UI:addText("", getText("IGUI_ZWBF_UI_Milk_title"), _, "Center")
+	self.UI:addButton("", getText("IGUI_ZWBF_UI_Milk_toggle"),
+			function()
+				self:togglePanel("lactation")
+			end
+	)
+	self.UI:nextLine()
+
+	-- Lactation UI
+	self.UI:addImage("lactation-image", "media/ui/lactation/boobs/color-0/normal_empty.png")
+	self.UI:nextLine()
+	self.UI:addText("lactation-level-title", string.format("%s:", getText("IGUI_ZWBF_UI_Milk_Amount")), _, "Center")
+	self.UI:addImage("lactation-level-image", "media/ui/lactation/level/milk_level_0.png")
+
+	-- The height of the lactation UI needs to take in consideration the title bar height
+	self.heights.lactation = self.UI.yAct + self.UI:titleBarHeight()
+
 	self.UI:setBorderToAllElements(true)
+	self.UI:saveLayout()
+
 	self.CharacterInfoTabManager:addTab("HPanel", self.UI)
 end
 
@@ -128,7 +133,7 @@ function ZWBFUI:onUpdateUI()
 	if not self.UI.isUIVisible then return end
 
 	-- Milk --
-	if self.selectedPanel == "lactation" then
+	if self.activePanels == "lactation" then
 		self.UI["lactation-image"]:setPath(self.Lactation:getBoobImage())
 		self.UI["lactation-level-image"]:setPath(self.Lactation:getMilkLevelImage())
 	end
