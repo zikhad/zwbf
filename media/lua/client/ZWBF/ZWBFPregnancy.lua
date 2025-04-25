@@ -92,6 +92,36 @@ function PregnancyClass:getInLabor()
     return self.data.InLabor
 end
 
+--- Make player consume extra calories during pregnancy.
+function PregnancyClass:consumeExtraCalories()
+    local player = self.player
+    local calories = (600 * self:getProgress()) / 1440
+
+    player:getNutrition():setCalories(math.max(-2200, player:getNutrition():getCalories() - calories))
+end
+
+--- Make player consume extra water during pregnancy.
+function PregnancyClass:consumeExtraWater()
+    local player = self.player
+    local water = (0.5 * self:getProgress()) / 1440
+
+    player:getStats():setThirst(math.min(1, player:getStats():getThirst() + water))
+end
+
+function PregnancyClass:setBodyWeightChanges()
+    local player = self.player
+    local progress = self:getProgress()
+    local maxWeightBase = 8 * (1 - (progress / 2));
+    player:setMaxWeightBase(maxWeightBase)
+end
+
+--- Resets body weight changes to default.
+function PregnancyClass:resetBodyWeightChanges()
+    local player = self.player
+    player:setMaxWeightBase(8)
+end
+
+--- Events Handlers ---
 --- Handles periodic labor checks.
 function PregnancyClass:onCheckLabor()
     if not self.data then return end
@@ -136,8 +166,17 @@ end
 
 --- Updates pregnancy progress.
 function PregnancyClass:onProgressUpdate()
+    local progress = self:getProgress()
+
+    --[[
+        if progress >= 0.25 then
+            self:consumeExtraCalories()
+            self:consumeExtraWater()
+            self:setBodyWeightChanges()
+        end
+    ]]
+
     self:moodle()
-    -- TODO: Consume extra calories and water here.
 end
 
 --- Handles the birth process.
@@ -148,6 +187,7 @@ function PregnancyClass:onBirth()
     self.player:getTraits():remove("Pregnancy")
     self.data.PregnancyCurrent = 0
     self.player:setBlockMovement(false)
+    self:resetBodyWeightChanges()
     self:moodle(nil)
 end
 
