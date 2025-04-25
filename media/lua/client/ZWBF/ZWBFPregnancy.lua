@@ -188,7 +188,7 @@ end
 
 --- Advances pregnancy to just before labor (DEBUG).
 function PregnancyClass:advanceToLabor()
-    self.data.PregnancyCurrent = self.data.PregnancyDuration - 60
+    self.data.PregnancyCurrent = self.data.PregnancyDuration - 1
 end
 
 --- Sets labor progress.

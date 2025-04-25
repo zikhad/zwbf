@@ -10,7 +10,7 @@ local triggerEvent = triggerEvent
 
 --- This file creates the Timed Action for when Birth occurs
 ZWBFActionBirth = ISBaseTimedAction:derive("ZWBFActionBirth")
-    
+
 function ZWBFActionBirth:isValid()
 	return true
 end
@@ -42,7 +42,7 @@ function ZWBFActionBirth:new(pregnancy)
 	self.__index = self
 	instance.character = pregnancy.player
     instance.pregnancy = pregnancy
-	instance.maxTime = 1000
+	instance.maxTime = 5500
 	instance.stopOnWalk = false
 	instance.stopOnRun = false
 	return instance
