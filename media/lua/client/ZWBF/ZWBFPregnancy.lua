@@ -10,6 +10,7 @@ local getActivatedMods = getActivatedMods
 local getTexture = getTexture
 local Perks = Perks
 local getText = getText
+local BodyPartType = BodyPartType
 
 -- Sandbox Variables
 local SBVars = SandboxVars.ZWBF
@@ -169,9 +170,7 @@ end
 function PregnancyClass:onLaborUpdate()
     local player = self.player
     local stats = player:getStats()
-
-    stats:setPain(math.min(100, stats:getPain() + 5))
-
+    local Groin = player:getBodyDamage():getBodyPart(BodyPartType.Groin)
     local modifier = (
         player:getPerkLevel(Perks.Strength) +
         player:getPerkLevel(Perks.Fitness) +
@@ -183,6 +182,10 @@ function PregnancyClass:onLaborUpdate()
     if ZombRand(100) <= chance then
         player:SayShout(getText("IGUI_ZWBF_UI_Scream"))
     end
+
+    -- Apply additional Pain
+    Groin:setAdditionalPain(math.min(100, Groin:getAdditionalPain() + 5))
+
     triggerEvent("ZWBFPregnancyLaborUpdate", self)
 end
 
