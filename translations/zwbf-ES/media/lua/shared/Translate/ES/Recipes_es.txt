@@ -1,0 +1,12 @@
+Recipes_es = {
+	Recipe_Hand_Expression_in_Bottle = "Llene la botella de leche (expresión de la mano)", /* generated */
+	Recipe_Hand_Expression_in_Biberon = "Llenar la biblia (expresión manual)", /* generated */
+	Recipe_Fill_Biberon = "Llenar la biblioteca (extractor de leche)", /* generated */
+	Recipe_Fill_Milk_Bottle = "Llene la botella de leche (Bombado)", /* generated */
+    
+	Recipe_Fill_Vaginal_Douche = "Llenar ducha vaginal", /* generated */
+	Recipe_Clear_Sperm = "Esperma clara", /* generated */
+    
+	Recipe_Open_Condom_Box = "Caja de condón abierta", /* generated */
+	Recipe_Place_Condoms_in_Box = "Coloque los condones en la caja", /* generated */
+}

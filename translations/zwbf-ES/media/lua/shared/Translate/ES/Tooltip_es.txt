@@ -1,0 +1,9 @@
+Tooltip_EN {
+	Tooltip_Contraceptive = "Previene el embarazo", /* generated */
+	Tooltip_Lactaid = "Ayuda con la lactancia", /* generated */
+	Tooltip_BreastPump = "Útil para extraer leche", /* generated */
+	Tooltip_MilkBottle = "Una botella llena de leche de madre", /* generated */
+	Tooltip_MilkBottle_rotten = "Una botella llena de leche de madre (podrida)", /* generated */
+	Tooltip_VaginalDouche_full = "Útil para despejar esperma", /* generated */
+	Tooltip_VaginalDouche_empty = "Se puede usar para despejar los espermatozoides cuando está lleno de agua", /* generated */
+}
