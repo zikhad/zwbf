@@ -5,7 +5,7 @@ UI_EN = {
 
     /* Traits */
     UI_Trait_Fertile = "Fertile",
-    UI_Trait_Fertile_Description = "You are specialy fertile <br>- Higher chance of getting pregnant",
+    UI_Trait_Fertile_Description = "You are very fertile <br>- Higher chance of getting pregnant <br>- +50% fertility",
 
     UI_Trait_Infertile = "Infertile",
     UI_Trait_Infertile_Description = "You are infertile<br>You Can't get pregnant",
