@@ -174,12 +174,13 @@ function PregnancyClass:onLaborUpdate()
     end
 
     -- set pain
-    groin:setAdditionalPain(math.min(100, groin:getAdditionalPain() + 5))
+    if (groin:getAdditionalPain() < 75) then
+        groin:setAdditionalPain(math.min(100, groin:getAdditionalPain() + 5))
+    end
 
     -- set Fatigue
-    local fatigue = stats:getFatigue()
-    if fatigue < 1 then
-        stats:setFatigue(math.min(1, fatigue + 0.001))
+    if (self:getLaborProgress() > stats:getFatigue()) then
+        stats:setFatigue(self:getLaborProgress())
     end
 
     triggerEvent("ZWBFPregnancyLaborUpdate", self)
