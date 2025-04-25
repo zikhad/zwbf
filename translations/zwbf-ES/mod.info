@@ -1,0 +1,8 @@
+name=ZomboWin Being Female - ES
+poster=poster.png
+id=ZWBF-ES
+description=Zombowin es mujer por Zikhad.
+description=Este mod presenta más juegos de roles femeninos para Project Zomboid.
+description=Ciclo menstrual, embarazo, lactancia y más
+url=https://github.com/zikhad/zwbf
+require=ZWBF

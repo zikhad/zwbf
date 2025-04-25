@@ -1,0 +1,22 @@
+Moodles_EN {
+    /** ENGORGEMENT **/
+	Moodles_Engorgement_Bad_lvl1 = "Leve", /* generated */
+	Moodles_Engorgement_Bad_desc_lvl1 = "Tus senos se sienten calientes", /* generated */
+	Moodles_Engorgement_Bad_lvl2 = "Senos firmes", /* generated */
+	Moodles_Engorgement_Bad_desc_lvl2 = "Tus senos se sienten cálidos y más firmes", /* generated */
+	Moodles_Engorgement_Bad_lvl3 = "Pechos muy firmes", /* generated */
+	Moodles_Engorgement_Bad_desc_lvl3 = "Puedes sentir algo chorreado por dentro", /* generated */
+	Moodles_Engorgement_Bad_lvl4 = "¡Lleno de estallido!", /* generated */
+	Moodles_Engorgement_Bad_desc_lvl4 = "¡Tan lleno que es doloroso!", /* generated */
+    
+    /** Pregnancy **/
+	Moodles_Pregnancy_Good_lvl1 = "Segunda etapa", /* generated */
+	Moodles_Pregnancy_Good_desc_lvl1 = "2da etapa del embarazo.", /* generated */
+	Moodles_Pregnancy_Good_lvl2 = "3ra etapa", /* generated */
+	Moodles_Pregnancy_Good_desc_lvl2 = "Tercera etapa del embarazo.", /* generated */
+	Moodles_Pregnancy_Good_lvl3 = "Cerca del trabajo", /* generated */
+	Moodles_Pregnancy_Good_desc_lvl3 = "¡Estás cerca del trabajo!", /* generated */
+	Moodles_Pregnancy_Good_lvl4 = "Muy cerca del trabajo", /* generated */
+	Moodles_Pregnancy_Good_desc_lvl4 = "¡Darás a luz en cualquier momento! <br> ¡Encuentra un lugar seguro!", /* generated */
+
+}

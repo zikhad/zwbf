@@ -1,0 +1,21 @@
+Sandbox_fr = {
+	Sandbox_ZWBF = "(ZWBF) Being Female",
+    
+	Sandbox_ZWBF_Pregnancy_Duration = "Durée de la grossesse", /* generated */
+	Sandbox_ZWBF_Pregnancy_Duration_tooltip = "Combien de jours la grossesse durera", /* generated */
+    
+	Sandbox_ZWBF_Pregnancy_Recovery = "Temps de Récupération après Grossesse",
+	Sandbox_ZWBF_Pregnancy_Recovery_tooltip = "Combien de jours avant la reprise du cycle menstruel ?",
+    
+	Sandbox_ZWBF_Womb_Max_Capacity = "Capacité de l'Utérus (ml)",
+	Sandbox_ZWBF_Womb_Max_Capacity_tooltip = "La quantité maximale de sperme que l'utérus peut contenir",
+
+	Sandbox_ZWBF__Milk_Capacity = "Capacité de Lait",
+	Sandbox_ZWBF__Milk_Capacity_tooltip = "La quantité maximale de lait que les seins peuvent contenir en ml",
+    
+	Sandbox_ZWBF__Milk_Expiration = "Expiration du Lait",
+	Sandbox_ZWBF__Milk_Expiration_tooltip = "Le nombre de jours avant que le lait ne périme s'il n'est pas utilisé",
+
+	Sandbox_ZWBF_Fertility_Bonus = "Bonus de Fertilité",
+	Sandbox_ZWBF_Fertility_Bonus_tooltip = "Le montant du bonus de fertilité que donne le trait Fertile",
+}

@@ -1,0 +1,22 @@
+UI_fr = {
+    /* UI Panel */
+	UI_HPanel = "Être une femme", /* generated */
+	UI_HPanel_Info = "Informations sur les caractéristiques féminines", /* generated */
+
+    /* Traits */
+	UI_Trait_Fertile = "Fertile",
+	UI_Trait_Fertile_Description = "Vous êtes très fertile <br> - Chance plus élevée de tomber enceinte <br> - + 50% de fertilité", /* generated */
+
+	UI_Trait_Infertile = "Infertile",
+	UI_Trait_Infertile_Description = "Vous êtes infertile<br>Vous ne pouvez pas tomber enceinte",
+
+	UI_Trait_Hyperfertile = "Hyperfertile",
+	UI_Trait_Hyperfertile_Description = "Vous êtes HYPER fertile <br>- +100% de fertilité, réduit de moitié le temps avant d'être prête à tomber enceinte à nouveau après un accouchement",
+
+	UI_Trait_Pregnancy = "Enceinte", /* generated */
+	UI_Trait_Pregnancy_Description = "Tu es enceinte", /* generated */
+
+	UI_Trait_DairyCow = "Vache laitière",
+	UI_Trait_DairyCow_Description = "Augmente le taux de production de lait (+25%) et la durée de lactation (+25%)",
+
+}

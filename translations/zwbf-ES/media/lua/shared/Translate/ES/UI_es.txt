@@ -1,0 +1,22 @@
+UI_es = {
+    /* UI Panel */
+	UI_HPanel = "Ser mujer", /* generated */
+	UI_HPanel_Info = "Información sobre las características femeninas", /* generated */
+
+    /* Traits */
+	UI_Trait_Fertile = "Fértil", /* generated */
+	UI_Trait_Fertile_Description = "Eres muy fértil <br>- Mayores posibilidades de quedar embarazada <br>- +50% de fertilidad", /* generated */
+
+	UI_Trait_Infertile = "Estéril", /* generated */
+	UI_Trait_Infertile_Description = "Eres infértil <br> no puedes quedar embarazada", /* generated */
+
+	UI_Trait_Hyperfertile = "Hiperfertil", /* generated */
+	UI_Trait_Hyperfertile_Description = "Eres hiper fértil <br>- +100% de fertilidad, a la mitad de la hora antes de estar listo para quedar embarazada nuevamente después del nacimiento", /* generated */
+
+	UI_Trait_Pregnancy = "Embarazada", /* generated */
+	UI_Trait_Pregnancy_Description = "Estás embarazada", /* generated */
+
+	UI_Trait_DairyCow = "Vaca lechera", /* generated */
+	UI_Trait_DairyCow_Description = "Aumenta la tasa de producción de leche (+25%) y el tiempo de lactancia (+25%)", /* generated */
+
+}

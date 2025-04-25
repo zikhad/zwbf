@@ -1,0 +1,14 @@
+Items_EN {
+	DisplayNameContraceptive = "Anticonceptivo", /* generated */
+    
+	DisplayNameMilkBottle = "Botella de leche", /* generated */
+	DisplayNameMilkBottle_rotten = "Botella de leche (podrida)", /* generated */
+    
+	DisplayNameVaginalDouche_Empty = "Douche vaginal (vacío)", /* generated */
+	DisplayNameVaginalDouche_Full = "Douche vaginal (completo)", /* generated */
+    
+	DisplayNameCondom = "Condón", /* generated */
+	DisplayNameCondomUsed = "Condón usado", /* generated */
+	CustomContextMenuCondomUsed = "Beber", /* generated */
+	DisplayNameCondomBox = "Caja de condón", /* generated */
+}
