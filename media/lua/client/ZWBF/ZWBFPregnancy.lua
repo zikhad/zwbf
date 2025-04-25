@@ -31,7 +31,6 @@ PregnancyClass.__index = PregnancyClass
 --- Constructor
 --- @param name string | nil Name of the pregnancy system instance (default: "Pregnancy").
 function PregnancyClass:new(name)
-    print("Entering Pregnancy:new()")
     local instance = setmetatable({}, PregnancyClass)
     instance.name = name or "Pregnancy"
     instance.isMF = false
@@ -41,7 +40,6 @@ function PregnancyClass:new(name)
         instance.isMF = true
         MF.createMoodle("Pregnancy")
     end
-    print("Leaving Pregnancy:new()")
     return instance
 end
 
@@ -55,14 +53,12 @@ end
 
 --- Initializes pregnancy data.
 function PregnancyClass:init()
-    print("entering Pregnancy:init()")
     self.player = self.player or getPlayer()
     self.data = self.player:getModData().ZWBFPregnancy or {}
     self.data.PregnancyDuration = self.data.PregnancyDuration or (SBVars.PregnancyDuration * 24 * 60)
     self.data.PregnancyCurrent = self.data.PregnancyCurrent or 0
     self.data.InLabor = self.data.InLabor or false
     self.data.LaborProgress = 0
-    print("leaving Pregnancy:init()")
 end
 
 --- Updates pregnancy data in the player's mod data.
@@ -72,9 +68,7 @@ end
 
 --- Initializes the pregnancy system for the player.
 function PregnancyClass:onCreatePlayer()
-    print("entering Pregnancy:onCreatePlayer()")
     self:init()
-    print("leaving Pregnancy:onCreatePlayer()")
 end
 
 --- Checks if the player is pregnant.
