@@ -110,6 +110,7 @@ end
 function PregnancyClass:onLaborStart()
     self.data.InLabor = true
     self.data.PregnancyCurrent = 0
+    self.player:setBlockMovement(true)
     ISTimedActionQueue.add(ZWBFActionBirth:new(self))
 end
 
@@ -135,7 +136,7 @@ end
 
 --- Updates pregnancy progress.
 function PregnancyClass:onProgressUpdate()
-    -- self:moodle()
+    self:moodle()
     -- TODO: Consume extra calories and water here.
 end
 
@@ -146,6 +147,7 @@ function PregnancyClass:onBirth()
     self.player:getInventory():AddItem("Babies." .. baby)
     self.player:getTraits():remove("Pregnancy")
     self.data.PregnancyCurrent = 0
+    self.player:setBlockMovement(false)
     self:moodle(nil)
 end
 
