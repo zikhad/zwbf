@@ -52,7 +52,7 @@ function ZWBFCharacterInfoTabManagerClass:overrideISCharacterInfoWindowMethods()
 
             self[viewName] = ui
             self[viewName]:setPositionPixel(0, 0)
-            self[viewName].infoText = getText("UI_" .. tabName .. "Panel")
+            self[viewName].infoText = getText("UI_" .. tabName .. "_Info")
             self[viewName].closeButton:setVisible(false)
 
             -- Prevent the tab content from being dragged

@@ -1,5 +1,5 @@
 ContextMenu_EN = {
-	ContextMenu_H_Status									= "[ZWBF] Womb (DEBUG)",
+	ContextMenu_ZWBF_Being_Female							= "[ZWBF] Being Female (DEBUG)",
 	ContextMenu_Check_Status_Description					= "Check your private status",
 	ContextMenu_Add_Sperm_Title								= "Add Sperm",
 	ContextMenu_Add_Description								= "Add 100ml",

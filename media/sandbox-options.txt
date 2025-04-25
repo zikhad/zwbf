@@ -1,4 +1,13 @@
 VERSION = 1,
+option ZWBF.PregnancyDuration {
+    type            = integer,
+    min             = 2,
+    max             = 270,
+    default         = 14,
+    page            = ZWBF,
+    translation     = ZWBF_Pregnancy_Duration,
+}
+
 option ZWBF.PregnancyRecovery {
     type            = integer,
     min             = 0,

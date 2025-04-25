@@ -74,3 +74,4 @@ table.insert(
 		end
 	end
 )
+-- TODO: add the ActionEvents.Update to better handle the animation
