@@ -30,6 +30,7 @@ PregnancyClass.__index = PregnancyClass
 --- Constructor
 --- @param name string | nil Name of the pregnancy system instance (default: "Pregnancy").
 function PregnancyClass:new(name)
+    print("Entering Pregnancy:new()")
     local instance = setmetatable({}, PregnancyClass)
     instance.name = name or "Pregnancy"
     instance.isMF = false
@@ -39,6 +40,7 @@ function PregnancyClass:new(name)
         instance.isMF = true
         MF.createMoodle("Pregnancy")
     end
+    print("Leaving Pregnancy:new()")
     return instance
 end
 
@@ -52,15 +54,14 @@ end
 
 --- Initializes pregnancy data.
 function PregnancyClass:init()
+    print("entering Pregnancy:init()")
+    self.player = self.player or getPlayer()
     self.data = self.player:getModData().ZWBFPregnancy or {}
     self.data.PregnancyDuration = self.data.PregnancyDuration or (SBVars.PregnancyDuration * 24 * 60)
     self.data.PregnancyCurrent = self.data.PregnancyCurrent or 0
     self.data.InLabor = self.data.InLabor or false
     self.data.LaborProgress = 0
-
-    if self.player:HasTrait("Pregnancy") then
-        Events.EveryOneMinute.Add(OnCheckLabor)
-    end
+    print("leaving Pregnancy:init()")
 end
 
 --- Updates pregnancy data in the player's mod data.
@@ -70,8 +71,9 @@ end
 
 --- Initializes the pregnancy system for the player.
 function PregnancyClass:onCreatePlayer()
-    self.player = getPlayer()
+    print("entering Pregnancy:onCreatePlayer()")
     self:init()
+    print("leaving Pregnancy:onCreatePlayer()")
 end
 
 --- Checks if the player is pregnant.
@@ -91,6 +93,23 @@ end
 function PregnancyClass:getInLabor()
     return self.data.InLabor
 end
+
+--- Handles MoodleFramework updates.
+--- @param level number | nil Progress level.
+function PregnancyClass:moodle(level)
+    if not self.isMF then return end
+    level = level or self:getProgress()
+
+    local moodle = MF.getMoodle("Pregnancy")
+    moodle:setThresholds(nil, nil, nil, nil, 0.3, 0.6, 0.9, 0.98)
+    moodle:setPicture(
+            moodle:getGoodBadNeutral(),
+            moodle:getLevel(),
+            getTexture("media/ui/Moodles/Pregnancy.png")
+    )
+    moodle:setValue(level)
+end
+
 
 --- Make player consume extra calories during pregnancy.
 function PregnancyClass:consumeExtraCalories()
@@ -122,16 +141,17 @@ function PregnancyClass:resetBodyWeightChanges()
 end
 
 --- Events Handlers ---
+
+--- Labor
+
 --- Handles periodic labor checks.
 function PregnancyClass:onCheckLabor()
-    if not self.data then return end
-    self.data.PregnancyCurrent = self.data.PregnancyCurrent + 1
+    if not self:getIsPregnant() then return end
 
     if self:getProgress() >= 1 then
-        Events.EveryOneMinute.Remove(OnCheckLabor)
-        triggerEvent("ZWBFPregnancyLaborStart", self)
+        self:onLaborStart()
     else
-        triggerEvent("ZWBFPregnancyProgress", self)
+        self.data.PregnancyCurrent = self.data.PregnancyCurrent + 1
     end
     self:update()
 end
@@ -142,6 +162,7 @@ function PregnancyClass:onLaborStart()
     self.data.PregnancyCurrent = 0
     self.player:setBlockMovement(true)
     ISTimedActionQueue.add(ZWBFActionBirth:new(self))
+    triggerEvent("ZWBFPregnancyLaborStart", self)
 end
 
 --- Updates labor progress and handles pain/screaming mechanics.
@@ -162,33 +183,30 @@ function PregnancyClass:onLaborUpdate()
     if ZombRand(100) <= chance then
         player:SayShout(getText("IGUI_ZWBF_UI_Scream"))
     end
+    triggerEvent("ZWBFPregnancyLaborUpdate", self)
 end
 
---- Updates pregnancy progress.
-function PregnancyClass:onProgressUpdate()
-    local progress = self:getProgress()
+--- Pregnancy progress update events ---
 
-    --[[
-        if progress >= 0.25 then
-            self:consumeExtraCalories()
-            self:consumeExtraWater()
-            self:setBodyWeightChanges()
-        end
-    ]]
+--- Events that should occur every minute.
+function PregnancyClass:onProgressUpdateOneMinute()
+    if not self:getIsPregnant() then return end
 
     self:moodle()
+    triggerEvent("ZWBFPregnancyProgressOneMinute", self)
 end
 
---- Handles the birth process.
-function PregnancyClass:onBirth()
-    self:resetVariables()
-    local baby = BABY_LIST[ZombRand(1, #BABY_LIST)]
-    self.player:getInventory():AddItem("Babies." .. baby)
-    self.player:getTraits():remove("Pregnancy")
-    self.data.PregnancyCurrent = 0
-    self.player:setBlockMovement(false)
-    self:resetBodyWeightChanges()
-    self:moodle(nil)
+--- Events that should occur every hour.
+function PregnancyClass:onProgressUpdateOneHour()
+    if not self:getIsPregnant() then return end
+
+    local progress = self:getProgress()
+    if progress >= 0.25 then
+        self:consumeExtraCalories()
+        self:consumeExtraWater()
+        self:setBodyWeightChanges()
+    end
+    triggerEvent("ZWBFPregnancyProgressOneHour", self)
 end
 
 --- Handles morning sickness during early pregnancy.
@@ -201,6 +219,17 @@ function PregnancyClass:onDawn()
     end
 end
 
+--- Handles the birth process.
+function PregnancyClass:onBirth()
+    local baby = BABY_LIST[ZombRand(1, #BABY_LIST)]
+    self.player:getInventory():AddItem("Babies." .. baby)
+    self.player:setBlockMovement(false)
+    self:resetBodyWeightChanges()
+    self:moodle(nil)
+    self:stop()
+    triggerEvent("ZWBFPregnancyBirth", self)
+end
+
 --- Starts the pregnancy process.
 function PregnancyClass:start()
     self.player:getTraits():add("Pregnancy")
@@ -210,7 +239,6 @@ function PregnancyClass:start()
     self.data.InLabor = false
     self.data.LaborProgress = 0
     self:update()
-    Events.EveryOneMinute.Add(OnCheckLabor)
 end
 
 --- Stops the pregnancy process and resets related data.
@@ -218,7 +246,6 @@ function PregnancyClass:stop()
     self.player:getTraits():remove("Pregnancy")
     self:resetVariables()
     self:update()
-    Events.EveryOneMinute.Remove(OnCheckLabor)
 end
 
 --- Advances pregnancy progress by a specified number of hours (DEBUG).
@@ -242,58 +269,32 @@ function PregnancyClass:getLaborProgress()
     return self.data.LaborProgress
 end
 
---- Handles MoodleFramework updates.
---- @param level number | nil Progress level.
-function PregnancyClass:moodle(level)
-    level = level or self:getProgress()
-    if not self.isMF then return end
-
-    local moodle = MF.getMoodle("Pregnancy")
-    moodle:setThresholds(nil, nil, nil, nil, 0.3, 0.6, 0.9, 0.98)
-    moodle:setPicture(
-        moodle:getGoodBadNeutral(),
-        moodle:getLevel(),
-        getTexture("media/ui/Moodles/Pregnancy.png")
-    )
-    moodle:setValue(level)
-end
-
 -- Instantiate Pregnancy class
 local Pregnancy = PregnancyClass:new()
-
--- Local Functions
-function OnCheckLabor()
-    Pregnancy:onCheckLabor()
-end
 
 -- Hook Events
 Events.OnCreatePlayer.Add(function()
     Pregnancy:onCreatePlayer()
 end)
 
+Events.EveryOneMinute.Add(function()
+    Pregnancy:onCheckLabor()
+    Pregnancy:onProgressUpdateOneMinute()
+end)
+
+Events.EveryHours.Add(function()
+    Pregnancy:onProgressUpdateOneHour()
+end)
+
 Events.OnDawn.Add(function()
     Pregnancy:onDawn()
 end)
 
-LuaEventManager.AddEvent("ZWBFPregnancyProgress")
-Events.ZWBFPregnancyProgress.Add(function(pregnancy)
-    pregnancy:onProgressUpdate()
-end)
-
+--- Register events to be used by other mods through LuaEventManager
+LuaEventManager.AddEvent("ZWBFPregnancyProgressOneMinute")
+LuaEventManager.AddEvent("ZWBFPregnancyProgressOneHour")
 LuaEventManager.AddEvent("ZWBFPregnancyLaborStart")
-Events.ZWBFPregnancyLaborStart.Add(function(pregnancy)
-    pregnancy:onLaborStart()
-end)
-
 LuaEventManager.AddEvent("ZWBFPregnancyLaborUpdate")
-Events.ZWBFPregnancyLaborUpdate.Add(function(pregnancy)
-    pregnancy:onLaborUpdate()
-end)
-
 LuaEventManager.AddEvent("ZWBFPregnancyBirth")
-Events.ZWBFPregnancyBirth.Add(function(pregnancy)
-    pregnancy:onBirth()
-end)
-
 
 return Pregnancy

@@ -17,7 +17,7 @@ end
 
 function ZWBFActionBirth:update()
     self.pregnancy:setLaborProgress(self:getJobDelta())
-	triggerEvent("ZWBFPregnancyLaborUpdate", self.pregnancy)
+	self.pregnancy:onLaborUpdate()
 end
 
 function ZWBFActionBirth:start()
@@ -30,7 +30,7 @@ end
 
 function ZWBFActionBirth:perform()
 	ISBaseTimedAction.perform(self)
-    triggerEvent("ZWBFPregnancyBirth", self.pregnancy)
+	self.pregnancy:onBirth()
 end
 
 --- comment
