@@ -10,7 +10,7 @@ table.insert(ZomboWinAnimationData, {
 			stages = {
                 {
 					perform = "blabla_Birthing",
-					duration = 3500
+					duration = 6000
 				}
 			}
 		}

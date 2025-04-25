@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <animNode>
 	<m_Name>blabla_Birthing</m_Name>
-	<m_AnimName>blabla_Birthing</m_AnimName>
+	<m_AnimName>Birthing</m_AnimName>
 	<m_deferredBoneAxis>Y</m_deferredBoneAxis>
 	<m_SyncTrackingEnabled>false</m_SyncTrackingEnabled>
 	<m_SpeedScale>1.0</m_SpeedScale>
