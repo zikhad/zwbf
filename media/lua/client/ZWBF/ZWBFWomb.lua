@@ -40,6 +40,21 @@ Womb.CONSTANTS = {
     }
 }
 
+Womb.Animations = {
+    normal = {
+        steps = 8,
+        loop = { 1, 3 }
+    },
+    pregnant = {
+        steps = 10,
+        loop = { 0, 3 }
+    }
+    womb = {
+        steps = 5,
+        loop = { 0, 4 }
+    }
+}
+
 --- Apply wetness to the groin
 --- @param amount number | nil (optional) The amount of wetness to apply
 function Womb:applyWetness(amount)
@@ -317,7 +332,9 @@ function Womb:getImage()
         Utils.Animation:isAllowed(player)
     ) then
         -- if so, a scene will be selected based on womb conditions
-        return sceneWomb()
+        -- return sceneWomb()
+        print("The nem animation system will be placed here!")
+        return
     end
     animStep = 0 -- clear the anim step if not in a scene
 
