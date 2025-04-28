@@ -12,6 +12,7 @@ local HaloTextHelper = HaloTextHelper
 local getPlayer = getPlayer
 local ZombRand = ZombRand
 local ZombRandFloat = ZombRandFloat
+local triggerEvent = triggerEvent
 
 --- ZomboWin Variables
 local ZomboWin = require("ZomboWin/ZomboWin")
@@ -75,8 +76,9 @@ table.insert(
 	end
 )
 table.insert(ActionEvents.Update,
-		function()
-			print("Job Delta: " .. self:getJobDelta())
+		function(action)
+			local delta = action:getJobDelta()
+			Womb:setAnimationDelta(delta)
 		end
 )
 -- TODO: add the ActionEvents.Update to better handle the animation
