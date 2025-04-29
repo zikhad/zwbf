@@ -1,6 +1,5 @@
 --- WombFill Events
 --- These events will be triggered when ZomboWin Action is performed
---- @autor Zikhad 2024
 
 --- CONSTANTS
 local MIN_AMOUNT = 10
@@ -34,7 +33,7 @@ local function impregnate()
 		Womb:getOnContraceptive() or
 		character:HasTrait("Infertile")
 	) then return end
-	
+
 	local fertility = Womb:getFertility()
 	if ZombRandFloat(0, 1) > (1 - fertility) then
 		local text = getText("IGUI_ZWBF_UI_Fertilized")
@@ -45,7 +44,7 @@ end
 
 --- Inject sperm into the player's womb
 local function injectSperm(character)
-	
+
 	if not character:isFemale() then return end
 
 	if (Utils.Inventory:hasItem("ZWBF.Condom", character)) then
@@ -57,13 +56,12 @@ local function injectSperm(character)
 		local amount = ZombRand(MIN_AMOUNT, MAX_AMOUNT) -- Random amount between MIN and MAX
 		local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
 		HaloTextHelper.addTextWithArrow(character, text, true, HaloTextHelper.getColorGreen())
-		
+
 		Womb:addSperm(amount) -- add sperm to the womb
 		impregnate() -- handle pregnancy
 	end
 end
 
---- Add the event to the ActionEvents
 table.insert(
 	ActionEvents.Perform,
 	function(action)
@@ -71,7 +69,30 @@ table.insert(
 		if not character:isFemale() then return end
 		if Utils.Animation:isAllowed(character) then
 			injectSperm(character)
+			Womb:setIsAnimation(false)
 		end
 	end
 )
--- TODO: add the ActionEvents.Update to better handle the animation
+
+table.insert(ActionEvents.Update,
+		function(action)
+			local duration = action.duration
+			local delta = action:getJobDelta()
+			local character = action.character
+
+			if not character:isFemale() then return end
+
+			if Utils.Animation:isAllowed(character) then
+				Womb:setIsAnimation(true)
+				Womb:setAnimationDuration(duration)
+				Womb:setAnimationDelta(delta)
+			end
+		end
+)
+
+table.insert(
+	ActionEvents.Stop,
+	function(action)
+		Womb:setIsAnimation(false)
+	end
+)

@@ -27,6 +27,7 @@ local BABY_LIST = {
 -- Pregnancy Class
 PregnancyClass = {}
 PregnancyClass.__index = PregnancyClass
+PregnancyClass.LaborAnimationTime = 5500
 
 --- Constructor
 --- @param name string | nil Name of the pregnancy system instance (default: "Pregnancy").
@@ -224,7 +225,7 @@ function PregnancyClass:onBirth()
     self:resetBodyWeightChanges()
     self:moodle(nil)
     self:stop()
-    triggerEvent("ZWBFPregnancyBirth", self)
+    triggerEvent("ZWBFPregnancyLaborEnd", self)
 end
 
 --- Starts the pregnancy process.
@@ -292,6 +293,6 @@ LuaEventManager.AddEvent("ZWBFPregnancyProgressOneMinute")
 LuaEventManager.AddEvent("ZWBFPregnancyProgressOneHour")
 LuaEventManager.AddEvent("ZWBFPregnancyLaborStart")
 LuaEventManager.AddEvent("ZWBFPregnancyLaborUpdate")
-LuaEventManager.AddEvent("ZWBFPregnancyBirth")
+LuaEventManager.AddEvent("ZWBFPregnancyLaborEnd")
 
 return Pregnancy
