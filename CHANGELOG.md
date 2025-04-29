@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.8.1](https://github.com/zikhad/zwbf/compare/v1.8.0...v1.8.1) (2025-04-29)
+
+
+### Bug Fixes
+
+* **animation:** fixing animations for pregnancy ([0757174](https://github.com/zikhad/zwbf/commit/07571744f89a116f5cf2a790fa10910aa90dca83))
+
 ## [1.8.0](https://github.com/zikhad/zwbf/compare/v1.7.2...v1.8.0) (2025-04-29)
 
 
