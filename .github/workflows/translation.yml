@@ -1,0 +1,51 @@
+name: Build and Translate Artifact
+
+on:
+  workflow_dispatch:
+    inputs:
+      language:
+        description: "Target language for translation"
+        required: true
+        default: "en"
+        type: choice
+        options:
+          - en
+          - es
+          - fr
+          - de
+          - it
+          - pt
+
+jobs:
+  build-translate-zip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Translate to target language
+        run: npm run translate -- --${{ github.event.inputs.language }}
+
+      - name: Get Zip name
+        id: get_zip_name
+        run: |
+          ZIPNAME=$(node scripts/zipname.js)
+          echo "ZIPNAME=$ZIPNAME" >> $GITHUB_OUTPUT
+
+      - name: Create zip artifact
+        run: npm run zipper
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.get_zip_name.outputs.ZIPNAME }}-${{ github.event.inputs.language }}.zip
+          path: ./*.zip
