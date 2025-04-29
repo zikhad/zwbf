@@ -5,4 +5,4 @@ description=ZomboWin Being Female by Zikhad.
 description=This mod introduces More Female Roleplay to Project Zomboid.
 description=Menstrual cycle, Pregnancy, Lactation and more
 url=https://github.com/zikhad/zwbf
-require=ZomboWin,UIAPI,Pregnancy,Babies
+require=ZomboWin,UIAPI,Babies

@@ -9,25 +9,30 @@ local Events = Events
 --- Table of all the traits relevant to ZWBF
 local TRAITS_LIST = {
     {
+        IdentifierType = "Infertile",
+        Cost = 3,
+        Profession = false,
+        MutualExclusives = {"Fertile", "Hyperfertile", "Pregnancy"},
+    },
+    {
 		IdentifierType = "Fertile",
 		Cost = -2,
 		Profession = false,
-		MutualExclusives = {},
+		MutualExclusives = {"Hyperfertile"},
 	},
-    {
-		IdentifierType = "Infertile",
-		Cost = 3,
-		Profession = false,
-		MutualExclusives = {"Fertile"},
-	},
-    -- TODO: Add Hyperfertile trait +10 > +100% fertility, Halves the time before being ready to get pregnant again after birth, increases chance of successful delivery by 10%
     {
         IdentifierType = "Hyperfertile",
 		Cost = -6,
 		Profession = false,
-		MutualExclusives = {"Fertile", "Infertile"},
-    },    
-    -- TODO: Add Dairy Cow trait -6 > Increases milk production rate (+25%) and time lactating (+25%).
+		MutualExclusives = {},
+    },
+    {
+        IdentifierType = "Pregnancy",
+		Cost = -8,
+		Profession = false,
+		MutualExclusives = {},
+    },
+    -- TODO: Add Dairy Cow trait -4 > Increases milk production rate (+25%) and time lactating (+25%).
     {
         IdentifierType = "DairyCow",
 		Cost = 4,
@@ -45,6 +50,13 @@ local function initTraits()
 
         local trait = TraitFactory.addTrait(data.IdentifierType, name, data.Cost, description, data.Profession)
 
+        if data.Callback then
+            data.Callback(trait)
+        end
+    end
+
+    -- For whichever reason, the setMutualExclusive can't be called in the loop above
+    for _, data in ipairs(TRAITS_LIST) do
         for _, exclusive in ipairs(data.MutualExclusives) do
             TraitFactory.setMutualExclusive(data.IdentifierType, exclusive)
         end
@@ -52,3 +64,4 @@ local function initTraits()
 end
 
 Events.OnGameBoot.Add(initTraits)
+Events.OnCreateLivingCharacter.Add(initTraits);

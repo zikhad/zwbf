@@ -1,12 +1,20 @@
 UI_EN = {
+    /* UI Panel */
+    UI_HPanel = "Being Female",
+    UI_HPanel_Info = "Information about Female characteristics",
+
+    /* Traits */
     UI_Trait_Fertile = "Fertile",
-    UI_Trait_Fertile_Description = "You are specialy fertile <br>- Higher chance of getting pregnant",
+    UI_Trait_Fertile_Description = "You are very fertile <br>- Higher chance of getting pregnant <br>- +50% fertility",
 
     UI_Trait_Infertile = "Infertile",
     UI_Trait_Infertile_Description = "You are infertile<br>You Can't get pregnant",
-    
+
     UI_Trait_Hyperfertile = "Hyperfertile",
     UI_Trait_Hyperfertile_Description = "You are HYPER fertile <br>- +100% fertility, Halves the time before being ready to get pregnant again after birth",
+
+    UI_Trait_Pregnancy = "Pregnant",
+    UI_Trait_Pregnancy_Description = "You are Pregnant",
 
     UI_Trait_DairyCow = "Dairy Cow",
     UI_Trait_DairyCow_Description = "Increases milk production rate (+25%) and time lactating (+25%)",

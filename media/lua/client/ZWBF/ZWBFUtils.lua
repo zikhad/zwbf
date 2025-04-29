@@ -33,7 +33,7 @@ local function getAnimInfo(player)
     local CurrentAnim = getAnim(player or getPlayer())
     -- Check if any animation is playing
     if not CurrentAnim then return nil end
-    
+
     -- Loop through all animations in ZomboWinAnimationData
     for _, data in pairs(ZomboWinAnimationData) do
         -- Loop through all actors in the current animation data
@@ -45,7 +45,7 @@ local function getAnimInfo(player)
             end
         end
     end
-    
+
     -- Return nil if no matching animation is found
     return nil
 end
@@ -113,7 +113,7 @@ end
 function Utils.Animation:isAllowed(player, excludedTags)
     player = player or getPlayer()
     excludedTags = excludedTags or {"Oral", "Masturbation", "Anal", "Solo", "Mast"}
-    
+
     local animationData = getAnimInfo(player) or {}
     if Utils.Table:some(animationData.tags or {}, excludedTags) then
         return false
@@ -136,7 +136,7 @@ function Utils.Inventory:wearingItem(itemName, player)
             return item
         end
     end
-    
+
     return nil
 end
 
@@ -145,8 +145,8 @@ end
 --- @return boolean
 function Utils.Inventory:hasItem(itemName, player)
     player = player or getPlayer()
-    local iventory = player:getInventory()
-    local items = iventory:getItems()
+    local inventory = player:getInventory()
+    local items = inventory:getItems()
     if items then
         for i = 0, items:size() - 1 do
             local item = items:get(i)

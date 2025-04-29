@@ -1,0 +1,23 @@
+IGUI_es = {
+	IGUI_ZWBF_UI_Panel = "Ser mujer", /* generated */
+	IGUI_ZWBF_UI_Sperm = "Esperma", /* generated */
+	IGUI_ZWBF_UI_Current = "Actual", /* generated */
+	IGUI_ZWBF_UI_Total = "Total", /* generated */
+	IGUI_ZWBF_UI_Cycle = "Ciclo", /* generated */
+	IGUI_ZWBF_UI_Phase = "Fase", /* generated */
+	IGUI_ZWBF_UI_Fertility = "Fertilidad", /* generated */
+	IGUI_ZWBF_UI_Fertilized = "Fecundado", /* generated */
+	IGUI_ZWBF_UI_Recovery = "Recuperación", /* generated */
+	IGUI_ZWBF_UI_Menstruation = "Menstruación", /* generated */
+	IGUI_ZWBF_UI_Follicular = "Folicular", /* generated */
+	IGUI_ZWBF_UI_Ovulation = "Ovulación", /* generated */
+	IGUI_ZWBF_UI_Luteal = "Lúteo", /* generated */
+	IGUI_ZWBF_UI_Pregnant = "Embarazada", /* generated */
+	IGUI_ZWBF_UI_Pregnancy = "Embarazo", /* generated */
+	IGUI_ZWBF_UI_Womb_title = "Matriz", /* generated */
+	IGUI_ZWBF_UI_Milk_title = "Leche", /* generated */
+	IGUI_ZWBF_UI_Milk_toggle = "Palanca", /* generated */
+	IGUI_ZWBF_UI_Milk_Amount = "Cantidad", /* generated */
+	IGUI_ZWBF_UI_Baby_Vomits = "El bebé vomita en ti", /* generated */
+	IGUI_ZWBF_UI_Scream = "*Gritar*", /* generated */
+}
