@@ -40,18 +40,40 @@ WombClass.CONSTANTS = {
     }
 }
 
-WombClass.Animations = {
+-- WombClass.isAnimation = false -- Animation status
+WombClass.Animation = {
+    isAnimation = false,
+    delta = 0,
+    duration = 0
+}
+
+WombClass.AnimationsSettings = {
     normal = {
-        steps = 8,
-        loop = { 1, 3 }
+        steps = {
+            0, 1, 2, 3, 4,
+            0, 1, 2, 3, 4,
+            0, 1, 2, 3, 4,
+            0, 1, 2, 3, 4,
+            5, 6, 7, 8, 9
+        },
+        loop = 1
     },
     pregnant = {
-        steps = 10,
-        loop = { 0, 3 }
+        steps = {
+            0, 1, 2, 3,
+            0, 1, 2, 3,
+            0, 1, 2, 3,
+            0, 1, 2, 3,
+            4, 5, 6, 7,
+            8, 9, 10, 11
+        },
+        loop = 1
     },
-    womb = {
-        steps = 5,
-        loop = { 0, 4 }
+    condom = {
+        steps = {
+            0, 1, 2, 3, 4, 5, 6
+        },
+        loop = 4
     }
 }
 
@@ -86,29 +108,30 @@ function WombClass:clearAllSperm()
 end
 
 --- SCENES
-local animStep = 0 -- the current step of the animation, incremented each call to animate
+-- local animStep = 0 -- the current step of the animation, incremented each call to animate
 
 --- Helper function to calculate animation loop index, optionally reversing the sequence
 --- @param maxIndex number: Maximum index to loop through
 --- @param isReversed boolean: Whether the loop should reverse direction
 --- @return number: The calculated animation index for the current step
-local function calculateLoopIndex(maxIndex, isReversed)
-    -- Determine position in the loop; goes from 0 to maxIndex and back if reversed
-    local loopIndex = math.floor(animStep) % (maxIndex * 2)
-    if loopIndex < maxIndex then
-        return loopIndex -- Forward loop phase
-    else
-        -- Reverse loop phase if 'isReversed' is true
-        return (isReversed and maxIndex - (loopIndex - maxIndex)) or maxIndex - loopIndex
+--[[
+    local function calculateLoopIndex(maxIndex, isReversed)
+        -- Determine position in the loop; goes from 0 to maxIndex and back if reversed
+        local loopIndex = math.floor(animStep) % (maxIndex * 2)
+        if loopIndex < maxIndex then
+            return loopIndex -- Forward loop phase
+        else
+            -- Reverse loop phase if 'isReversed' is true
+            return (isReversed and maxIndex - (loopIndex - maxIndex)) or maxIndex - loopIndex
+        end
     end
-end
+]]
 
 --- Determines fullness based on sperm amount in Womb data
---- @param data table: Data related to womb status
---- @return string: "full" or "empty" based on capacity threshold
-local function getFullness(data)
+--- @return string "full" if the womb is above half capacity, "empty" otherwise.
+function WombClass:getFullness()
     -- Checks if sperm amount is above half the womb's max capacity
-    return (data.SpermAmount > (WombClass.SBvars.WombMaxCapacity / 2)) and "full" or "empty"
+    return (self.data.SpermAmount > (self.SBvars.WombMaxCapacity / 2)) and "full" or "empty"
 end
 
 --- Main function to select the scene image based on womb and pregnancy conditions
@@ -162,12 +185,13 @@ function WombClass:normalWomb()
     local data = self.data
     local percentage = math.floor((data.SpermAmount / self.SBvars.WombMaxCapacity) * 100)
     local imageIndex = Utils:percentageToNumber(percentage, self.CONSTANTS.SPERM_LEVEL)
+    local status = "normal"
 
     -- If any amount of sperm is present, give the first image
     if imageIndex == 0 and data.SpermAmount > 0 then
         imageIndex = 1
     end
-    local status = "normal"
+
     if Pregnancy:getIsPregnant() then
         status = "conception"
 
@@ -180,53 +204,55 @@ function WombClass:normalWomb()
             imageIndex = Utils:percentageToNumber(progress, 6)
         end
     end
+
     return string.format("media/ui/womb/%s/womb_%s_%s.png", status, status, imageIndex)
 end
 
---- Set cycle phase based on the current day
-function WombClass:setCyclePhase()
-    local data = self.data
-    if Pregnancy:getIsPregnant() then
-        data.CyclePhase = "Pregnant"
-        data.Fertility = Pregnancy:getIsPregnant() and Pregnancy:getProgress() or 0
-    elseif data.CycleDay < 1 then
-        data.CyclePhase = "Recovery"
-        data.Fertility = 0
-    elseif data.CycleDay < 6 then
-        data.CyclePhase = "Menstruation"
-    elseif data.CycleDay < 13 then
-        data.CyclePhase = "Follicular"
-    elseif data.CycleDay < 16 then
-        data.CyclePhase = "Ovulation"
-    else
-        data.CyclePhase = "Luteal"
+function WombClass:getAnimationSetting()
+    local isCondom = Utils.Inventory:hasItem("ZWBF.Condom") -- Check for condom use case
+    local isPregnant = Pregnancy:getIsPregnant()
+    local pregnancyProgress = Pregnancy:getProgress()
+
+    if (isPregnant and pregnancyProgress > 0.5) then
+        return self.AnimationsSettings.pregnant, "pregnant"
     end
+
+    if (isCondom or (isPregnant and pregnancyProgress > 0.25)) then
+        return self.AnimationsSettings.condom, "condom"
+    end
+
+    return self.AnimationsSettings.normal, "normal"
 end
 
---- Set fertility based on the current cycle phase and conditions like pregnancy and contraceptives
-function WombClass:setFertility()
-    local data = self.data
-    local player = getPlayer()
-    if (
-        data.OnContraceptive or
-        player:HasTrait("Infertile")
-    ) then
-        data.Fertility = 0
-    elseif Pregnancy:getIsPregnant() then
-        data.Fertility = Pregnancy:getProgress() or 0
-    else
-        local fertility = {
-            ["Recovery"] = 0,
-            ["Menstruation"] = ZombRandFloat(0, 0.3),
-            ["Follicular"] = ZombRandFloat(0, 0.4),
-            ["Ovulation"] = ZombRandFloat(0.85, 1),
-            ["Luteal"] = ZombRandFloat(0, 0.3),
-        }
-        data.Fertility = fertility[data.CyclePhase] or 0;
-        if (data.Fertility > 0 and player:HasTrait("Fertile")) then
-            data.Fertility = data.Fertility * (1 + (self.SBvars.FertilityBonus / 100))
-        end
+function WombClass:sceneWomb()
+    local animation, type = self:getAnimationSetting()
+    local steps = animation.steps
+    local loop = animation.loop
+    local duration = self:getAnimationDuration()
+    local delta = self:getAnimationDelta()
+
+    -- Calculate the total duration of one loop
+    local loopDuration = duration / loop
+
+    -- Calculate the current position in the loop
+    local currentLoopDelta = (delta * duration) % loopDuration
+
+    -- Calculate the step duration
+    local stepDuration = loopDuration / #steps
+
+    -- Determine the current step index
+    local stepIndex = math.floor(currentLoopDelta / stepDuration) % #steps + 1
+    local step = steps[stepIndex]
+
+    print("Animation index: " .. stepIndex)
+    print("Animation frame: " .. tostring(step))
+
+    if type == "pregnant" or type == "condom" then
+        return string.format("media/ui/sex/%s/sex_%s.png", type, step)
     end
+
+    local fullness = self:getFullness()
+    return string.format("media/ui/sex/normal/sex_%s_%s.png", fullness, step)
 end
 
 --- Check if the player is on contraceptives
@@ -247,7 +273,7 @@ function WombClass:onCheckPregnancy()
         if Pregnancy:getProgress() > 0.5 then
             data.SpermAmount = 0
         end
-        self.setFertility()
+        self:setFertility()
     end
     self:update()
 end
@@ -276,7 +302,21 @@ function WombClass:addCycleDay()
         data.OnContraceptive = player:getModData().wombOnContraceptive or false
         data.CycleDay = (data.CycleDay < 28) and (data.CycleDay + 1) or 1
     end
-    setFertility()
+    self:setFertility()
+end
+
+-- Getters and Setters ---
+
+--- Get the current cycle day
+--- @return number Womb.isAnimation cycle day
+function WombClass:getIsAnimation()
+    return self.Animation.isAnimation
+end
+
+--- Set the current cycle day
+--- @param status boolean Animation status
+function WombClass:setIsAnimation(status)
+    self.Animation.isAnimation = status
 end
 
 --- Get the current cycle phase to be used in the UI
@@ -291,6 +331,26 @@ function WombClass:getCyclePhase()
         ["Pregnant"] = "IGUI_ZWBF_UI_Pregnant"
     }
     return cycleTranslations[self.data.CyclePhase]
+end
+
+--- Set cycle phase based on the current day
+function WombClass:setCyclePhase()
+    local data = self.data
+    if Pregnancy:getIsPregnant() then
+        data.CyclePhase = "Pregnant"
+        data.Fertility = Pregnancy:getIsPregnant() and Pregnancy:getProgress() or 0
+    elseif data.CycleDay < 1 then
+        data.CyclePhase = "Recovery"
+        data.Fertility = 0
+    elseif data.CycleDay < 6 then
+        data.CyclePhase = "Menstruation"
+    elseif data.CycleDay < 13 then
+        data.CyclePhase = "Follicular"
+    elseif data.CycleDay < 16 then
+        data.CyclePhase = "Ovulation"
+    else
+        data.CyclePhase = "Luteal"
+    end
 end
 
 --- Set the player on contraceptives
@@ -330,22 +390,65 @@ function WombClass:getFertility()
     return self.data.Fertility
 end
 
+--- Set fertility based on the current cycle phase and conditions like pregnancy and contraceptives
+function WombClass:setFertility()
+    local data = self.data
+    local player = getPlayer()
+    if (
+            data.OnContraceptive or
+                    player:HasTrait("Infertile")
+    ) then
+        data.Fertility = 0
+    elseif Pregnancy:getIsPregnant() then
+        data.Fertility = Pregnancy:getProgress() or 0
+    else
+        local fertility = {
+            ["Recovery"] = 0,
+            ["Menstruation"] = ZombRandFloat(0, 0.3),
+            ["Follicular"] = ZombRandFloat(0, 0.4),
+            ["Ovulation"] = ZombRandFloat(0.85, 1),
+            ["Luteal"] = ZombRandFloat(0, 0.3),
+        }
+        data.Fertility = fertility[data.CyclePhase] or 0;
+        if (data.Fertility > 0 and player:HasTrait("Fertile")) then
+            data.Fertility = data.Fertility * (1 + (self.SBvars.FertilityBonus / 100))
+        end
+    end
+end
+
+
+function WombClass:setAnimationDelta(delta)
+    -- print("ZWBF - Womb - Set Animation Delta - " .. delta)
+    self.Animation.delta = delta
+end
+function WombClass:getAnimationDelta()
+    -- print("ZWBF - Womb - Get Animation Delta")
+    return self.Animation.delta
+end
+
+function WombClass:setAnimationDuration(duration)
+    self.Animation.duration = duration
+end
+
+function WombClass:getAnimationDuration()
+    return self.Animation.duration
+end
+
 --- Returns the Womb image depending on Womb's conditions
 --- @return string
 function WombClass:getImage()
-    local player = getPlayer()
+    -- print("ZWBF - Womb - Get Image - is animation? " .. tostring(self.isAnimation))
+    -- local player = getPlayer()
 
     -- check if the player is in a scene
-    if (
-        player:getModData().ZomboWinSexScene and
-        Utils.Animation:isAllowed(player)
-    ) then
+    if (self:getIsAnimation()) then
         -- if so, a scene will be selected based on womb conditions
         -- return sceneWomb()
-        print("The nem animation system will be placed here!")
-        return "media/ui/womb/normal/womb_normal_17.png"
+        -- print("The nem animation system will be placed here!")
+        return self:sceneWomb()
+        -- return "media/ui/womb/normal/womb_normal_17.png"
     end
-    animStep = 0 -- clear the anim step if not in a scene
+    -- animStep = 0 -- clear the anim step if not in a scene
 
     return self:normalWomb() -- If not in a scene, the normal womb will be shown
 end
@@ -358,7 +461,7 @@ function WombClass:setPregnancy(status)
     else
         Pregnancy:stop()
     end
-    WombClass:addCycleDay()
+    self:addCycleDay()
 end
 
 --- (DEBUG) Advance the player's pregnancy by 24h
@@ -421,10 +524,6 @@ end
 
 function WombClass:onCreatePlayer()
     self:init()
-end
-
-function WombClass:setAnimationDelta(delta)
-    print("ZWBF - Womb - Set Animation Delta - " .. delta)
 end
 
 --- Update the UI, should be called every minute

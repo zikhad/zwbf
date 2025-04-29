@@ -65,6 +65,22 @@ local function injectSperm(character)
 end
 
 --- Add the event to the ActionEvents
+
+--[[
+	table.insert(
+			ActionEvents.Start,
+			function(action)
+				local character = action.character
+				if not character:isFemale() then return end
+				print("ZWBFWombFill:Start() " .. Utils.Animation:isAllowed(character))
+				if Utils.Animation:isAllowed(character) then
+					Womb:setIsAnimation(true)
+					Womb:setAnimationDuration(action.duration)
+				end
+			end
+	)
+]]
+
 table.insert(
 	ActionEvents.Perform,
 	function(action)
@@ -72,13 +88,35 @@ table.insert(
 		if not character:isFemale() then return end
 		if Utils.Animation:isAllowed(character) then
 			injectSperm(character)
+			Womb:setIsAnimation(false)
 		end
 	end
 )
+
 table.insert(ActionEvents.Update,
 		function(action)
+			local duration = action.duration
 			local delta = action:getJobDelta()
-			Womb:setAnimationDelta(delta)
+			local character = action.character
+
+			if not character:isFemale() then return end
+
+			if Utils.Animation:isAllowed(character) then
+				Womb:setIsAnimation(true)
+				Womb:setAnimationDuration(duration)
+				Womb:setAnimationDelta(delta)
+				-- print("ZWBFWombFill:Update() " .. toString(action))
+			end
 		end
 )
+
+--[[
+]]
+table.insert(
+	ActionEvents.Stop,
+	function(action)
+		Womb:setIsAnimation(false)
+	end
+)
+
 -- TODO: add the ActionEvents.Update to better handle the animation
