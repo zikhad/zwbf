@@ -14,7 +14,8 @@ local SBVars = SandboxVars.ZWBF
 local Utils = require("ZWBF/ZWBFUtils")
 local Pregnancy = require("ZWBF/ZWBFPregnancy")
 
-local WombClass = {}
+WombClass = {}
+PregnancyClass.__index = WombClass
 
 WombClass.SBvars = {
     PregnancyRecovery = 7, -- Number of days to recover after pregnancy,
@@ -74,6 +75,14 @@ WombClass.AnimationsSettings = {
             0, 1, 2, 3, 4, 5, 6
         },
         loop = 4
+    },
+    birth = {
+        steps = {
+            0, 1, 2, 3, 4,
+            5, 6, 7, 8, 9,
+            10, 11
+        },
+        loop = 1
     }
 }
 
@@ -99,7 +108,6 @@ function WombClass:addCycleDay()
     local player = getPlayer()
     local data = self.data
     data.OnContraceptive = false
-    print("ZWBF - Womb - Add Cycle Day - " .. data.CycleDay)
     if not Pregnancy:getIsPregnant() then
         data.OnContraceptive = player:getModData().wombOnContraceptive or false
         data.CycleDay = (data.CycleDay < 28) and (data.CycleDay + 1) or 1
@@ -230,7 +238,7 @@ end
 
 --- Returns the normal Womb image depending on Womb's conditions
 --- @return string
-function WombClass:normalWomb()
+function WombClass:stillImage()
     local data = self.data
     local percentage = math.floor((data.SpermAmount / self.SBvars.WombMaxCapacity) * 100)
     local imageIndex = Utils:percentageToNumber(percentage, self.CONSTANTS.SPERM_LEVEL)
@@ -243,11 +251,7 @@ function WombClass:normalWomb()
 
     if Pregnancy:getIsPregnant() then
         status = "conception"
-
-        if Pregnancy:getInLabor() then
-            status = "birth"
-            imageIndex = Utils:percentageToNumber(Pregnancy:getLaborProgress() * 100, 11)
-        elseif Pregnancy:getProgress() > 0.05 then
+        if Pregnancy:getProgress() > 0.05 then
             status = "pregnant"
             local progress = (Pregnancy:getProgress() < 0.9) and (Pregnancy:getProgress() * 100) or 100
             imageIndex = Utils:percentageToNumber(progress, 6)
@@ -257,23 +261,35 @@ function WombClass:normalWomb()
     return string.format("media/ui/womb/%s/womb_%s_%s.png", status, status, imageIndex)
 end
 
+--- Get the animation setting based on current conditions
+--- @return table Animation settings
 function WombClass:getAnimationSetting()
     local isCondom = Utils.Inventory:hasItem("ZWBF.Condom") -- Check for condom use case
     local isPregnant = Pregnancy:getIsPregnant()
-    local pregnancyProgress = Pregnancy:getProgress()
 
-    if (isPregnant and pregnancyProgress > 0.5) then
-        return self.AnimationsSettings.pregnant, "pregnant"
+    if isPregnant then
+        local isInLabor = Pregnancy:getInLabor()
+        local pregnancyProgress = Pregnancy:getProgress()
+
+        if isInLabor then
+            return self.AnimationsSettings.birth, "birth"
+        end
+
+        if pregnancyProgress > 0.5 then
+            return self.AnimationsSettings.pregnant, "pregnant"
+        elseif pregnancyProgress > 0.25 then
+            return self.AnimationsSettings.condom, "condom"
+        end
     end
 
-    if (isCondom or (isPregnant and pregnancyProgress > 0.25)) then
+    if (isCondom) then
         return self.AnimationsSettings.condom, "condom"
     end
 
     return self.AnimationsSettings.normal, "normal"
 end
 
-function WombClass:sceneWomb()
+function WombClass:sceneImage()
     local animation, type = self:getAnimationSetting()
     local steps = animation.steps
     local loop = animation.loop
@@ -293,15 +309,8 @@ function WombClass:sceneWomb()
     local stepIndex = math.floor(currentLoopDelta / stepDuration) % #steps + 1
     local step = steps[stepIndex]
 
-    print("Animation index: " .. stepIndex)
-    print("Animation frame: " .. tostring(step))
-
-    if type == "pregnant" or type == "condom" then
-        return string.format("media/ui/sex/%s/sex_%s.png", type, step)
-    end
-
-    local fullness = self:getFullness()
-    return string.format("media/ui/sex/normal/sex_%s_%s.png", fullness, step)
+    local fullness = (type == "normal") and ("/" .. self:getFullness()) or ""
+    return string.format("media/ui/animation/%s%s/%s.png", type, fullness, step)
 end
 
 --- Getters and Setters ---
@@ -319,7 +328,7 @@ function WombClass:setIsAnimation(status)
 end
 
 --- Get the current cycle phase to be used in the UI
---- @return string Womb.data.cyclePhase cycle phase
+--- @return string `Womb.data.cyclePhase` cycle phase
 function WombClass:getCyclePhase()
     local cycleTranslations = {
         ["Recovery"] = "IGUI_ZWBF_UI_Recovery",
@@ -360,7 +369,7 @@ function WombClass:setContraceptive(status)
 end
 
 --- Get the player's contraceptive status
---- @return boolean Womb.data.OnContraceptive contraceptive status
+--- @return boolean `Womb.data.OnContraceptive` contraceptive status
 function WombClass:getOnContraceptive()
     return self.data.OnContraceptive
 end
@@ -372,19 +381,19 @@ function WombClass:setSpermAmount(amount)
 end
 
 --- Get the amount of sperm in the womb
---- @return number Womb.data.SpermAmount sperm amount
+--- @return number `Womb.data.SpermAmount` sperm amount
 function WombClass:getSpermAmount()
     return self.data.SpermAmount
 end
 
 --- Get the total amount of sperm in the womb
---- @return number Womb.data.SpermAmountTotal total sperm amount
+--- @return number `Womb.data.SpermAmountTotal` total sperm amount
 function WombClass:getSpermAmountTotal()
     return self.data.SpermAmountTotal
 end
 
 --- Get the current Fertility
---- @return number Womb.data.Fertility fertility percentage
+--- @return number `Womb.data.Fertility` fertility percentage
 function WombClass:getFertility()
     return self.data.Fertility
 end
@@ -415,19 +424,26 @@ function WombClass:setFertility()
     end
 end
 
+--- Set animation delta, the progress of animation 0-1
+--- @param delta boolean Animation status
 function WombClass:setAnimationDelta(delta)
-    -- print("ZWBF - Womb - Set Animation Delta - " .. delta)
     self.Animation.delta = delta
 end
+
+--- Get animation delta, the progress of animation 0-1
+--- @return number `Womb.Animation.delta` animation delta
 function WombClass:getAnimationDelta()
-    -- print("ZWBF - Womb - Get Animation Delta")
     return self.Animation.delta
 end
 
+--- Set animation duration
+--- @param duration number Animation duration
 function WombClass:setAnimationDuration(duration)
     self.Animation.duration = duration
 end
 
+--- Get animation duration
+--- @return number `Womb.Animation.duration` animation duration
 function WombClass:getAnimationDuration()
     return self.Animation.duration
 end
@@ -437,9 +453,10 @@ end
 function WombClass:getImage()
     -- check if the player is in a scene
     if (self:getIsAnimation()) then
-        return self:sceneWomb()
+        return self:sceneImage()
     end
-    return self:normalWomb() -- If not in a scene, the normal womb will be shown
+    -- If not in a scene, the normal womb will be shown
+    return self:stillImage()
 end
 
 -- DEBUG --
@@ -478,6 +495,20 @@ end)
 
 Events.EveryDays.Add(function()
     Womb:addCycleDay()
+end)
+
+-- Custom events for Birth animation
+Events.ZWBFPregnancyLaborStart.Add(function(pregnancy)
+    Womb:setIsAnimation(true)
+    Womb:setAnimationDuration(pregnancy.LaborAnimationTime)
+end)
+
+Events.ZWBFPregnancyLaborUpdate.Add(function(pregnancy)
+    Womb:setAnimationDelta(pregnancy:getLaborProgress())
+end)
+
+Events.ZWBFPregnancyLaborEnd.Add(function(pregnancy)
+    Womb:setIsAnimation(false)
 end)
 
 -- TODO: add menstruation debuffs

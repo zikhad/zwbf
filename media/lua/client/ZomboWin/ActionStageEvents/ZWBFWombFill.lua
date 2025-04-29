@@ -1,6 +1,5 @@
 --- WombFill Events
 --- These events will be triggered when ZomboWin Action is performed
---- @autor Zikhad 2024
 
 --- CONSTANTS
 local MIN_AMOUNT = 10
@@ -12,7 +11,6 @@ local HaloTextHelper = HaloTextHelper
 local getPlayer = getPlayer
 local ZombRand = ZombRand
 local ZombRandFloat = ZombRandFloat
-local triggerEvent = triggerEvent
 
 --- ZomboWin Variables
 local ZomboWin = require("ZomboWin/ZomboWin")
@@ -64,23 +62,6 @@ local function injectSperm(character)
 	end
 end
 
---- Add the event to the ActionEvents
-
---[[
-	table.insert(
-			ActionEvents.Start,
-			function(action)
-				local character = action.character
-				if not character:isFemale() then return end
-				print("ZWBFWombFill:Start() " .. Utils.Animation:isAllowed(character))
-				if Utils.Animation:isAllowed(character) then
-					Womb:setIsAnimation(true)
-					Womb:setAnimationDuration(action.duration)
-				end
-			end
-	)
-]]
-
 table.insert(
 	ActionEvents.Perform,
 	function(action)
@@ -105,7 +86,6 @@ table.insert(ActionEvents.Update,
 				Womb:setIsAnimation(true)
 				Womb:setAnimationDuration(duration)
 				Womb:setAnimationDelta(delta)
-				-- print("ZWBFWombFill:Update() " .. toString(action))
 			end
 		end
 )
@@ -116,5 +96,3 @@ table.insert(
 		Womb:setIsAnimation(false)
 	end
 )
-
--- TODO: add the ActionEvents.Update to better handle the animation
