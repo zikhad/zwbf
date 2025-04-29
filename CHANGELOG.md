@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.8.0](https://github.com/zikhad/zwbf/compare/v1.7.2...v1.8.0) (2025-04-29)
+
+
+### Features
+
+* **animation:** adjusting animation time ([49439c9](https://github.com/zikhad/zwbf/commit/49439c9ea010f55017cf5834ecbf26da3b28bddc))
+* **animations:** revamped animation code ([ff3305f](https://github.com/zikhad/zwbf/commit/ff3305fbf0d155f36a434bb44010f17be5f4acd1))
+* **anims:** adding birthing animation ([af88ba9](https://github.com/zikhad/zwbf/commit/af88ba90cc6fe6a85fdd488083c72c6658c2d211))
+* **mechanic:** add morning sickness to pregnancy ([a21a3c1](https://github.com/zikhad/zwbf/commit/a21a3c1bbf43380524e93f41edceefd74ed2772b))
+* **mechanics:** added birth mechanic ([8c4f37a](https://github.com/zikhad/zwbf/commit/8c4f37a7a6904e3f72d95b0e8df002a9d5386e2c))
+* **mechanics:** added chance to scream during labor ([db21d8b](https://github.com/zikhad/zwbf/commit/db21d8b5e0a8815cc2c63f6b41f686149fff2309))
+* **mechanics:** adding data to pregnancy class ([7a04b52](https://github.com/zikhad/zwbf/commit/7a04b52b7eef988f8bd58d1b03f4a598070d9337))
+* **mechanics:** adding labor update event listener ([a8e9649](https://github.com/zikhad/zwbf/commit/a8e9649ebb013eea3998b313567882377d68720b))
+* **mechanics:** adding logic to consume extra calories and water ([d678b77](https://github.com/zikhad/zwbf/commit/d678b77ae07f89c2dd0667bdc50b0ee78c06c947))
+* **mechanics:** adding moodle and blocking player movement ([1a50a12](https://github.com/zikhad/zwbf/commit/1a50a1211d382f04d6764a5cef3f0a1d1f9f5547))
+* **mechanics:** attempt to use the PregnancyClass ([2a8b564](https://github.com/zikhad/zwbf/commit/2a8b564f0d123f0543f93f2ada06399e2c600c6b))
+* **mechanics:** correcting fatigue and pain levels ([97e9e21](https://github.com/zikhad/zwbf/commit/97e9e21638f9ecfd0f7df39bfb9d66000ad58699))
+* **mechanics:** pregnancy revamp - wip ([576457c](https://github.com/zikhad/zwbf/commit/576457c9c08c4fe5c62106eb04421ddd87165c3c))
+* **mechanics:** setting pain during birth ([90c9abd](https://github.com/zikhad/zwbf/commit/90c9abd32f5224852c98e880399021fa7dafd212))
+* **mechanics:** tweak the pregnancy updates functions ([1d64eb2](https://github.com/zikhad/zwbf/commit/1d64eb23ef236822549c2422f5a6e6e5aac7c01c))
+* **moodles:** added pregnancy moodle ([d33493c](https://github.com/zikhad/zwbf/commit/d33493cdbf3ca569792c449761c80917d32c6b3e))
+* **system:** new translator tool ([e769d08](https://github.com/zikhad/zwbf/commit/e769d0818c32c69be389623e27c78702a15ad37a))
+* **translations:** tweaking the generator scripts to generate translation mods ([dfeb5f7](https://github.com/zikhad/zwbf/commit/dfeb5f79e16e88b32e629e7994d47bfc2ad04206))
+* **ui:** adding lactation toggle button ([bef43dc](https://github.com/zikhad/zwbf/commit/bef43dc5aeac423311309cd3277646b92040a0d9))
+* **ui:** adding panel correctly on the UI (wip) ([633177a](https://github.com/zikhad/zwbf/commit/633177a7c235366a594c87b8e7fe4990fe406ad0))
+* **ui:** merge UIs ([60c8cbf](https://github.com/zikhad/zwbf/commit/60c8cbfdb53f36face1f062af8b1e53461313c7d))
+* **ui:** more code to insert tab ([af0ae62](https://github.com/zikhad/zwbf/commit/af0ae62babbb08a837f0a513801acf42fbd4d720))
+* **ui:** refactored the tab manager into a class ([e5ff4af](https://github.com/zikhad/zwbf/commit/e5ff4af771c67cc84748015a2a49588c14ada657))
+* **ui:** starting working towards having a tab instead of a separated panel ([fe9a852](https://github.com/zikhad/zwbf/commit/fe9a85210cc69b2885e02104817e0d9b553f67ae))
+* **ui:** sub ui, attempt 1 ([4657fa2](https://github.com/zikhad/zwbf/commit/4657fa24aab585b38cb85bad207b394dca027908))
+* **ui:** testing with adding to tab ([b075190](https://github.com/zikhad/zwbf/commit/b075190c60b8b239662898add410fa1398126888))
+* **ui:** trying to correct ui size ([fbcf72d](https://github.com/zikhad/zwbf/commit/fbcf72ddbe844b83e1cb8c1d5799c5c801f8a30b))
+* **ui:** working on having the old UI in a Tab panel [wip] ([1f3acb1](https://github.com/zikhad/zwbf/commit/1f3acb1aa64f1ec22e77153a352078f65be2a397))
+
+
+### Bug Fixes
+
+* **animation:** fixing animation time ([62daf4f](https://github.com/zikhad/zwbf/commit/62daf4f19bf7c6a4f10139a0b4188898727bfc9d))
+* **animation:** fixing birthing animation ([d8595c5](https://github.com/zikhad/zwbf/commit/d8595c5ade07468e17e1bd295968921ab4b83da3))
+* **animation:** fixing birthing animation ([30478ae](https://github.com/zikhad/zwbf/commit/30478ae340a0727ac491443c1ec78bc90c6d8daf))
+* **animation:** fixing birthing animation config ([03f082c](https://github.com/zikhad/zwbf/commit/03f082c594be12d8faaf4f82e98455ced88e54c1))
+* **items:** adding procedural items distribuition ([b1da273](https://github.com/zikhad/zwbf/commit/b1da27370d183ba3e9dabf6565262243dfd4e862))
+* **mechanics:** adding more safeguards to pregnancy ([a451d34](https://github.com/zikhad/zwbf/commit/a451d34e8d14b081b0f2bf5e9d5b912f4def1b5c))
+* **mechanics:** fixing some timing issues in pregnancy ([4d6f212](https://github.com/zikhad/zwbf/commit/4d6f212fd0d70967abf67621658be201e578e79b))
+* **traits:** adding fertile trait bonus ([dcd101a](https://github.com/zikhad/zwbf/commit/dcd101a2d69e512b5285228512763fa2d2aaf5cf))
+* **traits:** fixing trait code issues ([731af67](https://github.com/zikhad/zwbf/commit/731af675e24b52d550a12a7128bd8c7d685a70ac))
+* **ui:** fixing tab panel height (wip) ([7222d0c](https://github.com/zikhad/zwbf/commit/7222d0ca128f6193f231c4055a45551599b53799))
+* **ui:** lactation status update fix ([8c020ef](https://github.com/zikhad/zwbf/commit/8c020ef3fd1117ed4fd53774ab1bab4d9d5d1b00))
+* **ui:** set panel width & height ([c482218](https://github.com/zikhad/zwbf/commit/c482218ff64ce0c51bb0185c8bb59e7a63ddb907))
+* **ui:** set the correct height to the panel ([dfd1aab](https://github.com/zikhad/zwbf/commit/dfd1aab563c3ce5ff8615105f898d9694656c81b))
+
 ### [1.7.2](https://github.com/zikhad/zwbf/compare/v1.7.1...v1.7.2) (2025-01-08)
 
 
