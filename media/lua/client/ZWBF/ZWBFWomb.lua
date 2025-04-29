@@ -83,6 +83,8 @@ function WombClass:new(name)
     return instance
 end
 
+--- Methods ---
+
 --- Apply wetness to the groin
 --- @param amount number | nil (optional) The amount of wetness to apply
 function WombClass:applyWetness(amount)
@@ -90,6 +92,19 @@ function WombClass:applyWetness(amount)
     local player = getPlayer()
     local Groin = player:getBodyDamage():getBodyPart(BodyPartType.FromString("Groin"))
     Groin:setWetness(Groin:getWetness() + amount)
+end
+
+--- Add one day to the cycle
+function WombClass:addCycleDay()
+    local player = getPlayer()
+    local data = self.data
+    data.OnContraceptive = false
+    print("ZWBF - Womb - Add Cycle Day - " .. data.CycleDay)
+    if not Pregnancy:getIsPregnant() then
+        data.OnContraceptive = player:getModData().wombOnContraceptive or false
+        data.CycleDay = (data.CycleDay < 28) and (data.CycleDay + 1) or 1
+    end
+    self:setFertility()
 end
 
 --- Adds sperm to the womb
@@ -100,6 +115,103 @@ function WombClass:addSperm(amount)
     data.SpermAmountTotal = data.SpermAmountTotal + amount -- add to total
 end
 
+--- Update the Womb data
+function WombClass:update()
+    local player = getPlayer()
+    local data = self.data
+
+    if data.SpermAmount > self.SBvars.WombMaxCapacity then
+        data.SpermAmount = self.SBvars.WombMaxCapacity
+    elseif data.SpermAmount < 0 then
+        data.SpermAmount = 0
+    end
+    player:getModData().ZWBFWomb = data
+    self:setCyclePhase()
+end
+
+--- Modify the variables according to player Traits
+function WombClass:applyTraits()
+    local player = getPlayer()
+    -- Hyperfertile
+    if player:HasTrait("Fertile") then
+        -- +50% fertility
+        self.SBvars.FertilityBonus = SBVars.FertilityBonus * 1.5
+    end
+    if player:HasTrait("Hyperfertile") then
+        -- +100% fertility
+        self.SBvars.FertilityBonus = SBVars.FertilityBonus * 2
+        -- Halves the time before being ready to get pregnant again after birth
+        self.SBvars.PregnancyRecovery = math.floor(SBVars.PregnancyRecovery / 2)
+    end
+end
+
+--- Initializes the Womb, settings variables and mod data
+function WombClass:init()
+
+    -- setup SandboxVars
+    self.SBvars.PregnancyRecovery = SBVars.PregnancyRecovery
+    self.SBvars.WombMaxCapacity = SBVars.WombMaxCapacity
+    self.SBvars.FertilityBonus = SBVars.FertilityBonus
+    -- Apply Traits that are related to the Womb
+    self:applyTraits()
+
+    local player = getPlayer()
+    local data = player:getModData().ZWBFWomb or {}
+
+    data.SpermAmount = data.SpermAmount or 0
+    data.SpermAmountTotal = data.SpermAmountTotal or 0
+    data.CycleDay = data.CycleDay or ZombRand(1, 28)
+    data.OnContraceptive = data.OnContraceptive or false
+    self.data = data
+
+    self:setFertility()
+end
+
+
+--- Events Listeners ---
+
+--- Initialize the Womb when the player is created ---
+function WombClass:onCreatePlayer()
+    self:init()
+end
+
+--- Check if the player is on contraceptives
+function WombClass:onCheckContraceptive()
+    local player = getPlayer()
+    local data = self.data
+    data.OnContraceptive = player:getModData().wombOnContraceptive or false
+    if data.OnContraceptive then
+        data.Fertility = 0
+    end
+end
+
+--- Check if the player is pregnant
+function WombClass:onCheckPregnancy()
+    local data = self.data
+    if Pregnancy:getIsPregnant() then
+        data.CycleDay = -self.SBvars.PregnancyRecovery
+        if Pregnancy:getProgress() > 0.5 then
+            data.SpermAmount = 0
+        end
+        self:setFertility()
+    end
+    self:update()
+end
+
+--- Run down logic to eventually empty the womb
+function WombClass:onRunDown()
+    if ZombRand(100) < 80 then return end -- 80% chance not doing anything
+    local player = getPlayer()
+    local amount = ZombRand(10)
+    local data = self.data
+    if data.SpermAmount > 0 then
+        local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
+        HaloTextHelper.addTextWithArrow(player, text, false, HaloTextHelper.getColorWhite())
+        self:applyWetness()
+    end
+    data.SpermAmount = data.SpermAmount - amount
+end
+
 --- (DEBUG) This function is used to clear All the sperm in the Womb
 function WombClass:clearAllSperm()
     local data = self.data
@@ -107,25 +219,7 @@ function WombClass:clearAllSperm()
     data.SpermAmountTotal = 0
 end
 
---- SCENES
--- local animStep = 0 -- the current step of the animation, incremented each call to animate
-
---- Helper function to calculate animation loop index, optionally reversing the sequence
---- @param maxIndex number: Maximum index to loop through
---- @param isReversed boolean: Whether the loop should reverse direction
---- @return number: The calculated animation index for the current step
---[[
-    local function calculateLoopIndex(maxIndex, isReversed)
-        -- Determine position in the loop; goes from 0 to maxIndex and back if reversed
-        local loopIndex = math.floor(animStep) % (maxIndex * 2)
-        if loopIndex < maxIndex then
-            return loopIndex -- Forward loop phase
-        else
-            -- Reverse loop phase if 'isReversed' is true
-            return (isReversed and maxIndex - (loopIndex - maxIndex)) or maxIndex - loopIndex
-        end
-    end
-]]
+--- Scenes ---
 
 --- Determines fullness based on sperm amount in Womb data
 --- @return string "full" if the womb is above half capacity, "empty" otherwise.
@@ -133,51 +227,6 @@ function WombClass:getFullness()
     -- Checks if sperm amount is above half the womb's max capacity
     return (self.data.SpermAmount > (self.SBvars.WombMaxCapacity / 2)) and "full" or "empty"
 end
-
---- Main function to select the scene image based on womb and pregnancy conditions
---- @return string: Path to the appropriate scene image
---[[
-    local function sceneWomb()
-        animStep = animStep + 0.1 -- Increment animation step with each function call
-        local animIndex = 0 -- image index
-        local repetitions = 9 -- number of repetitions for loops
-        local isPregnant = Pregnancy:getIsPregnant() -- Check pregnancy status
-        local progress = isPregnant and Pregnancy:getProgress() or 0 -- Pregnancy progress (0 if not pregnant)
-        local fullness = getFullness(WombClass.data) -- Determine fullness of the womb
-
-        -- Check for condom use case: animates from 0 to 6, then 6 to 0 in a repeating loop
-        if Utils.Inventory:hasItem("ZWBF.Condom") then
-            animIndex = calculateLoopIndex(6, true) -- Calculate loop index up to 6, then reverse
-            return string.format("media/ui/sex/womb/womb_%s.png", animIndex) -- Return image path for condom case
-        end
-
-        -- Pregnant case with high progress (> 0.6): loop 0 to 4 and back, then animate through final frames
-        if isPregnant and progress > 0.6 then
-            animIndex = calculateLoopIndex(4, true) -- Loop index from 0 to 4 and back
-            -- Check if the loop repetitions have completed; if so, proceed with final frames (0-11)
-            if math.floor(animStep / 10) >= repetitions then
-                animIndex = math.min(math.floor(animStep) - 10 * repetitions, 11) -- Constrain to max frame 11
-            end
-            return string.format("media/ui/sex/pregnant/sex_%s.png", animIndex) -- Return image path for pregnant case
-        end
-
-        -- Non-pregnant cases based on womb fullness
-        if fullness == "empty" then
-            -- Empty womb animation: loop 0 to 4 and back; after 'repetitions', animate through final frames (0-9)
-            animIndex = calculateLoopIndex(4, true) -- Loop index from 0 to 4 and back
-            if math.floor(animStep / 10) >= repetitions then
-                animIndex = math.min(math.floor(animStep) - 10 * repetitions, 9) -- Constrain to max frame 9
-            end
-        else
-            -- Full womb animation: loop 0 to 9 and back, repeating indefinitely
-            animIndex = calculateLoopIndex(9, true) -- Loop index from 0 to 9 and back
-        end
-
-        -- Return the image path based on fullness and calculated animIndex
-        return string.format("media/ui/sex/normal/sex_%s_%s.png", fullness, animIndex)
-    end
-]]
-
 
 --- Returns the normal Womb image depending on Womb's conditions
 --- @return string
@@ -255,65 +304,15 @@ function WombClass:sceneWomb()
     return string.format("media/ui/sex/normal/sex_%s_%s.png", fullness, step)
 end
 
---- Check if the player is on contraceptives
-function WombClass:onCheckContraceptive()
-    local player = getPlayer()
-    local data = self.data
-    data.OnContraceptive = player:getModData().wombOnContraceptive or false
-    if data.OnContraceptive then
-        data.Fertility = 0
-    end
-end
+--- Getters and Setters ---
 
---- Check if the player is pregnant
-function WombClass:onCheckPregnancy()
-    local data = self.data
-    if Pregnancy:getIsPregnant() then
-        data.CycleDay = -self.SBvars.PregnancyRecovery
-        if Pregnancy:getProgress() > 0.5 then
-            data.SpermAmount = 0
-        end
-        self:setFertility()
-    end
-    self:update()
-end
-
---- Run down logic to eventually empty the womb
-function WombClass:onRunDown()
-    if ZombRand(100) < 80 then return end -- 80% chance not doing anything
-    local player = getPlayer()
-    local amount = ZombRand(10)
-    local data = self.data
-    if data.SpermAmount > 0 then
-        local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
-        HaloTextHelper.addTextWithArrow(player, text, false, HaloTextHelper.getColorWhite())
-        self:applyWetness()
-    end
-    data.SpermAmount = data.SpermAmount - amount
-end
-
---- Add one day to the cycle
-function WombClass:addCycleDay()
-    local player = getPlayer()
-    local data = self.data
-    data.OnContraceptive = false
-    print("ZWBF - Womb - Add Cycle Day - " .. data.CycleDay)
-    if not Pregnancy:getIsPregnant() then
-        data.OnContraceptive = player:getModData().wombOnContraceptive or false
-        data.CycleDay = (data.CycleDay < 28) and (data.CycleDay + 1) or 1
-    end
-    self:setFertility()
-end
-
--- Getters and Setters ---
-
---- Get the current cycle day
+--- Get if it is in animation state
 --- @return number Womb.isAnimation cycle day
 function WombClass:getIsAnimation()
     return self.Animation.isAnimation
 end
 
---- Set the current cycle day
+--- Set if it is in animation state
 --- @param status boolean Animation status
 function WombClass:setIsAnimation(status)
     self.Animation.isAnimation = status
@@ -416,7 +415,6 @@ function WombClass:setFertility()
     end
 end
 
-
 function WombClass:setAnimationDelta(delta)
     -- print("ZWBF - Womb - Set Animation Delta - " .. delta)
     self.Animation.delta = delta
@@ -437,22 +435,14 @@ end
 --- Returns the Womb image depending on Womb's conditions
 --- @return string
 function WombClass:getImage()
-    -- print("ZWBF - Womb - Get Image - is animation? " .. tostring(self.isAnimation))
-    -- local player = getPlayer()
-
     -- check if the player is in a scene
     if (self:getIsAnimation()) then
-        -- if so, a scene will be selected based on womb conditions
-        -- return sceneWomb()
-        -- print("The nem animation system will be placed here!")
         return self:sceneWomb()
-        -- return "media/ui/womb/normal/womb_normal_17.png"
     end
-    -- animStep = 0 -- clear the anim step if not in a scene
-
     return self:normalWomb() -- If not in a scene, the normal womb will be shown
 end
 
+-- DEBUG --
 --- (DEBUG) Set player Pregnancy
 --- @param status boolean Pregnancy status
 function WombClass:setPregnancy(status)
@@ -470,64 +460,6 @@ function WombClass:advancePregnancy()
     self:setFertility()
 end
 
---- Update the Womb data
-function WombClass:update()
-    local player = getPlayer()
-    local data = self.data
-
-    if data.SpermAmount > self.SBvars.WombMaxCapacity then
-        data.SpermAmount = self.SBvars.WombMaxCapacity
-    elseif data.SpermAmount < 0 then
-        data.SpermAmount = 0
-    end
-    player:getModData().ZWBFWomb = data
-    self:setCyclePhase()
-end
-
---- Modify the variables according to player Traits
-function WombClass:applyTraits()
-    local player = getPlayer()
-    -- Hyperfertile
-    if player:HasTrait("Fertile") then
-        -- +50% fertility
-        self.SBvars.FertilityBonus = SBVars.FertilityBonus * 1.5
-    end
-    if player:HasTrait("Hyperfertile") then
-        -- +100% fertility
-        self.SBvars.FertilityBonus = SBVars.FertilityBonus * 2
-        -- Halves the time before being ready to get pregnant again after birth
-        self.SBvars.PregnancyRecovery = math.floor(SBVars.PregnancyRecovery / 2)
-    end
-end
-
---- Initializes the Womb, This should be called on creation of player
-function WombClass:init()
-
-    -- setup SandboxVars
-    self.SBvars.PregnancyRecovery = SBVars.PregnancyRecovery
-    self.SBvars.WombMaxCapacity = SBVars.WombMaxCapacity
-    self.SBvars.FertilityBonus = SBVars.FertilityBonus
-    -- Apply Traits that are related to the Womb
-    self:applyTraits()
-
-    local player = getPlayer()
-    local data = player:getModData().ZWBFWomb or {}
-
-    data.SpermAmount = data.SpermAmount or 0
-    data.SpermAmountTotal = data.SpermAmountTotal or 0
-    data.CycleDay = data.CycleDay or ZombRand(1, 28)
-    data.OnContraceptive = data.OnContraceptive or false
-    self.data = data
-
-    self:setFertility()
-end
-
-function WombClass:onCreatePlayer()
-    self:init()
-end
-
---- Update the UI, should be called every minute
-
 local Womb = WombClass:new()
 
 --- Hook up event listeners
@@ -535,16 +467,8 @@ Events.OnCreatePlayer.Add(function()
     Womb:onCreatePlayer()
 end)
 
---[[
-    Events.OnPostRender.Add(function()
-        -- if not Womb or not Pregnancy then return end
-        Womb:update()
-    end)
-]]
 Events.EveryOneMinute.Add(function()
     Womb:onCheckContraceptive()
-end)
-Events.EveryOneMinute.Add(function()
     Womb:onCheckPregnancy()
 end)
 
@@ -556,12 +480,7 @@ Events.EveryDays.Add(function()
     Womb:addCycleDay()
 end)
 
---[[
-    LuaEventManager.AddEvent("ZWBFWombFillUpdate")
-    Events.ZWBFWombFillUpdate.Add(function(delta)
-        print("ZWBFWombFillUpdate - Delta: " .. delta)
-    end)
-]]
+-- TODO: add menstruation debuffs
 
 
 return Womb

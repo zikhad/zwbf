@@ -110,8 +110,6 @@ table.insert(ActionEvents.Update,
 		end
 )
 
---[[
-]]
 table.insert(
 	ActionEvents.Stop,
 	function(action)
