@@ -151,29 +151,22 @@ function EngorgementClass:update()
 end
 
 function EngorgementClass:registerEvents()
-	-- Register the event for the Engorgement pain infliction
-	Events.EveryOneMinute.Add(function() self:update() end)
-	--- ZWBFEngorgement Events API
-	--- This will allow other mods to listen to the Engorgement pain infliction
-	LuaEventManager.AddEvent("ZWBFEngorgementUpdate")
-end
-
---[[
-	-- Example usage:
-	Events.ZWBFEngorgementUpdate.Add(function(level, fullness)
-		print("Engorgement Pain inflicted with level: " .. level .. " fullness: " .. fullness)
-	end)
-]]
-
---[[
-	local Engorgement = EngorgementClass:new()
-
-	function OnEveryMinute()
-		Engorgement:update()
+	-- Register default events
+	local function registerDefaultEvents()
+		Events.EveryOneMinute.Add(function() self:update() end)
 	end
-
-	-- Hook up event listeners
-	Events.EveryOneMinute.Add(OnEveryMinute)
-]]
+	-- Register custom events
+	local function registerCustomEvents()
+		LuaEventManager.AddEvent("ZWBFEngorgementUpdate")
+		--[[
+			-- Example usage:
+			Events.ZWBFEngorgementUpdate.Add(function(level, fullness)
+				print("Engorgement Pain inflicted with level: " .. level .. " fullness: " .. fullness)
+			end)
+		]]
+	end
+	registerDefaultEvents()
+	registerCustomEvents()
+end
 
 return EngorgementClass
