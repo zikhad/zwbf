@@ -96,7 +96,7 @@ function createTranslationArchives(translationsDir) {
 			});
 
 			archive.pipe(output);
-			archive.directory(folderPath, `${zipName}/${baseFolder}`);
+			archive.directory(folderPath, `${baseFolder}`);
 			archive.finalize();
 		});
 }
