@@ -9,22 +9,23 @@ local LuaEventManager = LuaEventManager
 local triggerEvent = triggerEvent
 local getTexture = getTexture
 
-local Lactation = require("ZWBF/ZWBFLactation")
+-- local Lactation = require("ZWBF/ZWBFLactation")
 
 --- EngorgementClass
 --- This class will handle the Engorgement moodle and pain infliction
-EngorgementClass = {}
+local EngorgementClass = {}
 EngorgementClass.__index = EngorgementClass
 
 --- EngorgementClass Constructor
 --- This method will initialize the MoodleFramework if applicable
---- @param name string | nil Instance name
-function EngorgementClass:new(name)
+--- @param props table The properties for the class
+function EngorgementClass:new(props)
+	props = props or {}
     local instance = setmetatable({}, EngorgementClass)
-    instance.name = name or "Engorgement"
-	instance.Lactation = Lactation
+    instance.name = props.name or "Engorgement"
+	instance.Lactation = props.Lactation or require("ZWBF/ZWBFLactation")
 	instance.isMF = false
-	
+
 	if getActivatedMods():contains("MoodleFramework") == true then
 		require "MF_ISMoodle"
 		instance.isMF = true
@@ -40,7 +41,7 @@ function EngorgementClass:noMoodleFramework(lvl)
 	if lvl == 0.5 then
 		return
 	end
-	
+
 	local player = getPlayer()
 	local parseLvl = {
 		["0.5"] = "1",
@@ -65,7 +66,7 @@ function EngorgementClass:getLevelFromPercentage(percentage)
 	 -- Make sure percentage is in acceptable range
 	 percentage = percentage > 1 and 1 or percentage
 	 percentage = percentage < 0 and 0 or percentage
-	
+
 	 -- Define level mapping
 	local levelMapping = {
 		{0.5, 0.5},
@@ -112,7 +113,7 @@ function EngorgementClass:inflictPain(level)
 	-- Get the player and torso
 	local player = getPlayer()
 	local torso = player:getBodyDamage():getBodyPart(BodyPartType.FromString("Torso_Upper"))
-	
+
 	-- Define pain level mapping
 	local painLevel = {
 		["0.5"] = 0,
@@ -121,7 +122,7 @@ function EngorgementClass:inflictPain(level)
 		["0.2"] = 0.75,
 	   	["0.1"] = 1
 	}
-	
+
 	-- inflict pain until the limit of 50 (pain)
 	if (torso:getAdditionalPain() < 50)
 	then
@@ -143,15 +144,20 @@ function EngorgementClass:update()
 	local level = self:getLevelFromPercentage(fullness)
 	self:moodle(level)
 	self:inflictPain(level)
-	
+
 	--- Trigger the event for other mods to listen
 	triggerEvent("ZWBFEngorgementUpdate", level, fullness);
 
 end
 
---- ZWBFEngorgement Events API
---- This will allow other mods to listen to the Engorgement pain infliction
-LuaEventManager.AddEvent("ZWBFEngorgementUpdate")
+function EngorgementClass:registerEvents()
+	-- Register the event for the Engorgement pain infliction
+	Events.EveryOneMinute.Add(function() self:update() end)
+	--- ZWBFEngorgement Events API
+	--- This will allow other mods to listen to the Engorgement pain infliction
+	LuaEventManager.AddEvent("ZWBFEngorgementUpdate")
+end
+
 --[[
 	-- Example usage:
 	Events.ZWBFEngorgementUpdate.Add(function(level, fullness)
@@ -159,11 +165,15 @@ LuaEventManager.AddEvent("ZWBFEngorgementUpdate")
 	end)
 ]]
 
-local Engorgement = EngorgementClass:new()
+--[[
+	local Engorgement = EngorgementClass:new()
 
-function OnEveryMinute()
-	Engorgement:update()
-end
+	function OnEveryMinute()
+		Engorgement:update()
+	end
 
--- Hook up event listeners
-Events.EveryOneMinute.Add(OnEveryMinute)
+	-- Hook up event listeners
+	Events.EveryOneMinute.Add(OnEveryMinute)
+]]
+
+return EngorgementClass
