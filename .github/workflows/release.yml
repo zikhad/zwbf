@@ -50,12 +50,6 @@ jobs:
         id: get_previous_tag
         run: echo "PREVIOUS_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1 --max-count=1))" >> $GITHUB_OUTPUT
 
-      - name: Get Zip name
-        id: get_zip_name
-        run: |
-          ZIPNAME=$(node scripts/zipname.js)
-          echo "ZIPNAME=$ZIPNAME" >> $GITHUB_OUTPUT
-
       - name: Generate changelog link
         id: generate_changelog
         uses: actions/github-script@v6
@@ -75,6 +69,6 @@ jobs:
           tag_name: ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
           name: Release ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
           body: ${{ steps.generate_changelog.outputs.result }}
-          files: ./${{ steps.get_zip_name.outputs.ZIPNAME }}.zip
+          files: ./*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

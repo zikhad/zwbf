@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/zikhad/zwbf#readme",
   "devDependencies": {
+    "@types/archiver": "^6.0.3",
+    "@types/micromatch": "^4.0.9",
     "archiver": "^7.0.1",
     "fs-extra": "^11.2.0",
     "micromatch": "^4.0.7",
