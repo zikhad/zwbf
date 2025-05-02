@@ -9,8 +9,6 @@ local LuaEventManager = LuaEventManager
 local triggerEvent = triggerEvent
 local getTexture = getTexture
 
--- local Lactation = require("ZWBF/ZWBFLactation")
-
 --- EngorgementClass
 --- This class will handle the Engorgement moodle and pain infliction
 local EngorgementClass = {}

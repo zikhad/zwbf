@@ -13,11 +13,13 @@ ZWBFInventoryClass.__index = ZWBFInventoryClass
 
 --- Constructor
 --- Initializes the class with required modules
-function ZWBFInventoryClass:new()
+function ZWBFInventoryClass:new(props)
+	props = props or {}
 	local instance = setmetatable({}, ZWBFInventoryClass)
-	instance.Womb = require("ZWBF/ZWBFWomb")
-	instance.Pregnancy = require("ZWBF/ZWBFPregnancy")
-	instance.Lactation = require("ZWBF/ZWBFLactation")
+	instance.name = props.name or "Inventory"
+	instance.Womb = props.Womb or require("ZWBF/ZWBFWomb")
+	instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
+	instance.Lactation = props.Lactation or require("ZWBF/ZWBFLactation")
 	return instance
 end
 

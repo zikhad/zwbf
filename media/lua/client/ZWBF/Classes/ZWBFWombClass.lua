@@ -9,6 +9,8 @@ local SandboxVars = SandboxVars
 
 local SBVars = SandboxVars.ZWBF
 
+--- ZWBFWombClass
+--- This class handles the womb system for ZomboWinBeingFemale
 local WombClass = {}
 WombClass.__index = WombClass
 
@@ -82,11 +84,11 @@ WombClass.AnimationsSettings = {
 }
 
 function WombClass:new(props)
-    local instance = setmetatable({}, WombClass)
     props = props or {}
+    local instance = setmetatable({}, WombClass)
 
     instance.name = props.name or "Womb"
-    instance.Utils = props.Utils or require("ZWBF/ZWBFUtils")
+    instance.Utils = props.Utils or require("ZWBF/ZWBFUtilsClass")
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
     return instance
 end
@@ -476,6 +478,7 @@ function WombClass:advancePregnancy()
     self:setFertility()
 end
 
+--- Register Events
 function WombClass:registerEvents()
     local function defaultEvents()
         Events.OnCreatePlayer.Add(function()

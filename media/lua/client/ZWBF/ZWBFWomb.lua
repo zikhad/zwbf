@@ -1,7 +1,7 @@
-local WombClass = require("ZWBF/ZWBFWombClass")
+local WombClass = require("ZWBF/Classes/ZWBFWombClass")
 
 local Womb = WombClass:new()
 
 Womb:registerEvents()
 
-return Womb;
+return Womb

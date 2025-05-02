@@ -6,12 +6,11 @@ local getText = getText
 local CharacterActionAnims = CharacterActionAnims
 local ZombRandFloat = ZombRandFloat
 
-local Womb = require("ZWBF/ZWBFWomb")
 local Lactation = require("ZWBF/ZWBFLactation")
 
---- This file creates the Timed Action for when lactaid is taken 
+--- This file creates the Timed Action for when lactaid is taken
 ZWBFActionTakeLactaid = ISBaseTimedAction:derive("ZWBFActionTakeLactaid")
-    
+
 function ZWBFActionTakeLactaid:isValid()
 	return self.character:getInventory():contains(self.pills)
 end
