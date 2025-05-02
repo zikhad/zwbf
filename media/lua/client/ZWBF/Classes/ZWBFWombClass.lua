@@ -93,6 +93,28 @@ function WombClass:new(props)
     return instance
 end
 
+--- Initializes the Womb, settings variables and mod data
+function WombClass:init()
+
+    -- setup SandboxVars
+    self.SBvars.PregnancyRecovery = SBVars.PregnancyRecovery
+    self.SBvars.WombMaxCapacity = SBVars.WombMaxCapacity
+    self.SBvars.FertilityBonus = SBVars.FertilityBonus
+    -- Apply Traits that are related to the Womb
+    self:applyTraits()
+
+    local player = getPlayer()
+    local data = player:getModData().ZWBFWomb or {}
+
+    data.SpermAmount = data.SpermAmount or 0
+    data.SpermAmountTotal = data.SpermAmountTotal or 0
+    data.CycleDay = data.CycleDay or ZombRand(1, 28)
+    data.OnContraceptive = data.OnContraceptive or false
+    self.data = data
+
+    self:setFertility()
+end
+
 --- Methods ---
 
 --- Apply wetness to the groin
@@ -152,28 +174,6 @@ function WombClass:applyTraits()
         -- Halves the time before being ready to get pregnant again after birth
         self.SBvars.PregnancyRecovery = math.floor(SBVars.PregnancyRecovery / 2)
     end
-end
-
---- Initializes the Womb, settings variables and mod data
-function WombClass:init()
-
-    -- setup SandboxVars
-    self.SBvars.PregnancyRecovery = SBVars.PregnancyRecovery
-    self.SBvars.WombMaxCapacity = SBVars.WombMaxCapacity
-    self.SBvars.FertilityBonus = SBVars.FertilityBonus
-    -- Apply Traits that are related to the Womb
-    self:applyTraits()
-
-    local player = getPlayer()
-    local data = player:getModData().ZWBFWomb or {}
-
-    data.SpermAmount = data.SpermAmount or 0
-    data.SpermAmountTotal = data.SpermAmountTotal or 0
-    data.CycleDay = data.CycleDay or ZombRand(1, 28)
-    data.OnContraceptive = data.OnContraceptive or false
-    self.data = data
-
-    self:setFertility()
 end
 
 
@@ -481,7 +481,7 @@ end
 --- Register Events
 function WombClass:registerEvents()
     local function defaultEvents()
-        Events.OnCreatePlayer.Add(function()
+        Events.OnCreatePlayer.Add(function(_, player)
             self:onCreatePlayer()
         end)
 
