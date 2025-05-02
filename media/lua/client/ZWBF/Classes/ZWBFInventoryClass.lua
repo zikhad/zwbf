@@ -6,6 +6,10 @@ local getText = getText
 local getSpecificPlayer = getSpecificPlayer
 local Events = Events
 
+local ZWBFActionFeedBaby = require("ZWBF/Actions/ZWBFActionFeedBaby")
+local ZWBFActionTakeContraceptive = require("ZWBF/Actions/ZWBFActionTakeContraceptive")
+local ZWBFActionTakeLactaid = require("ZWBF/Actions/ZWBFActionTakeLactaid")
+
 --- ZWBFInventoryClass
 --- This class handles inventory-related actions for ZomboWinBeingFemale
 local ZWBFInventoryClass = {}

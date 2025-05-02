@@ -10,7 +10,6 @@ local ZombRandFloat = ZombRandFloat
 
 local Lactation = require("ZWBF/ZWBFLactation")
 
-
 local function stopCrying()
     local player = getPlayer()
     local soundEmitter = player:getEmitter()
@@ -19,7 +18,7 @@ local function stopCrying()
     end
 end
 
-ZWBFActionFeedBaby = ISBaseTimedAction:derive("ZWBFActionFeedBaby")
+local ZWBFActionFeedBaby = ISBaseTimedAction:derive("ZWBFActionFeedBaby")
 
 function ZWBFActionFeedBaby:isValid()
 	return self.character:getInventory():contains(self.baby)
@@ -35,7 +34,7 @@ function ZWBFActionFeedBaby:start()
 	self:setActionAnim("FeedBaby")
 	self:setOverrideHandModels(nil, self.baby)
 	self.character:playSound("BreastfeedBaby")
-    
+
     stopCrying()
 
 end
@@ -104,3 +103,5 @@ function ZWBFActionFeedBaby:new(character, baby)
 	o.stopOnRun = false
 	return o
 end
+
+return ZWBFActionFeedBaby

@@ -9,7 +9,7 @@ local ZombRandFloat = ZombRandFloat
 local Lactation = require("ZWBF/ZWBFLactation")
 
 --- This file creates the Timed Action for when lactaid is taken
-ZWBFActionTakeLactaid = ISBaseTimedAction:derive("ZWBFActionTakeLactaid")
+local ZWBFActionTakeLactaid = ISBaseTimedAction:derive("ZWBFActionTakeLactaid")
 
 function ZWBFActionTakeLactaid:isValid()
 	return self.character:getInventory():contains(self.pills)
@@ -55,3 +55,5 @@ function ZWBFActionTakeLactaid:new(character, pills)
 	o.stopOnRun = false
 	return o
 end
+
+return ZWBFActionTakeLactaid
