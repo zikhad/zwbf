@@ -1,33 +1,50 @@
 local Events = Events
 
 local ZWBFCharacterInfoTabManagerClass = require("ZWBF/Classes/ZWBFCharacterInfoTabManagerClass")
+local ZWBFDebugMenuClass = require("ZWBF/Classes/ZWBFDebugMenuClass")
+
+--- utility function to get the text for a label
+--- @param text string The text to be formatted
+local function label(text)
+    return string.format("%s:", getText(text))
+end
 
 --- ZWBFUIClass
 --- This class handles the UI for the ZWBF mod, including the lactation and womb panels.
+--- ZWBFUIClass
+--- @class ZWBFUIClass
+--- @field UI table UIElement
+--- @field CharacterInfoTabManager table ZWBFCharacterInfoTabManagerClass
+--- @field Utils table ZWBFUtilsClass
+--- @field Womb table ZWBFWomb
+--- @field Pregnancy table ZWBFPregnancy
+--- @field Lactation table ZWBFLactation
 local ZWBFUIClass = {}
 ZWBFUIClass.__index = ZWBFUIClass
 
 --- Constructor
 function ZWBFUIClass:new(props)
     props = props or {}
-    local self = setmetatable({}, ZWBFUIClass)
+    local instance = setmetatable({}, ZWBFUIClass)
 
-    self.CharacterInfoTabManager = props.CharacterInfoTabManager or ZWBFCharacterInfoTabManagerClass:new()
-    self.Utils = props.Utils or require("ZWBF/ZWBFUtilsClass")
-    self.Womb = props.Womb or require("ZWBF/ZWBFWomb")
-    self.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
-    self.Lactation = props.Lactation or require("ZWBF/ZWBFLactation")
+    instance.name = props.name or "ZWBFUI"
+    instance.CharacterInfoTabManager = props.CharacterInfoTabManager or ZWBFCharacterInfoTabManagerClass:new()
+    instance.Utils = props.Utils or require("ZWBF/ZWBFUtilsClass")
+    instance.Womb = props.Womb or require("ZWBF/ZWBFWomb")
+    instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
+    instance.Lactation = props.Lactation or require("ZWBF/ZWBFLactation")
+    instance.DebugMenu = props.DebugMenu or ZWBFDebugMenuClass:new(props)
 
-    self.UI = nil
-    self.activePanels = {
+    instance.UI = nil
+    instance.activePanels = {
         lactation = true,
         womb = true
     }
-    self.heights = {
+    instance.heights = {
         lactation = 0,
         womb = 0
     }
-    self.UIElements = {
+    instance.UIElements = {
         lactation = {
             image = "lactation-image",
             title = "lactation-level-title",
@@ -60,7 +77,7 @@ function ZWBFUIClass:new(props)
             }
         }
     }
-    return self
+    return instance
 end
 
 
@@ -95,24 +112,24 @@ function ZWBFUIClass:onCreateUI()
     self.UI:setTitle(getText("IGUI_ZWBF_UI_Panel"))
 
     --- Womb ---
-    self.UI:addText(self.UIElements.womb.title, string.format("%s:", getText("IGUI_ZWBF_UI_Womb_title")), _, "Center")
+    self.UI:addText(self.UIElements.womb.title, label("IGUI_ZWBF_UI_Womb_title"), _, "Center")
     self.UI:nextLine()
     self.UI:addImage(self.UIElements.womb.image, "media/ui/womb/normal/womb_normal_0.png")
     self.UI:nextLine()
-    self.UI:addText(self.UIElements.womb.sperm.current.title, string.format("%s:", getText("IGUI_ZWBF_UI_Current")), _, "Center")
+    self.UI:addText(self.UIElements.womb.sperm.current.title, label("IGUI_ZWBF_UI_Current"), _, "Center")
     self.UI:addText(self.UIElements.womb.sperm.current.amount, "0 ml", _, "Center")
     self.UI:nextLine()
-    self.UI:addText(self.UIElements.womb.sperm.total.title, string.format("%s:", getText("IGUI_ZWBF_UI_Total")), _, "Center")
+    self.UI:addText(self.UIElements.womb.sperm.total.title, label("IGUI_ZWBF_UI_Total"), _, "Center")
     self.UI:addText(self.UIElements.womb.sperm.total.amount, "0 ml", _, "Center")
     self.UI:nextLine()
     self.UI:addText(self.UIElements.womb.cycle.title, getText("IGUI_ZWBF_UI_Cycle"), _, "Center")
     self.UI:nextLine()
-    self.UI:addText(self.UIElements.womb.cycle.phase.title, string.format("%s:", getText("IGUI_ZWBF_UI_Phase")), _, "Center")
+    self.UI:addText(self.UIElements.womb.cycle.phase.title, label("IGUI_ZWBF_UI_Phase"), _, "Center")
     self.UI:addText(self.UIElements.womb.cycle.phase.value, "", _, "Center")
     self.UI:nextLine()
 
     if not getPlayer():HasTrait("Infertile") then
-        self.UI:addText(self.UIElements.womb.fertility.title, string.format("%s:", getText("IGUI_ZWBF_UI_Fertility")), _, "Center")
+        self.UI:addText(self.UIElements.womb.fertility.title, label("IGUI_ZWBF_UI_Fertility"), _, "Center")
         self.UI:addProgressBar(self.UIElements.womb.fertility.bar, 0, 0, 1)
         self.UI:addText(self.UIElements.womb.fertility.value, "", _, "Center")
         self.UI:nextLine()
@@ -134,7 +151,7 @@ function ZWBFUIClass:onCreateUI()
     -- Lactation UI
     self.UI:addImage(self.UIElements.lactation.image, "media/ui/lactation/boobs/color-0/normal_empty.png")
     self.UI:nextLine()
-    self.UI:addText(self.UIElements.lactation.title, string.format("%s:", getText("IGUI_ZWBF_UI_Milk_Amount")), _, "Center")
+    self.UI:addText(self.UIElements.lactation.title, label("IGUI_ZWBF_UI_Milk_Amount"), _, "Center")
     self.UI:addImage(self.UIElements.lactation.level, "media/ui/lactation/level/milk_level_0.png")
 
     -- The height of the lactation UI needs to take in consideration the title bar height
@@ -168,41 +185,11 @@ function ZWBFUIClass:onUpdateUI()
     end
 end
 
---- Create H-Status Context Menu Button
-function ZWBFUIClass:onCreateDebugContextMenu(player, context, items)
-    local specificPlayer = getSpecificPlayer(player)
-    if not specificPlayer:isFemale() or specificPlayer:isAsleep() or specificPlayer:getVehicle() then return end
-
-    local option = context:addOption(getText("ContextMenu_ZWBF_Being_Female"))
-    local submenu = ISContextMenu:getNew(context)
-    context:addSubMenu(option, submenu)
-
-    self.Utils:addOption(submenu, getText("ContextMenu_Add_Sperm_Title"), getText("ContextMenu_Add_Description"), function() self.Womb:addSperm(100) end)
-    self.Utils:addOption(submenu, getText("ContextMenu_Remove_Title"), getText("ContextMenu_Remove_Description"), function() self.Womb:setSpermAmount(0) end)
-    self.Utils:addOption(submenu, getText("ContextMenu_Remove_Total_Title"), getText("ContextMenu_Remove_Total_Description"), function() self.Womb:clearAllSperm() end)
-    self.Utils:addOption(submenu, getText("ContextMenu_Add_Cycle_Day_Title"), getText("ContextMenu_Add_Cycle_Day_Description"), function() self.Womb:addCycleDay() end)
-    self.Utils:addOption(submenu, getText("ContextMenu_Add_Pregnancy_Title"), getText("ContextMenu_Add_Pregnancy_Description"), function() self.Womb:setPregnancy(true) end)
-
-    if self.Pregnancy:getIsPregnant() then
-        self.Utils:addOption(submenu, getText("ContextMenu_Advance_Pregnancy_Title"), getText("ContextMenu_Advance_Pregnancy_Description"), function() self.Womb:advancePregnancy() end)
-        self.Utils:addOption(submenu, getText("ContextMenu_Advance_Pregnancy_Labor_Title"), getText("ContextMenu_Advance_Pregnancy_Labor_Description"), function() self.Pregnancy:advanceToLabor() end)
-        self.Utils:addOption(submenu, getText("ContextMenu_Remove_Pregnancy_Title"), getText("ContextMenu_Remove_Pregnancy_Description"), function() self.Womb:setPregnancy(false) end)
-    end
-
-    self.Utils:addOption(submenu, getText("ContextMenu_Milk_Toggle_Lactation_Title"), getText("ContextMenu_Milk_Toggle_Lactation_Description"), function() self.Lactation:set(not self.Lactation:getIsLactating()) end)
-    if self.Lactation:getIsLactating() then
-        self.Utils:addOption(submenu, getText("ContextMenu_Milk_Add_Milk_Title"), getText("ContextMenu_Milk_Add_Milk_Description"), function() self.Lactation:add(200) end)
-        self.Utils:addOption(submenu, getText("ContextMenu_Milk_Clear_Milk_Title"), getText("ContextMenu_Milk_Clear_Milk_Description"), function() self.Lactation:clear() end)
-    end
-end
-
 --- Hook up event listeners
 function ZWBFUIClass:registerEvents()
     Events.OnCreateUI.Add(function() self:onCreateUI() end)
     Events.OnPostRender.Add(function() self:onUpdateUI() end)
-    if isDebugEnabled() then
-        Events.OnFillWorldObjectContextMenu.Add(function(player, context, items) self:onCreateDebugContextMenu(player, context, items) end)
-    end
+    self.DebugMenu:registerEvents()
 end
 
 return ZWBFUIClass
