@@ -30,22 +30,34 @@ function ZWBFUIClass:new(props)
     self.UIElements = {
         lactation = {
             image = "lactation-image",
-            levelTitle = "lactation-level-title",
-            levelImage = "lactation-level-image"
+            title = "lactation-level-title",
+            level = "lactation-level-image"
         },
         womb = {
             title = "womb-title",
             image = "womb-image",
-            spermTitle = "womb-sperm-title",
-            spermAmount = "womb-sperm-amount",
-            spermTotalTitle = "womb-sperm-total-title",
-            spermTotalAmount = "womb-sperm-total-amount",
-            cycleTitle = "womb-cycle-title",
-            cycleInfoTitle = "womb-cycle-info-title",
-            cycleInfo = "womb-cycle-info",
-            pregnancyChance = "womb-pregnancy-chance",
-            pregnancyBar = "womb-pregnancy-bar",
-            pregnancyInfo = "womb-pregnancy-info"
+            sperm = {
+                current = {
+                    title = "womb-sperm-current-title",
+                    amount = "womb-sperm-current-amount",
+                },
+                total = {
+                    title = "womb-sperm-total-title",
+                    amount = "womb-sperm-total-amount",
+                }
+            },
+            cycle = {
+                title = "womb-cycle-title",
+                phase = {
+                    title = "womb-cycle-phase-title",
+                    value = "womb-cycle-phase-value",
+                }
+            },
+            fertility = {
+                title = "womb-fertility-title",
+                bar = "womb-fertility-bar",
+                value = "womb-fertility-value"
+            }
         }
     }
     return self
@@ -83,26 +95,26 @@ function ZWBFUIClass:onCreateUI()
     self.UI:setTitle(getText("IGUI_ZWBF_UI_Panel"))
 
     --- Womb ---
-    self.UI:addText("womb-title", string.format("%s:", getText("IGUI_ZWBF_UI_Womb_title")), _, "Center")
+    self.UI:addText(self.UIElements.womb.title, string.format("%s:", getText("IGUI_ZWBF_UI_Womb_title")), _, "Center")
     self.UI:nextLine()
-    self.UI:addImage("womb-image", "media/ui/womb/normal/womb_normal_0.png")
+    self.UI:addImage(self.UIElements.womb.image, "media/ui/womb/normal/womb_normal_0.png")
     self.UI:nextLine()
-    self.UI:addText("womb-sperm-title", string.format("%s:", getText("IGUI_ZWBF_UI_Current")), _, "Center")
-    self.UI:addText("womb-sperm-amount", "0 ml", _, "Center")
+    self.UI:addText(self.UIElements.womb.sperm.current.title, string.format("%s:", getText("IGUI_ZWBF_UI_Current")), _, "Center")
+    self.UI:addText(self.UIElements.womb.sperm.current.amount, "0 ml", _, "Center")
     self.UI:nextLine()
-    self.UI:addText("womb-sperm-total-title", string.format("%s:", getText("IGUI_ZWBF_UI_Total")), _, "Center")
-    self.UI:addText("womb-sperm-total-amount", "0 ml", _, "Center")
+    self.UI:addText(self.UIElements.womb.sperm.total.title, string.format("%s:", getText("IGUI_ZWBF_UI_Total")), _, "Center")
+    self.UI:addText(self.UIElements.womb.sperm.total.amount, "0 ml", _, "Center")
     self.UI:nextLine()
-    self.UI:addText("womb-cycle-title", getText("IGUI_ZWBF_UI_Cycle"), _, "Center")
+    self.UI:addText(self.UIElements.womb.cycle.title, getText("IGUI_ZWBF_UI_Cycle"), _, "Center")
     self.UI:nextLine()
-    self.UI:addText("womb-cycle-info-title", string.format("%s:", getText("IGUI_ZWBF_UI_Phase")), _, "Center")
-    self.UI:addText("womb-cycle-info", "", _, "Center")
+    self.UI:addText(self.UIElements.womb.cycle.phase.title, string.format("%s:", getText("IGUI_ZWBF_UI_Phase")), _, "Center")
+    self.UI:addText(self.UIElements.womb.cycle.phase.value, "", _, "Center")
     self.UI:nextLine()
 
     if not getPlayer():HasTrait("Infertile") then
-        self.UI:addText("womb-pregnancy-chance", string.format("%s:", getText("IGUI_ZWBF_UI_Fertility")), _, "Center")
-        self.UI:addProgressBar("womb-pregnancy-bar", 0, 0, 1)
-        self.UI:addText("womb-pregnancy-info", "", _, "Center")
+        self.UI:addText(self.UIElements.womb.fertility.title, string.format("%s:", getText("IGUI_ZWBF_UI_Fertility")), _, "Center")
+        self.UI:addProgressBar(self.UIElements.womb.fertility.bar, 0, 0, 1)
+        self.UI:addText(self.UIElements.womb.fertility.value, "", _, "Center")
         self.UI:nextLine()
     end
 
@@ -120,10 +132,10 @@ function ZWBFUIClass:onCreateUI()
     self.UI:nextLine()
 
     -- Lactation UI
-    self.UI:addImage("lactation-image", "media/ui/lactation/boobs/color-0/normal_empty.png")
+    self.UI:addImage(self.UIElements.lactation.image, "media/ui/lactation/boobs/color-0/normal_empty.png")
     self.UI:nextLine()
-    self.UI:addText("lactation-level-title", string.format("%s:", getText("IGUI_ZWBF_UI_Milk_Amount")), _, "Center")
-    self.UI:addImage("lactation-level-image", "media/ui/lactation/level/milk_level_0.png")
+    self.UI:addText(self.UIElements.lactation.title, string.format("%s:", getText("IGUI_ZWBF_UI_Milk_Amount")), _, "Center")
+    self.UI:addImage(self.UIElements.lactation.level, "media/ui/lactation/level/milk_level_0.png")
 
     -- The height of the lactation UI needs to take in consideration the title bar height
     self.heights.lactation = self.UI.yAct + (self.UI:titleBarHeight() * 2)
@@ -140,19 +152,19 @@ function ZWBFUIClass:onUpdateUI()
 
     -- Milk --
     if self.activePanels.lactation then
-        self.UI["lactation-image"]:setPath(self.Lactation:getBoobImage())
-        self.UI["lactation-level-image"]:setPath(self.Lactation:getMilkLevelImage())
+        self.UI[self.UIElements.lactation.image]:setPath(self.Lactation:getBoobImage())
+        self.UI[self.UIElements.lactation.level]:setPath(self.Lactation:getMilkLevelImage())
     end
 
     -- Womb
-    self.UI["womb-sperm-amount"]:setText(string.format("%s ml", self.Womb:getSpermAmount()))
-    self.UI["womb-sperm-total-amount"]:setText(string.format("%s ml", self.Womb:getSpermAmountTotal()))
-    self.UI["womb-image"]:setPath(self.Womb:getImage())
-    self.UI["womb-cycle-info"]:setText(getText(self.Womb:getCyclePhase()))
+    self.UI[self.UIElements.womb.sperm.current.amount]:setText(string.format("%s ml", self.Womb:getSpermAmount()))
+    self.UI[self.UIElements.womb.sperm.total.amount]:setText(string.format("%s ml", self.Womb:getSpermAmountTotal()))
+    self.UI[self.UIElements.womb.image]:setPath(self.Womb:getImage())
+    self.UI[self.UIElements.womb.cycle.phase.value]:setText(getText(self.Womb:getCyclePhase()))
     if not getPlayer():HasTrait("Infertile") then
-        self.UI["womb-pregnancy-chance"]:setText(getText(self.Pregnancy:getIsPregnant() and "IGUI_ZWBF_UI_Pregnancy" or "IGUI_ZWBF_UI_Fertility"))
-        self.UI["womb-pregnancy-bar"]:setValue(self.Womb:getFertility())
-        self.UI["womb-pregnancy-info"]:setText(math.floor(self.Womb:getFertility() * 100) .. "%")
+        self.UI[self.UIElements.womb.fertility.title]:setText(getText(self.Pregnancy:getIsPregnant() and "IGUI_ZWBF_UI_Pregnancy" or "IGUI_ZWBF_UI_Fertility"))
+        self.UI[self.UIElements.womb.fertility.bar]:setValue(self.Womb:getFertility())
+        self.UI[self.UIElements.womb.fertility.value]:setText(math.floor(self.Womb:getFertility() * 100) .. "%")
     end
 end
 
