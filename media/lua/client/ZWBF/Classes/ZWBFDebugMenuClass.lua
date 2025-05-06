@@ -32,13 +32,13 @@ function ZWBFDebugMenuClass:onCreateDebugContextMenu(player, context, items)
     self.Utils:addOption(submenu, getText("ContextMenu_Add_Sperm_Title"), getText("ContextMenu_Add_Description"), function() self.Womb:addSperm(100) end)
     self.Utils:addOption(submenu, getText("ContextMenu_Remove_Title"), getText("ContextMenu_Remove_Description"), function() self.Womb:setSpermAmount(0) end)
     self.Utils:addOption(submenu, getText("ContextMenu_Remove_Total_Title"), getText("ContextMenu_Remove_Total_Description"), function() self.Womb:clearAllSperm() end)
-    self.Utils:addOption(submenu, getText("ContextMenu_Add_Pregnancy_Title"), getText("ContextMenu_Add_Pregnancy_Description"), function() self.Womb:setPregnancy(true) end)
 
     if self.Pregnancy:getIsPregnant() then
-        self.Utils:addOption(submenu, getText("ContextMenu_Advance_Pregnancy_Title"), getText("ContextMenu_Advance_Pregnancy_Description"), function() self.Womb:advancePregnancy() end)
+        self.Utils:addOption(submenu, getText("ContextMenu_Remove_Pregnancy_Title"), getText("ContextMenu_Remove_Pregnancy_Description"), function() self.Pregnancy:stop() end)
+        self.Utils:addOption(submenu, getText("ContextMenu_Advance_Pregnancy_Title"), getText("ContextMenu_Advance_Pregnancy_Description"), function() self.Pregnancy:advancePregnancy(24) end)
         self.Utils:addOption(submenu, getText("ContextMenu_Advance_Pregnancy_Labor_Title"), getText("ContextMenu_Advance_Pregnancy_Labor_Description"), function() self.Pregnancy:advanceToLabor() end)
-        self.Utils:addOption(submenu, getText("ContextMenu_Remove_Pregnancy_Title"), getText("ContextMenu_Remove_Pregnancy_Description"), function() self.Womb:setPregnancy(false) end)
     else
+        self.Utils:addOption(submenu, getText("ContextMenu_Add_Pregnancy_Title"), getText("ContextMenu_Add_Pregnancy_Description"), function() self.Pregnancy:start() end)
         self.Utils:addOption(submenu, getText("ContextMenu_Add_Cycle_Day_Title"), getText("ContextMenu_Add_Cycle_Day_Description"), function() self.Womb:addCycleDay() end)
         self.Utils:addOption(submenu, getText("ContextMenu_Next_Cycle_Title"), getText("ContextMenu_Next_Cycle_Description"), function() self.Womb:nextCycle() end)
     end

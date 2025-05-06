@@ -103,17 +103,28 @@ function WombClass:applyWetness(amount)
     Groin:setWetness(Groin:getWetness() + amount)
 end
 
+
+function WombClass:rollCycleChances()
+    local chances = {
+        ["Recovery"] = 0,
+        ["Menstruation"] = ZombRandFloat(0, 0.3),
+        ["Follicular"] = ZombRandFloat(0, 0.4),
+        ["Ovulation"] = ZombRandFloat(0.85, 1),
+        ["Luteal"] = ZombRandFloat(0, 0.3),
+    }
+    return chances
+end
+
 --- Add one day to the cycle
 function WombClass:addCycleDay()
-    local player = self.player
     local data = self.data
 
     data.OnContraceptive = false
     if not self.Pregnancy:getIsPregnant() then
-        data.OnContraceptive = player:getModData().wombOnContraceptive or false
         data.CycleDay = (data.CycleDay < 28) and (data.CycleDay + 1) or 1
+    else
+        data.cycleChances = self:rollCycleChances()
     end
-    self:setFertility()
 end
 
 --- Adds sperm to the womb
@@ -126,16 +137,9 @@ end
 
 --- Update the Womb data
 function WombClass:update()
-    local player = self.player
-    local data = self.data
-
-    if data.SpermAmount > self.SBvars.WombMaxCapacity then
-        data.SpermAmount = self.SBvars.WombMaxCapacity
-    elseif data.SpermAmount < 0 then
-        data.SpermAmount = 0
-    end
-    player:getModData().ZWBFWomb = data
     self:updateCyclePhase()
+    self:updateFertility()
+    self.player:getModData().ZWBFWomb = self.data
 end
 
 --- Modify the variables according to player Traits
@@ -172,19 +176,8 @@ function WombClass:onCreatePlayer(player)
     data.SpermAmountTotal = data.SpermAmountTotal or 0
     data.CycleDay = data.CycleDay or ZombRand(1, 28)
     data.OnContraceptive = data.OnContraceptive or false
+    data.cycleChances = data.cycleChances or self:rollCycleChances()
     self.data = data
-
-    self:setFertility()
-end
-
---- Check if the player is on contraceptives
-function WombClass:onCheckContraceptive()
-    local player = self.player
-    local data = self.data
-    data.OnContraceptive = player:getModData().wombOnContraceptive or false
-    if data.OnContraceptive then
-        data.Fertility = 0
-    end
 end
 
 --- Check if the player is pregnant
@@ -195,16 +188,16 @@ function WombClass:onCheckPregnancy()
         if self.Pregnancy:getProgress() > 0.5 then
             data.SpermAmount = 0
         end
-        self:setFertility()
     end
-    self:update()
 end
 
 --- Run down logic to eventually empty the womb
-function WombClass:onRunDown()
-    if ZombRand(100) < 80 then return end -- 80% chance not doing anything
+--- @param chance number | nil (optional) The chance of running down
+function WombClass:onRunDown(chance)
+    chance = chance or 50
+    if ZombRand(100) > 50 then return end -- chance of not doing anything
     local player = self.player
-    local amount = ZombRand(10)
+    local amount = ZombRand(50)
     local data = self.data
     if data.SpermAmount > 0 then
         local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
@@ -212,6 +205,19 @@ function WombClass:onRunDown()
         self:applyWetness()
     end
     data.SpermAmount = data.SpermAmount - amount
+end
+
+function WombClass:onEveryOneMinute()
+    self:onCheckPregnancy()
+    self:update()
+end
+
+function WombClass:onEveryTenMinutes()
+    self:onRunDown()
+end
+
+function WombClass:onEveryHours()
+    self.data.cycleChances = self:rollCycleChances()
 end
 
 --- (DEBUG) This function is used to clear All the sperm in the Womb
@@ -339,10 +345,8 @@ function WombClass:updateCyclePhase()
     local data = self.data
     if self.Pregnancy:getIsPregnant() then
         data.CyclePhase = "Pregnant"
-        data.Fertility = self.Pregnancy:getIsPregnant() and self.Pregnancy:getProgress() or 0
     elseif data.CycleDay < 1 then
         data.CyclePhase = "Recovery"
-        data.Fertility = 0
     elseif data.CycleDay < 6 then
         data.CyclePhase = "Menstruation"
     elseif data.CycleDay < 13 then
@@ -370,7 +374,6 @@ end
 --- @param status boolean
 function WombClass:setContraceptive(status)
     self.data.OnContraceptive = status
-    self:setFertility()
 end
 
 --- Get the player's contraceptive status
@@ -404,22 +407,16 @@ function WombClass:getFertility()
 end
 
 --- Set fertility based on the current cycle phase and conditions like pregnancy and contraceptives
-function WombClass:setFertility()
+function WombClass:updateFertility()
     local data = self.data
     local player = self.player
+
     if data.OnContraceptive or player:HasTrait("Infertile") then
         data.Fertility = 0
     elseif self.Pregnancy:getIsPregnant() then
         data.Fertility = self.Pregnancy:getProgress() or 0
     else
-        local fertility = {
-            ["Recovery"] = 0,
-            ["Menstruation"] = ZombRandFloat(0, 0.3),
-            ["Follicular"] = ZombRandFloat(0, 0.4),
-            ["Ovulation"] = ZombRandFloat(0.85, 1),
-            ["Luteal"] = ZombRandFloat(0, 0.3),
-        }
-        data.Fertility = fertility[data.CyclePhase] or 0;
+        data.Fertility = data.cycleChances[data.CyclePhase] or 0;
         if (data.Fertility > 0) and (player:HasTrait("Fertile") or player:HasTrait("Hyperfertile")) then
             data.Fertility = data.Fertility * (1 + (self.SBvars.FertilityBonus / 100))
         end
@@ -461,24 +458,6 @@ function WombClass:getImage()
     return self:stillImage()
 end
 
--- DEBUG --
---- (DEBUG) Set player Pregnancy
---- @param status boolean Pregnancy status
-function WombClass:setPregnancy(status)
-    if status then
-        self.Pregnancy:start()
-    else
-        self.Pregnancy:stop()
-    end
-    self:addCycleDay()
-end
-
---- (DEBUG) Advance the player's pregnancy by 24h
-function WombClass:advancePregnancy()
-    self.Pregnancy:advancePregnancy(24)
-    self:setFertility()
-end
-
 --- (DEBUG) Advance the player's menstrual cycle to the next phase
 function WombClass:nextCycle()
     if self.Pregnancy:getIsPregnant() then return end
@@ -497,7 +476,6 @@ function WombClass:nextCycle()
     else
         data.CycleDay = 1
     end
-    self:setFertility()
 end
 
 --- Register Events
@@ -508,12 +486,15 @@ function WombClass:registerEvents()
         end)
 
         Events.EveryOneMinute.Add(function()
-            self:onCheckContraceptive()
-            self:onCheckPregnancy()
+            self:onEveryOneMinute()
         end)
 
         Events.EveryTenMinutes.Add(function()
-            self:onRunDown()
+            self:onEveryTenMinutes()
+        end)
+
+        Events.EveryHours.Add(function()
+            self:onEveryHours()
         end)
 
         Events.EveryDays.Add(function()
