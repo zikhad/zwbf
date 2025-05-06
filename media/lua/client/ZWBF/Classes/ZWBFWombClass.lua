@@ -358,12 +358,6 @@ function WombClass:updateCyclePhase()
     end
 end
 
---- Get the current cycle phase
---- @return string `Womb.data.CyclePhase` cycle phase
-function WombClass:getCyclePhase()
-    return self.data.CyclePhase
-end
-
 --- Returns true if the player is in recovery
 --- @return boolean `true` if the player is in recovery
 function WombClass:getInRecovery()
