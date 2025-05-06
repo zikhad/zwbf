@@ -7,9 +7,9 @@ local CharacterActionAnims = CharacterActionAnims
 
 local Womb = require("ZWBF/ZWBFWomb")
 
---- This file creates the Timed Action for when contraceptive is taken 
-ZWBFActionTakeContraceptive = ISBaseTimedAction:derive("ZWBFActionTakeContraceptive")
-    
+--- This file creates the Timed Action for when contraceptive is taken
+local ZWBFActionTakeContraceptive = ISBaseTimedAction:derive("ZWBFActionTakeContraceptive")
+
 function ZWBFActionTakeContraceptive:isValid()
 	return self.character:getInventory():contains(self.pills)
 end
@@ -49,3 +49,5 @@ function ZWBFActionTakeContraceptive:new(character, pills)
 	o.stopOnRun = false
 	return o
 end
+
+return ZWBFActionTakeContraceptive

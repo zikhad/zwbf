@@ -4,13 +4,13 @@ Utils.Animation = {} -- Utility functions for animations
 Utils.Inventory = {} -- Utility functions related to Inventory
 
 -- Localized PZ Variables
-local ISToolTip = ISToolTip
-local ISTimedActionQueue = ISTimedActionQueue;
-local getPlayer = getPlayer;
-local ZomboWinAnimationData = ZomboWinAnimationData;
+-- local ISToolTip = ISToolTip
+-- local ISTimedActionQueue = ISTimedActionQueue;
+-- local getPlayer = getPlayer;
+-- local ZomboWinAnimationData = ZomboWinAnimationData;
 
 -- ZomboWin Variables
-local AnimationUtils = require("ZomboWin/ZomboWinAnimationUtils")
+-- local AnimationUtils = require("ZomboWin/ZomboWinAnimationUtils")
 
 -- LOCAL FUNCTIONS
 
@@ -53,7 +53,7 @@ end
 
 --- Returns character skin color
 --- @param character any
---- @return integer
+--- @return number
 function Utils:getSkinColor(character)
     character = character or getPlayer()
    return character:getHumanVisual():getSkinTextureIndex()
@@ -93,7 +93,7 @@ end
 --- Given a percentage and an arbitrary number, returns the corresponding number between 0 and provided maxNumber
 --- @param percentage number
 --- @param maxNumber number
---- @return integer
+--- @return number
 function Utils:percentageToNumber(percentage, maxNumber)
     -- Ensure the percentage is within the valid range
     if percentage < 0 then

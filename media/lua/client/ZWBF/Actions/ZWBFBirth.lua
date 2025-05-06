@@ -5,7 +5,21 @@ local ISBaseTimedAction = ISBaseTimedAction
 
 
 --- This file creates the Timed Action for when Birth occurs
-ZWBFActionBirth = ISBaseTimedAction:derive("ZWBFActionBirth")
+local ZWBFActionBirth = ISBaseTimedAction:derive("ZWBFActionBirth")
+
+--- comment
+--- @param pregnancy table
+--- @return table
+function ZWBFActionBirth:new(pregnancy)
+	local instance = setmetatable({}, self)
+	self.__index = self
+	instance.character = pregnancy.player
+	instance.pregnancy = pregnancy
+	instance.maxTime = pregnancy.LaborAnimationTime
+	instance.stopOnWalk = false
+	instance.stopOnRun = false
+	return instance
+end
 
 function ZWBFActionBirth:isValid()
 	return true
@@ -29,17 +43,4 @@ function ZWBFActionBirth:perform()
 	self.pregnancy:onBirth()
 end
 
---- comment
---- @param pregnancy table
---- @return table
-function ZWBFActionBirth:new(pregnancy)
-    print("ZWBFActionBirth:new()")
-	local instance = setmetatable({}, self)
-	self.__index = self
-	instance.character = pregnancy.player
-    instance.pregnancy = pregnancy
-	instance.maxTime = pregnancy.LaborAnimationTime
-	instance.stopOnWalk = false
-	instance.stopOnRun = false
-	return instance
-end
+return ZWBFActionBirth
