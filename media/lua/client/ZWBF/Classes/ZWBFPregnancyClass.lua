@@ -235,6 +235,7 @@ function PregnancyClass:start()
     self.data.InLabor = false
     self.data.LaborProgress = 0
     self:update()
+    triggerEvent("ZWBFPregnancyStart", self)
 end
 
 --- Stops the pregnancy process and resets related data.
@@ -242,6 +243,7 @@ function PregnancyClass:stop()
     self.player:getTraits():remove("Pregnancy")
     self:resetVariables()
     self:update()
+    triggerEvent("ZWBFPregnancyStop", self)
 end
 
 --- Advances pregnancy progress by a specified number of hours (DEBUG).
@@ -285,6 +287,8 @@ function PregnancyClass:registerEvents()
        end)
    end
     local function customEvents()
+        LuaEventManager.AddEvent("ZWBFPregnancyStart")
+        LuaEventManager.AddEvent("ZWBFPregnancyStop")
         LuaEventManager.AddEvent("ZWBFPregnancyProgressOneMinute")
         LuaEventManager.AddEvent("ZWBFPregnancyProgressOneHour")
         LuaEventManager.AddEvent("ZWBFPregnancyLaborStart")
