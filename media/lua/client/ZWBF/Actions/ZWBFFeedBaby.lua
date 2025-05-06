@@ -3,20 +3,11 @@ require "TimedActions/ISBaseTimedAction"
 --- Localized global functions from PZ
 local ISBaseTimedAction = ISBaseTimedAction
 local getText = getText
-local getPlayer = getPlayer
 local GameTime = GameTime
 local getGametimeTimestamp = getGametimeTimestamp
 local ZombRandFloat = ZombRandFloat
 
 local Lactation = require("ZWBF/ZWBFLactation")
-
-local function stopCrying()
-    local player = getPlayer()
-    local soundEmitter = player:getEmitter()
-    if soundEmitter:isPlaying("Cry") then
-        soundEmitter:stopSoundByName("Cry")
-    end
-end
 
 local ZWBFActionFeedBaby = ISBaseTimedAction:derive("ZWBFActionFeedBaby")
 
@@ -35,7 +26,7 @@ function ZWBFActionFeedBaby:start()
 	self:setOverrideHandModels(nil, self.baby)
 	self.character:playSound("BreastfeedBaby")
 
-    stopCrying()
+    self:stopCrying()
 
 end
 
@@ -44,8 +35,19 @@ function ZWBFActionFeedBaby:stop()
 	self.baby:setJobDelta(0.0)
 end
 
-local function feedBaby(item)
-    local player = getPlayer()
+function ZWBFActionFeedBaby:stopCrying()
+    local player = self.character
+
+    local soundEmitter = player:getEmitter()
+    if soundEmitter:isPlaying("Cry") then
+        soundEmitter:stopSoundByName("Cry")
+    end
+end
+
+function ZWBFActionFeedBaby:feedBaby()
+    local player = self.character
+    local item = self.baby
+
     local soundEmitter = player:getEmitter()
     local gameTime = GameTime.getInstance()
     local hour = gameTime:getHour()
@@ -76,7 +78,7 @@ local function feedBaby(item)
         soundEmitter:stopSoundByName("BreastfeedBaby")
     end
 
-    stopCrying()
+    -- self:stopCrying()
 
     if item:isRinging() then
         item:stopRinging()
@@ -87,7 +89,7 @@ function ZWBFActionFeedBaby:perform()
 	self.baby:getContainer():setDrawDirty(true)
 	self.baby:setJobDelta(0.0)
 	ISBaseTimedAction.perform(self)
-	feedBaby(self.baby)
+	self:feedBaby()
 	Lactation:remove(Lactation:getBottleAmount())
     Lactation:setMultiplier(ZombRandFloat(0.1, 0.3))
     Lactation:addExpiration(Lactation.SBvars.MilkExpiration)

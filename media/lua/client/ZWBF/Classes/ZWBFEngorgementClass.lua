@@ -1,6 +1,5 @@
 --- Localized global functions from PZ
 local getActivatedMods = getActivatedMods
-local getPlayer = getPlayer
 local HaloTextHelper = HaloTextHelper
 local getText = getText
 local Events = Events
@@ -33,6 +32,10 @@ function EngorgementClass:new(props)
     return instance
 end
 
+function EngorgementClass:onCreatePlayer(player)
+	self.player = player
+end
+
 --- Fallback method that will handle the moodle text when there is no MoodleFramework
 --- @param lvl number The level for the moodle text
 function EngorgementClass:noMoodleFramework(lvl)
@@ -40,7 +43,7 @@ function EngorgementClass:noMoodleFramework(lvl)
 		return
 	end
 
-	local player = getPlayer()
+	local player = self.player
 	local parseLvl = {
 		["0.5"] = "1",
 		["0.4"] = "1",
@@ -109,7 +112,7 @@ end
 --- @param level number Percentage of Milk fullness
 function EngorgementClass:inflictPain(level)
 	-- Get the player and torso
-	local player = getPlayer()
+	local player = self.player
 	local torso = player:getBodyDamage():getBodyPart(BodyPartType.FromString("Torso_Upper"))
 
 	-- Define pain level mapping
@@ -131,7 +134,7 @@ end
 --- Update engorgement
 --- This method should be called periodically
 function EngorgementClass:update()
-	local player = getPlayer()
+	local player = self.player
 	if (
 		player:isNPC()
 		or not player:isFemale()
@@ -151,6 +154,7 @@ end
 function EngorgementClass:registerEvents()
 	-- Register default events
 	local function registerDefaultEvents()
+		Events.OnCreatePlayer.Add(function(_, player) self:onCreatePlayer(player) end)
 		Events.EveryOneMinute.Add(function() self:update() end)
 	end
 	-- Register custom events

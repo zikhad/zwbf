@@ -1,5 +1,4 @@
 --- Localized global functions from PZ
-local getPlayer = getPlayer
 local ZombRandFloat = ZombRandFloat
 local ZombRand = ZombRand
 local BodyPartType = BodyPartType
@@ -88,31 +87,9 @@ function WombClass:new(props)
     local instance = setmetatable({}, WombClass)
 
     instance.name = props.name or "Womb"
-    instance.Utils = props.Utils or require("ZWBF/ZWBFUtilsClass")
+    instance.Utils = props.Utils or require("ZWBF/ZWBFUtils")
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
     return instance
-end
-
---- Initializes the Womb, settings variables and mod data
-function WombClass:init()
-
-    -- setup SandboxVars
-    self.SBvars.PregnancyRecovery = SBVars.PregnancyRecovery
-    self.SBvars.WombMaxCapacity = SBVars.WombMaxCapacity
-    self.SBvars.FertilityBonus = SBVars.FertilityBonus
-    -- Apply Traits that are related to the Womb
-    self:applyTraits()
-
-    local player = getPlayer()
-    local data = player:getModData().ZWBFWomb or {}
-
-    data.SpermAmount = data.SpermAmount or 0
-    data.SpermAmountTotal = data.SpermAmountTotal or 0
-    data.CycleDay = data.CycleDay or ZombRand(1, 28)
-    data.OnContraceptive = data.OnContraceptive or false
-    self.data = data
-
-    self:setFertility()
 end
 
 --- Methods ---
@@ -121,15 +98,16 @@ end
 --- @param amount number | nil (optional) The amount of wetness to apply
 function WombClass:applyWetness(amount)
     amount = amount or ZombRand(self.CONSTANTS.WETNESS.MIN, self.CONSTANTS.WETNESS.MAX)
-    local player = getPlayer()
+    local player = self.player
     local Groin = player:getBodyDamage():getBodyPart(BodyPartType.FromString("Groin"))
     Groin:setWetness(Groin:getWetness() + amount)
 end
 
 --- Add one day to the cycle
 function WombClass:addCycleDay()
-    local player = getPlayer()
+    local player = self.player
     local data = self.data
+
     data.OnContraceptive = false
     if not self.Pregnancy:getIsPregnant() then
         data.OnContraceptive = player:getModData().wombOnContraceptive or false
@@ -148,7 +126,7 @@ end
 
 --- Update the Womb data
 function WombClass:update()
-    local player = getPlayer()
+    local player = self.player
     local data = self.data
 
     if data.SpermAmount > self.SBvars.WombMaxCapacity then
@@ -157,18 +135,17 @@ function WombClass:update()
         data.SpermAmount = 0
     end
     player:getModData().ZWBFWomb = data
-    self:setCyclePhase()
+    self:updateCyclePhase()
 end
 
 --- Modify the variables according to player Traits
 function WombClass:applyTraits()
-    local player = getPlayer()
+    local player = self.player
     -- Hyperfertile
     if player:HasTrait("Fertile") then
         -- +50% fertility
         self.SBvars.FertilityBonus = SBVars.FertilityBonus * 1.5
-    end
-    if player:HasTrait("Hyperfertile") then
+    elseif player:HasTrait("Hyperfertile") then
         -- +100% fertility
         self.SBvars.FertilityBonus = SBVars.FertilityBonus * 2
         -- Halves the time before being ready to get pregnant again after birth
@@ -180,13 +157,29 @@ end
 --- Events Listeners ---
 
 --- Initialize the Womb when the player is created ---
-function WombClass:onCreatePlayer()
-    self:init()
+function WombClass:onCreatePlayer(player)
+    -- setup SandboxVars
+    self.player = player
+    self.SBvars.PregnancyRecovery = SBVars.PregnancyRecovery
+    self.SBvars.WombMaxCapacity = SBVars.WombMaxCapacity
+    self.SBvars.FertilityBonus = SBVars.FertilityBonus
+    -- Apply Traits that are related to the Womb
+    self:applyTraits()
+
+    local data = self.player:getModData().ZWBFWomb or {}
+
+    data.SpermAmount = data.SpermAmount or 0
+    data.SpermAmountTotal = data.SpermAmountTotal or 0
+    data.CycleDay = data.CycleDay or ZombRand(1, 28)
+    data.OnContraceptive = data.OnContraceptive or false
+    self.data = data
+
+    self:setFertility()
 end
 
 --- Check if the player is on contraceptives
 function WombClass:onCheckContraceptive()
-    local player = getPlayer()
+    local player = self.player
     local data = self.data
     data.OnContraceptive = player:getModData().wombOnContraceptive or false
     if data.OnContraceptive then
@@ -210,7 +203,7 @@ end
 --- Run down logic to eventually empty the womb
 function WombClass:onRunDown()
     if ZombRand(100) < 80 then return end -- 80% chance not doing anything
-    local player = getPlayer()
+    local player = self.player
     local amount = ZombRand(10)
     local data = self.data
     if data.SpermAmount > 0 then
@@ -265,17 +258,15 @@ end
 --- Get the animation setting based on current conditions
 --- @return table Animation settings
 function WombClass:getAnimationSetting()
-    local isCondom = self.Utils.Inventory:hasItem("ZWBF.Condom") -- Check for condom use case
-    local isPregnant = self.Pregnancy:getIsPregnant()
 
+    local isPregnant = self.Pregnancy:getIsPregnant()
     if isPregnant then
         local isInLabor = self.Pregnancy:getInLabor()
-        local pregnancyProgress = self.Pregnancy:getProgress()
-
         if isInLabor then
             return self.AnimationsSettings.birth, "birth"
         end
 
+        local pregnancyProgress = self.Pregnancy:getProgress()
         if pregnancyProgress > 0.5 then
             return self.AnimationsSettings.pregnant, "pregnant"
         elseif pregnancyProgress > 0.25 then
@@ -283,7 +274,8 @@ function WombClass:getAnimationSetting()
         end
     end
 
-    if (isCondom) then
+    local isCondom = self.Utils.Inventory:hasItem("ZWBF.Condom")
+    if isCondom then
         return self.AnimationsSettings.condom, "condom"
     end
 
@@ -330,7 +322,7 @@ end
 
 --- Get the current cycle phase to be used in the UI
 --- @return string `Womb.data.cyclePhase` cycle phase
-function WombClass:getCyclePhase()
+function WombClass:getCyclePhaseTranslation()
     local cycleTranslations = {
         ["Recovery"] = "IGUI_ZWBF_UI_Recovery",
         ["Menstruation"] = "IGUI_ZWBF_UI_Menstruation",
@@ -343,7 +335,7 @@ function WombClass:getCyclePhase()
 end
 
 --- Set cycle phase based on the current day
-function WombClass:setCyclePhase()
+function WombClass:updateCyclePhase()
     local data = self.data
     if self.Pregnancy:getIsPregnant() then
         data.CyclePhase = "Pregnant"
@@ -360,6 +352,18 @@ function WombClass:setCyclePhase()
     else
         data.CyclePhase = "Luteal"
     end
+end
+
+--- Get the current cycle phase
+--- @return string `Womb.data.CyclePhase` cycle phase
+function WombClass:getCyclePhase()
+    return self.data.CyclePhase
+end
+
+--- Returns true if the player is in recovery
+--- @return boolean `true` if the player is in recovery
+function WombClass:getInRecovery()
+    return self.data.CyclePhase == "Recovery"
 end
 
 --- Set the player on contraceptives
@@ -402,11 +406,8 @@ end
 --- Set fertility based on the current cycle phase and conditions like pregnancy and contraceptives
 function WombClass:setFertility()
     local data = self.data
-    local player = getPlayer()
-    if (
-            data.OnContraceptive or
-                    player:HasTrait("Infertile")
-    ) then
+    local player = self.player
+    if data.OnContraceptive or player:HasTrait("Infertile") then
         data.Fertility = 0
     elseif self.Pregnancy:getIsPregnant() then
         data.Fertility = self.Pregnancy:getProgress() or 0
@@ -419,7 +420,7 @@ function WombClass:setFertility()
             ["Luteal"] = ZombRandFloat(0, 0.3),
         }
         data.Fertility = fertility[data.CyclePhase] or 0;
-        if (data.Fertility > 0 and player:HasTrait("Fertile")) then
+        if (data.Fertility > 0) and (player:HasTrait("Fertile") or player:HasTrait("Hyperfertile")) then
             data.Fertility = data.Fertility * (1 + (self.SBvars.FertilityBonus / 100))
         end
     end
@@ -478,11 +479,32 @@ function WombClass:advancePregnancy()
     self:setFertility()
 end
 
+--- (DEBUG) Advance the player's menstrual cycle to the next phase
+function WombClass:nextCycle()
+    if self.Pregnancy:getIsPregnant() then return end
+    local data = self.data
+
+    if data.CycleDay < 1 then
+        data.CycleDay = 1
+    elseif data.CycleDay < 6 then
+        data.CycleDay = 6
+    elseif data.CycleDay < 13 then
+        data.CycleDay = 13
+    elseif data.CycleDay < 16 then
+        data.CycleDay = 16
+    elseif data.CycleDay < 28 then
+        data.CycleDay = 28
+    else
+        data.CycleDay = 1
+    end
+    self:setFertility()
+end
+
 --- Register Events
 function WombClass:registerEvents()
     local function defaultEvents()
         Events.OnCreatePlayer.Add(function(_, player)
-            self:onCreatePlayer()
+            self:onCreatePlayer(player)
         end)
 
         Events.EveryOneMinute.Add(function()

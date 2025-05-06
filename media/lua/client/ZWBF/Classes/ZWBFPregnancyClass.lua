@@ -1,5 +1,5 @@
 -- Localized global functions from PZ
-local getPlayer = getPlayer
+-- local getPlayer = getPlayer
 local SandboxVars = SandboxVars
 local Events = Events
 local LuaEventManager = LuaEventManager
@@ -57,9 +57,14 @@ function PregnancyClass:resetVariables()
     self.data.PregnancyDuration = SBVars.PregnancyDuration * 24 * 60
 end
 
---- Initializes pregnancy data.
-function PregnancyClass:init()
-    self.player = self.player or getPlayer()
+--- Updates pregnancy data in the player's mod data.
+function PregnancyClass:update()
+    self.player:getModData().ZWBFPregnancy = self.data
+end
+
+--- Initializes the pregnancy system for the player.
+function PregnancyClass:onCreatePlayer(player)
+    self.player = player
     local modData = self.player:getModData()
     modData.ZWBFPregnancy = modData.ZWBFPregnancy or {}
     self.data = modData.ZWBFPregnancy
@@ -67,16 +72,6 @@ function PregnancyClass:init()
     self.data.PregnancyCurrent = self.data.PregnancyCurrent or 0
     self.data.InLabor = self.data.InLabor or false
     self.data.LaborProgress = self.data.LaborProgress or 0
-end
-
---- Updates pregnancy data in the player's mod data.
-function PregnancyClass:update()
-    self.player:getModData().ZWBFPregnancy = self.data
-end
-
---- Initializes the pregnancy system for the player.
-function PregnancyClass:onCreatePlayer()
-    self:init()
 end
 
 --- Checks if the player is pregnant.
@@ -235,7 +230,6 @@ end
 --- Starts the pregnancy process.
 function PregnancyClass:start()
     self.player:getTraits():add("Pregnancy")
-    self:init()
     self.data.PregnancyCurrent = 0
     self.data.PregnancyDuration = SBVars.PregnancyDuration * 24 * 60
     self.data.InLabor = false
@@ -273,8 +267,8 @@ end
 
 function PregnancyClass:registerEvents()
    local function defaultEvents()
-       Events.OnCreatePlayer.Add(function()
-           self:onCreatePlayer()
+       Events.OnCreatePlayer.Add(function(_, player)
+           self:onCreatePlayer(player)
        end)
 
        Events.EveryOneMinute.Add(function()

@@ -1,5 +1,4 @@
 --- Localized global functions from PZ
-local getPlayer = getPlayer
 local Events = Events
 local ZombRand = ZombRand
 local SandboxVars = SandboxVars
@@ -35,17 +34,17 @@ LactationClass.CONSTANTS = {
 }
 
 function LactationClass:new(props)
-    local instance = setmetatable({}, LactationClass)
     props = props or {}
+    local instance = setmetatable({}, LactationClass)
     instance.name = props.name or "Lactation"
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
-    instance.Utils = props.Utils or require("ZWBF/ZWBFUtilsClass")
+    instance.Utils = props.Utils or require("ZWBF/ZWBFUtils")
     return instance
 end
 
 --- Updates the data
 function LactationClass:update()
-    local player = getPlayer()
+    local player = self.player
     local data = self.data
     data.MilkAmount = (data.MilkAmount > 0) and data.MilkAmount or 0
     data.MilkMultiplier = (data.MilkMultiplier > 0) and data.MilkMultiplier or 0
@@ -56,11 +55,12 @@ function LactationClass:update()
 end
 
 --- Add expiration to the lactation
---- @param days integer
+--- @param days number
 function LactationClass:addExpiration(days)
+    local player = self.player
     local data = self.data
+
     data.Expiration = 60 * 24 * days -- 60 minutes * 24 hours * days
-    local player = getPlayer()
 
     -- Add 25% of lactation time if player has "Dairy cow" Trait
     if player:HasTrait("Dairy cow") then
@@ -69,14 +69,13 @@ function LactationClass:addExpiration(days)
 end
 
 --- Initializes the Lactation
-function LactationClass:init()
-
+function LactationClass:onCreatePlayer(player)
+    self.player = player
     -- setup SandboxVars
     self.SBvars.MilkCapacity = SBVars.MilkCapacity
     self.SBvars.MilkExpiration = SBVars.MilkExpiration
 
-    local player = getPlayer()
-    local data = player:getModData().ZWBFLactation or {}
+    local data = self.player:getModData().ZWBFLactation or {}
 
     data.IsLactating = data.IsLactating or false
     data.MilkAmount = data.MilkAmount or 0
@@ -89,7 +88,7 @@ function LactationClass:init()
 end
 
 --- Returns the milk amount
---- @return integer Womb.data.MilkAmount The amount of milk
+--- @return number Womb.data.MilkAmount The amount of milk
 function LactationClass:getMilkAmount()
     local data = self.data
     return data.MilkAmount
@@ -181,7 +180,7 @@ end
 function LactationClass:setMultiplier(multiplier)
     local data = self.data
     data.MilkMultiplier = multiplier
-    local player = getPlayer()
+    local player = self.player
 
     -- Add  25% of bonus to the multiplier if player has "Dairy cow" Trait
     if player:HasTrait("Dairy cow") then
@@ -243,8 +242,8 @@ end
 
 --- Register the events
 function LactationClass:registerEvents()
-    Events.OnCreatePlayer.Add(function()
-        self:init()
+    Events.OnCreatePlayer.Add(function(_, player)
+        self:onCreatePlayer(player)
     end)
     Events.EveryHours.Add(function()
         self:onEveryHour()

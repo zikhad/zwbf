@@ -16,7 +16,7 @@ local ZombRandFloat = ZombRandFloat
 local ZomboWin = require("ZomboWin/ZomboWin")
 local ActionEvents = ZomboWin.AnimationHandler.ActionEvents
 
-local Utils = require("lua.client.ZWBF.ZWBFUtilsClass")
+local Utils = require("ZWBF/ZWBFUtils")
 
 --- VARIABLES
 
@@ -26,8 +26,7 @@ local Womb = require("ZWBF/ZWBFWomb")
 --- LOCAL FUNCTIONS
 
 --- Handles impregnation
-local function impregnate()
-    local character = getPlayer()
+local function impregnate(character)
     if (
             (not character:isFemale()) or
                     Pregnancy:getIsPregnant() or
@@ -63,7 +62,7 @@ local function injectSperm(character)
         HaloTextHelper.addTextWithArrow(character, text, true, HaloTextHelper.getColorGreen())
 
         Womb:addSperm(amount) -- add sperm to the womb
-        impregnate() -- handle pregnancy
+        impregnate(character) -- handle pregnancy
     end
 end
 

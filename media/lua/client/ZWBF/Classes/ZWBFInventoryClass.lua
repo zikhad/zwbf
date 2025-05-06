@@ -6,9 +6,9 @@ local getText = getText
 local getSpecificPlayer = getSpecificPlayer
 local Events = Events
 
-local ZWBFActionFeedBaby = require("ZWBF/Actions/ZWBFActionFeedBaby")
-local ZWBFActionTakeContraceptive = require("ZWBF/Actions/ZWBFActionTakeContraceptive")
-local ZWBFActionTakeLactaid = require("ZWBF/Actions/ZWBFActionTakeLactaid")
+local ZWBFActionFeedBaby = require("ZWBF/Actions/ZWBFFeedBaby")
+local ZWBFActionTakeContraceptive = require("ZWBF/Actions/ZWBFTakeContraceptive")
+local ZWBFActionTakeLactaid = require("ZWBF/Actions/ZWBFTakeLactaid")
 
 --- ZWBFInventoryClass
 --- This class handles inventory-related actions for ZomboWinBeingFemale
@@ -61,38 +61,58 @@ function ZWBFInventoryClass:OnFeed_Baby(item, player, items)
 end
 
 --- Create context menu for ZomboWinBeingFemale
---- @param player any
---- @param context any
---- @param items any
-function ZWBFInventoryClass:BuildInventoryCM(player, context, items)
-	local playerObj = getSpecificPlayer(player)
+--- @param playerId number
+--- @param context table
+--- @param items table
+function ZWBFInventoryClass:BuildInventoryCM(playerId, context, items)
+	local player = getSpecificPlayer(playerId)
+
+	-- Define item actions
+	local itemActions = {
+		{
+			text = getText("ContextMenu_BreastFeed_Baby"),
+			itemType = "Baby",
+			condition = function(item)
+				return self.Lactation:getMilkAmount() >= self.Lactation:getBottleAmount()
+			end,
+			handler = function(item)
+				self:OnFeed_Baby(item, player, items)
+			end
+		},
+		{
+			text = getText("ContextMenu_Take_Contraceptive"),
+			itemType = "Contraceptive",
+			condition = function(item)
+				return (
+						not self.Womb:getOnContraceptive() and
+						not self.Womb:getInRecovery() and
+						not self.Pregnancy:getIsPregnant()
+				)
+			end,
+			handler = function(item)
+				self:OnTake_Contraceptive(item, player, items)
+			end
+		},
+		{
+			text = getText("ContextMenu_Take_Lactaid"),
+			itemType = "Lactaid",
+			condition = function(item)
+				return true
+			end,
+			handler = function(item)
+				self:OnTake_Lactaid(item, player, items)
+			end
+		}
+	}
+
+	-- Iterate through items and add context menu options
 	for _, v in ipairs(items) do
 		local item = (instanceof(v, "InventoryItem") and v) or v.items[1]
 
-		if (
-				string.find(item:getType(), "Baby") and
-						self.Lactation:getMilkAmount() >= self.Lactation:getBottleAmount()
-		) then
-			context:addOption(
-					getText("ContextMenu_BreastFeed_Baby"),
-					item,
-					function() self:OnFeed_Baby(item, playerObj, items) end
-			)
-		elseif item:getType() == "Contraceptive" and
-				not self.Womb:getOnContraceptive() and
-				not self.Pregnancy:getIsPregnant()
-		then
-			context:addOption(
-					getText("ContextMenu_Take_Contraceptive"),
-					item,
-					function() self:OnTake_Contraceptive(item, playerObj, items) end
-			)
-		elseif item:getType() == "Lactaid" then
-			context:addOption(
-					getText("ContextMenu_Take_Lactaid"),
-					item,
-					function() self:OnTake_Lactaid(item, playerObj, items) end
-			)
+		for _, action in ipairs(itemActions) do
+			if string.find(item:getType(), action.itemType) and action.condition(item) then
+				context:addOption(action.text, item, action.handler)
+			end
 		end
 	end
 end

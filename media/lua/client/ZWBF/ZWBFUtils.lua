@@ -1,7 +1,7 @@
-local UtilsClass = {}
-UtilsClass.Table = {} -- Utility functions for tables
-UtilsClass.Animation = {} -- Utility functions for animations
-UtilsClass.Inventory = {} -- Utility functions related to Inventory
+local Utils = {}
+Utils.Table = {} -- Utility functions for tables
+Utils.Animation = {} -- Utility functions for animations
+Utils.Inventory = {} -- Utility functions related to Inventory
 
 -- Localized PZ Variables
 -- local ISToolTip = ISToolTip
@@ -53,8 +53,8 @@ end
 
 --- Returns character skin color
 --- @param character any
---- @return integer
-function UtilsClass:getSkinColor(character)
+--- @return number
+function Utils:getSkinColor(character)
     character = character or getPlayer()
    return character:getHumanVisual():getSkinTextureIndex()
 end
@@ -62,7 +62,7 @@ end
 --- Define the function to check if any value from table1 exists in table2
 --- @param table1 table
 --- @param table2 table
-function UtilsClass.Table:some(table1, table2)
+function Utils.Table:some(table1, table2)
     for _, value1 in ipairs(table1) do
         for _, value2 in ipairs(table2) do
             if value1 == value2 then
@@ -79,7 +79,7 @@ end
 --- @param title string
 --- @param description string
 --- @param func any
-function UtilsClass:addOption(menu, title, description, func)
+function Utils:addOption(menu, title, description, func)
     local toolTip = ISToolTip:new()
     toolTip.description = description
     toolTip:initialise()
@@ -93,8 +93,8 @@ end
 --- Given a percentage and an arbitrary number, returns the corresponding number between 0 and provided maxNumber
 --- @param percentage number
 --- @param maxNumber number
---- @return integer
-function UtilsClass:percentageToNumber(percentage, maxNumber)
+--- @return number
+function Utils:percentageToNumber(percentage, maxNumber)
     -- Ensure the percentage is within the valid range
     if percentage < 0 then
         percentage = 0
@@ -110,12 +110,12 @@ end
 --- @param player any | nil character of the animation (default: player)
 --- @param excludedTags string[] | nil table with tags to exclude
 --- @return boolean
-function UtilsClass.Animation:isAllowed(player, excludedTags)
+function Utils.Animation:isAllowed(player, excludedTags)
     player = player or getPlayer()
     excludedTags = excludedTags or {"Oral", "Masturbation", "Anal", "Solo", "Mast"}
 
     local animationData = getAnimInfo(player) or {}
-    if UtilsClass.Table:some(animationData.tags or {}, excludedTags) then
+    if Utils.Table:some(animationData.tags or {}, excludedTags) then
         return false
     end
     return true
@@ -125,7 +125,7 @@ end
 --- @param itemName string
 --- @param player any
 --- @return table | nil
-function UtilsClass.Inventory:wearingItem(itemName, player)
+function Utils.Inventory:wearingItem(itemName, player)
     player = player or getPlayer()
     local wornItems = player:getWornItems()
     if not wornItems then return nil end
@@ -143,7 +143,7 @@ end
 --- Returns true if the player have the item in inventory
 --- @param itemName any
 --- @return boolean
-function UtilsClass.Inventory:hasItem(itemName, player)
+function Utils.Inventory:hasItem(itemName, player)
     player = player or getPlayer()
     local inventory = player:getInventory()
     local items = inventory:getItems()
@@ -158,4 +158,4 @@ function UtilsClass.Inventory:hasItem(itemName, player)
     return false
 end
 
-return UtilsClass
+return Utils
