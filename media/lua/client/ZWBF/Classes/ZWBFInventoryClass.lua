@@ -10,8 +10,11 @@ local ZWBFActionFeedBaby = require("ZWBF/Actions/ZWBFFeedBaby")
 local ZWBFActionTakeContraceptive = require("ZWBF/Actions/ZWBFTakeContraceptive")
 local ZWBFActionTakeLactaid = require("ZWBF/Actions/ZWBFTakeLactaid")
 
---- ZWBFInventoryClass
---- This class handles inventory-related actions for ZomboWinBeingFemale
+--- This class handles the inventory actions for the ZWBF mod
+--- @class ZWBFInventoryClass
+--- @field Womb table ZWBFWomb
+--- @field Pregnancy table ZWBFPregnancy
+--- @field Lactation table ZWBFLactation
 local ZWBFInventoryClass = {}
 ZWBFInventoryClass.__index = ZWBFInventoryClass
 
@@ -20,7 +23,7 @@ ZWBFInventoryClass.__index = ZWBFInventoryClass
 function ZWBFInventoryClass:new(props)
 	props = props or {}
 	local instance = setmetatable({}, ZWBFInventoryClass)
-	instance.name = props.name or "Inventory"
+
 	instance.Womb = props.Womb or require("ZWBF/ZWBFWomb")
 	instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
 	instance.Lactation = props.Lactation or require("ZWBF/ZWBFLactation")

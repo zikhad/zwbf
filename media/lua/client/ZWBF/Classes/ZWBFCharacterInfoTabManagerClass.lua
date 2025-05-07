@@ -4,6 +4,11 @@ local ISWindow = ISWindow
 local ISLayoutManager = ISLayoutManager
 local getText = getText
 
+--- ZWBF Character Info Tab Manager Class
+--- This class manages the tabs in the character info window.
+--- It allows adding new tabs and handles their display.
+--- @class ZWBFCharacterInfoTabManagerClass
+--- @field tabs table A table to store the tabs
 local ZWBFCharacterInfoTabManagerClass = {}
 ZWBFCharacterInfoTabManagerClass.__index = ZWBFCharacterInfoTabManagerClass
 

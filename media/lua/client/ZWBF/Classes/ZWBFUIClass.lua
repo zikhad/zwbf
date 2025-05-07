@@ -9,9 +9,7 @@ local function label(text)
     return string.format("%s:", getText(text))
 end
 
---- ZWBFUIClass
 --- This class handles the UI for the ZWBF mod, including the lactation and womb panels.
---- ZWBFUIClass
 --- @class ZWBFUIClass
 --- @field UI table UIElement
 --- @field CharacterInfoTabManager table ZWBFCharacterInfoTabManagerClass
@@ -19,6 +17,11 @@ end
 --- @field Womb table ZWBFWomb
 --- @field Pregnancy table ZWBFPregnancy
 --- @field Lactation table ZWBFLactation
+--- @field DebugMenu table ZWBFDebugMenu
+--- @field UI table The UI object
+--- @field activePanels table A table to track the visibility of the panels
+--- @field heights table A table to track the heights of the panels
+--- @field UIElements table A table to track the UI elements
 local ZWBFUIClass = {}
 ZWBFUIClass.__index = ZWBFUIClass
 
@@ -27,7 +30,7 @@ function ZWBFUIClass:new(props)
     props = props or {}
     local instance = setmetatable({}, ZWBFUIClass)
 
-    instance.name = props.name or "ZWBFUI"
+
     instance.CharacterInfoTabManager = props.CharacterInfoTabManager or ZWBFCharacterInfoTabManagerClass:new()
     instance.Utils = props.Utils or require("ZWBF/ZWBFUtils")
     instance.Womb = props.Womb or require("ZWBF/ZWBFWomb")

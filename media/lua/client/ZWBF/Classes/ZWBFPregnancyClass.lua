@@ -17,19 +17,22 @@ local SBVars = SandboxVars.ZWBF
 
 local ZWBFActionBirth = require("ZWBF/Actions/ZWBFBirth")
 
+-- This class will handle the pregnancy system
+-- @class PregnancyClass
+-- @field SCREAM_CHANCE number Chance to scream during labor
+-- @field BABY_LIST table List of baby items
+-- @field LaborAnimationTime number Time for labor animation
+-- @field isMF boolean Flag to check if MoodleFramework is activated
+local PregnancyClass = {}
+PregnancyClass.__index = PregnancyClass
 -- Constants
-local SCREAM_CHANCE = 5
-local BABY_LIST = {
+PregnancyClass.SCREAM_CHANCE = 5
+PregnancyClass.BABY_LIST = {
     "Baby_01_b", "Baby_02", "Baby_02_b", "Baby_03", "Baby_03_b", "Baby_07",
     "Baby_07_b", "Baby_08", "Baby_08_b", "Baby_09", "Baby_09_b", "Baby_10",
     "Baby_10_b", "Baby_11", "Baby_11_b", "Baby_12", "Baby_12_b", "Baby_13",
     "Baby_14"
 }
-
--- Pregnancy Class
--- This class will handle the pregnancy system
-local PregnancyClass = {}
-PregnancyClass.__index = PregnancyClass
 PregnancyClass.LaborAnimationTime = 5500
 
 --- Constructor
@@ -37,7 +40,7 @@ PregnancyClass.LaborAnimationTime = 5500
 function PregnancyClass:new(props)
     props = props or {}
     local instance = setmetatable({}, PregnancyClass)
-    instance.name = props.name or "Pregnancy"
+
     instance.isMF = false
 
     if getActivatedMods():contains("MoodleFramework") then
@@ -135,14 +138,11 @@ end
 
 --- Handles periodic labor checks.
 function PregnancyClass:onCheckLabor()
-    if not self:getIsPregnant() then return end
-
     if self:getProgress() >= 1 then
         self:onLaborStart()
     else
         self.data.PregnancyCurrent = self.data.PregnancyCurrent + 1
     end
-    self:update()
 end
 
 --- Handles labor start.
@@ -166,7 +166,7 @@ function PregnancyClass:onLaborUpdate()
             self.player:getPerkLevel(Perks.Sneak)
     ) * 3
 
-    local chanceToScream = SCREAM_CHANCE + math.floor(stats:getPain() / SCREAM_CHANCE)
+    local chanceToScream = self.SCREAM_CHANCE + math.floor(stats:getPain() / self.SCREAM_CHANCE)
     local chance = math.floor(chanceToScream * (1 - (modifier / 100)))
 
     if ZombRand(100) <= chance then
@@ -187,14 +187,16 @@ function PregnancyClass:onLaborUpdate()
 end
 
 --- Called every in-game minute.
-function PregnancyClass:onProgressUpdateOneMinute()
+function PregnancyClass:onEveryOneMinute()
     if not self:getIsPregnant() then return end
+    self:onCheckLabor()
     self:moodle()
+    self:update()
     triggerEvent("ZWBFPregnancyProgressOneMinute", self)
 end
 
 --- Called every in-game hour.
-function PregnancyClass:onProgressUpdateOneHour()
+function PregnancyClass:onEveryHours()
     if not self:getIsPregnant() then return end
 
     local progress = self:getProgress()
@@ -218,7 +220,7 @@ end
 
 --- Handles the birth process.
 function PregnancyClass:onBirth()
-    local baby = BABY_LIST[ZombRand(1, #BABY_LIST)]
+    local baby = self.BABY_LIST[ZombRand(1, #self.BABY_LIST)]
     self.player:getInventory():AddItem("Babies." .. baby)
     self.player:setBlockMovement(false)
     self:resetBodyWeightChanges()
@@ -234,7 +236,6 @@ function PregnancyClass:start()
     self.data.PregnancyDuration = SBVars.PregnancyDuration * 24 * 60
     self.data.InLabor = false
     self.data.LaborProgress = 0
-    self:update()
     triggerEvent("ZWBFPregnancyStart", self)
 end
 
@@ -242,7 +243,6 @@ end
 function PregnancyClass:stop()
     self.player:getTraits():remove("Pregnancy")
     self:resetVariables()
-    self:update()
     triggerEvent("ZWBFPregnancyStop", self)
 end
 
@@ -274,12 +274,11 @@ function PregnancyClass:registerEvents()
        end)
 
        Events.EveryOneMinute.Add(function()
-           self:onCheckLabor()
-           self:onProgressUpdateOneMinute()
+           self:onEveryOneMinute()
        end)
 
        Events.EveryHours.Add(function()
-           self:onProgressUpdateOneHour()
+           self:onEveryHours()
        end)
 
        Events.OnDawn.Add(function()

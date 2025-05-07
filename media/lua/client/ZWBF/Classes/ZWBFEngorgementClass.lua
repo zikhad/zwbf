@@ -8,8 +8,10 @@ local LuaEventManager = LuaEventManager
 local triggerEvent = triggerEvent
 local getTexture = getTexture
 
---- EngorgementClass
---- This class will handle the Engorgement moodle and pain infliction
+--- This class handles the engorgement system
+--- @class EngorgementClass
+--- @field Lactation table ZWBFLactation
+--- @field isMF boolean Flag to check if MoodleFramework is activated
 local EngorgementClass = {}
 EngorgementClass.__index = EngorgementClass
 
@@ -19,7 +21,6 @@ EngorgementClass.__index = EngorgementClass
 function EngorgementClass:new(props)
 	props = props or {}
     local instance = setmetatable({}, EngorgementClass)
-    instance.name = props.name or "Engorgement"
 	instance.Lactation = props.Lactation or require("ZWBF/ZWBFLactation")
 	instance.isMF = false
 
@@ -102,7 +103,7 @@ function EngorgementClass:moodle(level)
     local moodle = MF.getMoodle("Engorgement")
     moodle:setValue(level)
 	moodle:setPicture(
-	moodle:getGoodBadNeutral(),
+		moodle:getGoodBadNeutral(),
 		moodle:getLevel(),
 		getTexture("media/ui/Moodles/Engorgement.png")
 	);

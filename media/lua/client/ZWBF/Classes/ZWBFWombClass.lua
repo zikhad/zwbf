@@ -5,11 +5,18 @@ local BodyPartType = BodyPartType
 local HaloTextHelper = HaloTextHelper
 local getText = getText
 local SandboxVars = SandboxVars
-
 local SBVars = SandboxVars.ZWBF
 
---- ZWBFWombClass
---- This class handles the womb system for ZomboWinBeingFemale
+
+--- This class handles the womb system
+--- @class WombClass
+--- @field SBvars table Sandbox variables for the womb
+--- @field data table Womb data
+--- @field CONSTANTS table Constants for the womb
+--- @field Animation table Animation settings
+--- @field AnimationsSettings table Animation settings for different states
+--- @field Utils table ZWBFUtils
+--- @field Pregnancy table ZWBFPregnancy
 local WombClass = {}
 WombClass.__index = WombClass
 
@@ -37,7 +44,6 @@ WombClass.CONSTANTS = {
     }
 }
 
--- WombClass.isAnimation = false -- Animation status
 WombClass.Animation = {
     isAnimation = false,
     delta = 0,
@@ -82,11 +88,12 @@ WombClass.AnimationsSettings = {
     }
 }
 
+--- Constructor
 function WombClass:new(props)
     props = props or {}
     local instance = setmetatable({}, WombClass)
 
-    instance.name = props.name or "Womb"
+
     instance.Utils = props.Utils or require("ZWBF/ZWBFUtils")
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
     return instance
@@ -104,6 +111,8 @@ function WombClass:applyWetness(amount)
 end
 
 
+--- Rolls the cycle chances
+--- @return table A table with the chances of each cycle phase
 function WombClass:rollCycleChances()
     local chances = {
         ["Recovery"] = 0,
@@ -207,24 +216,19 @@ function WombClass:onRunDown(chance)
     data.SpermAmount = data.SpermAmount - amount
 end
 
+--- On Every One Minute update handler
 function WombClass:onEveryOneMinute()
     self:onCheckPregnancy()
     self:update()
 end
-
+--- On Every Ten Minutes update handler
 function WombClass:onEveryTenMinutes()
     self:onRunDown()
 end
 
+--- On Every Hours update handler
 function WombClass:onEveryHours()
     self.data.cycleChances = self:rollCycleChances()
-end
-
---- (DEBUG) This function is used to clear All the sperm in the Womb
-function WombClass:clearAllSperm()
-    local data = self.data
-    data.SpermAmount = 0
-    data.SpermAmountTotal = 0
 end
 
 --- Scenes ---
@@ -234,6 +238,33 @@ end
 function WombClass:getFullness()
     -- Checks if sperm amount is above half the womb's max capacity
     return (self.data.SpermAmount > (self.SBvars.WombMaxCapacity / 2)) and "full" or "empty"
+end
+
+--- Get the animation setting based on current conditions
+--- @return table Animation setting
+function WombClass:getAnimationSetting()
+
+    local isPregnant = self.Pregnancy:getIsPregnant()
+    if isPregnant then
+        local isInLabor = self.Pregnancy:getInLabor()
+        if isInLabor then
+            return self.AnimationsSettings.birth, "birth"
+        end
+
+        local pregnancyProgress = self.Pregnancy:getProgress()
+        if pregnancyProgress > 0.5 then
+            return self.AnimationsSettings.pregnant, "pregnant"
+        elseif pregnancyProgress > 0.25 then
+            return self.AnimationsSettings.condom, "condom"
+        end
+    end
+
+    local isCondom = self.Utils.Inventory:hasItem("ZWBF.Condom")
+    if isCondom then
+        return self.AnimationsSettings.condom, "condom"
+    end
+
+    return self.AnimationsSettings.normal, "normal"
 end
 
 --- Returns the normal Womb image depending on Womb's conditions
@@ -261,33 +292,8 @@ function WombClass:stillImage()
     return string.format("media/ui/womb/%s/womb_%s_%s.png", status, status, imageIndex)
 end
 
---- Get the animation setting based on current conditions
---- @return table Animation settings
-function WombClass:getAnimationSetting()
-
-    local isPregnant = self.Pregnancy:getIsPregnant()
-    if isPregnant then
-        local isInLabor = self.Pregnancy:getInLabor()
-        if isInLabor then
-            return self.AnimationsSettings.birth, "birth"
-        end
-
-        local pregnancyProgress = self.Pregnancy:getProgress()
-        if pregnancyProgress > 0.5 then
-            return self.AnimationsSettings.pregnant, "pregnant"
-        elseif pregnancyProgress > 0.25 then
-            return self.AnimationsSettings.condom, "condom"
-        end
-    end
-
-    local isCondom = self.Utils.Inventory:hasItem("ZWBF.Condom")
-    if isCondom then
-        return self.AnimationsSettings.condom, "condom"
-    end
-
-    return self.AnimationsSettings.normal, "normal"
-end
-
+--- Get the animation image based on current conditions
+--- @return string Animation image path
 function WombClass:sceneImage()
     local animation, type = self:getAnimationSetting()
     local steps = animation.steps
@@ -312,34 +318,6 @@ function WombClass:sceneImage()
     return string.format("media/ui/animation/%s%s/%s.png", type, fullness, step)
 end
 
---- Getters and Setters ---
-
---- Get if it is in animation state
---- @return number Womb.isAnimation cycle day
-function WombClass:getIsAnimation()
-    return self.Animation.isAnimation
-end
-
---- Set if it is in animation state
---- @param status boolean Animation status
-function WombClass:setIsAnimation(status)
-    self.Animation.isAnimation = status
-end
-
---- Get the current cycle phase to be used in the UI
---- @return string `Womb.data.cyclePhase` cycle phase
-function WombClass:getCyclePhaseTranslation()
-    local cycleTranslations = {
-        ["Recovery"] = "IGUI_ZWBF_UI_Recovery",
-        ["Menstruation"] = "IGUI_ZWBF_UI_Menstruation",
-        ["Follicular"] = "IGUI_ZWBF_UI_Follicular",
-        ["Ovulation"] = "IGUI_ZWBF_UI_Ovulation",
-        ["Luteal"] = "IGUI_ZWBF_UI_Luteal",
-        ["Pregnant"] = "IGUI_ZWBF_UI_Pregnant"
-    }
-    return cycleTranslations[self.data.CyclePhase]
-end
-
 --- Set cycle phase based on the current day
 function WombClass:updateCyclePhase()
     local data = self.data
@@ -356,48 +334,6 @@ function WombClass:updateCyclePhase()
     else
         data.CyclePhase = "Luteal"
     end
-end
-
---- Returns true if the player is in recovery
---- @return boolean `true` if the player is in recovery
-function WombClass:getInRecovery()
-    return self.data.CyclePhase == "Recovery"
-end
-
---- Set the player on contraceptives
---- @param status boolean
-function WombClass:setContraceptive(status)
-    self.data.OnContraceptive = status
-end
-
---- Get the player's contraceptive status
---- @return boolean `Womb.data.OnContraceptive` contraceptive status
-function WombClass:getOnContraceptive()
-    return self.data.OnContraceptive
-end
-
---- Set the amount of sperm in the womb
---- @param amount number Sperm amount
-function WombClass:setSpermAmount(amount)
-    self.data.SpermAmount = amount
-end
-
---- Get the amount of sperm in the womb
---- @return number `Womb.data.SpermAmount` sperm amount
-function WombClass:getSpermAmount()
-    return self.data.SpermAmount
-end
-
---- Get the total amount of sperm in the womb
---- @return number `Womb.data.SpermAmountTotal` total sperm amount
-function WombClass:getSpermAmountTotal()
-    return self.data.SpermAmountTotal
-end
-
---- Get the current Fertility
---- @return number `Womb.data.Fertility` fertility percentage
-function WombClass:getFertility()
-    return self.data.Fertility
 end
 
 --- Set fertility based on the current cycle phase and conditions like pregnancy and contraceptives
@@ -417,6 +353,76 @@ function WombClass:updateFertility()
     end
 end
 
+--- Getters and Setters ---
+
+--- Get if it is in animation state
+--- @return number WombClass.isAnimation cycle day
+function WombClass:getIsAnimation()
+    return self.Animation.isAnimation
+end
+
+--- Set if it is in animation state
+--- @param status boolean Animation status
+function WombClass:setIsAnimation(status)
+    self.Animation.isAnimation = status
+end
+
+--- Get the current cycle phase to be used in the UI
+--- @return string Cycle phase translation
+function WombClass:getCyclePhaseTranslation()
+    local cycleTranslations = {
+        ["Recovery"] = "IGUI_ZWBF_UI_Recovery",
+        ["Menstruation"] = "IGUI_ZWBF_UI_Menstruation",
+        ["Follicular"] = "IGUI_ZWBF_UI_Follicular",
+        ["Ovulation"] = "IGUI_ZWBF_UI_Ovulation",
+        ["Luteal"] = "IGUI_ZWBF_UI_Luteal",
+        ["Pregnant"] = "IGUI_ZWBF_UI_Pregnant"
+    }
+    return cycleTranslations[self.data.CyclePhase]
+end
+
+--- Returns true if the player is in recovery
+--- @return boolean player is in recovery
+function WombClass:getInRecovery()
+    return self.data.CyclePhase == "Recovery"
+end
+
+--- Set the player on contraceptives
+--- @param status boolean
+function WombClass:setContraceptive(status)
+    self.data.OnContraceptive = status
+end
+
+--- Get the player's contraceptive status
+--- @return boolean Contraceptive status
+function WombClass:getOnContraceptive()
+    return self.data.OnContraceptive
+end
+
+--- Set the amount of sperm in the womb
+--- @param amount number Sperm amount
+function WombClass:setSpermAmount(amount)
+    self.data.SpermAmount = amount
+end
+
+--- Get the amount of sperm in the womb
+--- @return number Sperm amount
+function WombClass:getSpermAmount()
+    return self.data.SpermAmount
+end
+
+--- Get the total amount of sperm in the womb
+--- @return number Total sperm amount
+function WombClass:getSpermAmountTotal()
+    return self.data.SpermAmountTotal
+end
+
+--- Get the current Fertility
+--- @return number Fertility percentage
+function WombClass:getFertility()
+    return self.data.Fertility
+end
+
 --- Set animation delta, the progress of animation 0-1
 --- @param delta boolean Animation status
 function WombClass:setAnimationDelta(delta)
@@ -424,7 +430,7 @@ function WombClass:setAnimationDelta(delta)
 end
 
 --- Get animation delta, the progress of animation 0-1
---- @return number `Womb.Animation.delta` animation delta
+--- @return number Animation delta
 function WombClass:getAnimationDelta()
     return self.Animation.delta
 end
@@ -436,7 +442,7 @@ function WombClass:setAnimationDuration(duration)
 end
 
 --- Get animation duration
---- @return number `Womb.Animation.duration` animation duration
+--- @return number Animation duration
 function WombClass:getAnimationDuration()
     return self.Animation.duration
 end
@@ -450,6 +456,14 @@ function WombClass:getImage()
     end
     -- If not in a scene, the normal womb will be shown
     return self:stillImage()
+end
+
+--- DEBUG FUNCTIONS ---
+--- (DEBUG) This function is used to clear All the sperm in the Womb
+function WombClass:clearAllSperm()
+    local data = self.data
+    data.SpermAmount = 0
+    data.SpermAmountTotal = 0
 end
 
 --- (DEBUG) Advance the player's menstrual cycle to the next phase

@@ -3,6 +3,12 @@ local getSpecificPlayer = getSpecificPlayer
 local getText = getText
 local ISContextMenu = ISContextMenu
 
+--- This class handles the debug menu for the ZWBF mod.
+--- @class ZWBFDebugMenuClass
+--- @field Utils table ZWBFUtilsClass
+--- @field Womb table ZWBFWomb
+--- @field Pregnancy table ZWBFPregnancy
+--- @field Lactation table ZWBFLactation
 local ZWBFDebugMenuClass = {}
 ZWBFDebugMenuClass.__index = ZWBFDebugMenuClass
 
@@ -11,7 +17,6 @@ function ZWBFDebugMenuClass:new(props)
     props = props or {}
     local instance = setmetatable({}, ZWBFDebugMenuClass)
 
-    instance.name = props.name or "ZWBFDebugMenu"
     instance.Utils = props.Utils or require("ZWBF/ZWBFUtils")
     instance.Womb = props.Womb or require("ZWBF/ZWBFWomb")
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")

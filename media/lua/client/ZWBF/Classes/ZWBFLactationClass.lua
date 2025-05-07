@@ -5,8 +5,13 @@ local SandboxVars = SandboxVars
 
 local SBVars = SandboxVars.ZWBF
 
---- LactationClass
---- This class handles the lactation system for the player
+--- This class handles the lactation system
+--- @class LactationClass
+--- @field SBvars table Sandbox variables for lactation
+--- @field data table Lactation data
+--- @field CONSTANTS table Constants for lactation
+--- @field Pregnancy table ZWBFPregnancy
+--- @field Utils table ZWBFUtils
 local LactationClass = {}
 LactationClass.__index = LactationClass
 
@@ -36,7 +41,7 @@ LactationClass.CONSTANTS = {
 function LactationClass:new(props)
     props = props or {}
     local instance = setmetatable({}, LactationClass)
-    instance.name = props.name or "Lactation"
+
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
     instance.Utils = props.Utils or require("ZWBF/ZWBFUtils")
     return instance
@@ -83,8 +88,6 @@ function LactationClass:onCreatePlayer(player)
     data.Expiration = data.Expiration or 0
 
     self.data = data
-
-    self:update()
 end
 
 --- Returns the milk amount
@@ -147,7 +150,6 @@ end
 function LactationClass:remove(amount)
     local data = self.data
     data.MilkAmount = data.MilkAmount - amount
-    self:update()
 end
 
 --- Get the amount needed to make a bottle
@@ -196,7 +198,7 @@ function LactationClass:getMultiplier()
 end
 
 --- Update that should occur every hour
-function LactationClass:onEveryHour()
+function LactationClass:onEveryHours()
     local data = self.data
     if not data.IsLactating then return end
 
@@ -214,7 +216,6 @@ end
 
 --- Check if the player is pregnant and if the pregnancy is advanced enough to be lactating
 function LactationClass:onCheckPregnancy()
-    local data = self.data
     if self.Pregnancy:getIsPregnant() and self.Pregnancy:getProgress() > 0.4 then
         self:set(true)
         self:setMultiplier(self.Pregnancy:getProgress())
@@ -223,7 +224,7 @@ function LactationClass:onCheckPregnancy()
 end
 
 --- Update that should occur every minute
-function LactationClass:onEveryMinute()
+function LactationClass:onEveryOneMinute()
     self:onCheckExpiration()
     self:onCheckPregnancy()
     self:update()
@@ -234,9 +235,9 @@ function LactationClass:onCheckExpiration()
     local data = self.data
     if data.Expiration > 0 then
         data.Expiration = data.Expiration - 1
-        if data.Expiration <= 0 then
-            self:set(false)
-        end
+    elseif data.Expiration <= 0 then
+        data.Expiration = 0
+        self:set(false)
     end
 end
 
@@ -245,11 +246,13 @@ function LactationClass:registerEvents()
     Events.OnCreatePlayer.Add(function(_, player)
         self:onCreatePlayer(player)
     end)
-    Events.EveryHours.Add(function()
-        self:onEveryHour()
-    end)
+
     Events.EveryOneMinute.Add(function()
-        self:onEveryMinute()
+        self:onEveryOneMinute()
+    end)
+
+    Events.EveryHours.Add(function()
+        self:onEveryHours()
     end)
 end
 
