@@ -1,3 +1,6 @@
+-- Localizaded PZ functions
+local getText = getText
+
 --- TraitsManager Class
 --- Handles the initialization and management of traits
 local TraitsManager = {}
