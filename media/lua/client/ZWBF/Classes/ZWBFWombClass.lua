@@ -221,9 +221,12 @@ end
 
 -- Method to control menstruation effects
 function WombClass:onMenstruationEffect(chance)
-    -- TODO: maybe add some traits to change this?
+    local player = self.player
+    -- If player has the NoMenstrualCramps trait, do nothing
+    if player:HasTrait("NoMenstrualCramps") then return end
+
     chance = chance or 50
-    local maxPain = 50
+    local maxPain = self.player:HasTrait("StrongMenstrualCramps") and 50 or 25
 
     local groin = self:getGroin()
 

@@ -46,6 +46,18 @@ function TraitsManager:new()
             Profession = false,
             MutualExclusives = {},
         },
+        {
+            IdentifierType = "StrongMenstrualCramps",
+            Cost = -1,
+            Profession = false,
+            MutualExclusives = {"NoMenstrualCramps"},
+        },
+        {
+            IdentifierType = "NoMenstrualCramps",
+            Cost = 1,
+            Profession = false,
+            MutualExclusives = {},
+        }
         -- TODO: Add Baby Crazy trait -6 > Decreases Unhappiness, Boredom and Stress when breastfeeding and when getting pregnant. Reduces injuries by 10% when in the 2nd or 3rd trimester.
         -- TODO: Add Dedicated Parent trait -10 > Reduces injuries, fatigue rate and endurance loss when a baby is equipped, by 20% (my bf has this)
     }
