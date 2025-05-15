@@ -125,8 +125,8 @@ function EngorgementClass:inflictPain(level)
 	   	["0.1"] = 1
 	}
 
-	-- inflict pain until the limit of 50 (pain)
-	if (torso:getAdditionalPain() < 50)
+	-- inflict pain until the limit of 25 (minor pain)
+	if (torso:getAdditionalPain() < 25)
 	then
 		torso:setAdditionalPain(torso:getAdditionalPain() + painLevel[tostring(level)])
 	end
