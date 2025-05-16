@@ -29,9 +29,10 @@ end
 --- @param item table
 --- @param result table
 function ZWBFRecipes.OnCreate.HandExpress(item, result)
-    Lactation:remove(Lactation:getBottleAmount() * 2)
-    Lactation:setMultiplier(ZombRandFloat(0.05, 0.1))
-    Lactation:addExpiration(Lactation.SBvars.MilkExpiration)
+    Lactation:useMilk(
+        Lactation:getBottleAmount() * 2,
+        ZombRandFloat(0.05, 0.1)
+    )
 end
 
 
@@ -48,9 +49,10 @@ end
 --- @param item table
 --- @param result table
 function ZWBFRecipes.OnCreate.BreastPump(item, result)
-    Lactation:remove(Lactation:getBottleAmount())
-    Lactation:setMultiplier(ZombRandFloat(0.1, 0.2))
-    Lactation:addExpiration(Lactation.SBvars.MilkExpiration)
+    Lactation:useMilk(
+        Lactation:getBottleAmount(),
+        ZombRandFloat(0.1, 0.2)
+    )
 end
 
 --- Run if the sperm can be cleaned
