@@ -17,7 +17,7 @@ EngorgementClass.__index = EngorgementClass
 
 --- EngorgementClass Constructor
 --- This method will initialize the MoodleFramework if applicable
---- @param props table The properties for the class
+--- @param props table | nil The properties for the class
 function EngorgementClass:new(props)
 	props = props or {}
     local instance = setmetatable({}, EngorgementClass)

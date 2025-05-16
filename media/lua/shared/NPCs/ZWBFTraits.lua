@@ -1,5 +1,7 @@
 -- Localizaded PZ functions
 local getText = getText
+local TraitFactory = TraitFactory
+local Events= Events
 
 --- TraitsManager Class
 --- Handles the initialization and management of traits
