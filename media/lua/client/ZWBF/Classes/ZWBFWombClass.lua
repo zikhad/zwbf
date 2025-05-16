@@ -4,6 +4,7 @@ local ZombRand = ZombRand
 local BodyPartType = BodyPartType
 local HaloTextHelper = HaloTextHelper
 local getText = getText
+local Events = Events
 local SandboxVars = SandboxVars
 local SBVars = SandboxVars.ZWBF
 
@@ -100,14 +101,17 @@ function WombClass:new(props)
 end
 
 --- Methods ---
+--- @return table Groin return the groin to apply effects
+function WombClass:getGroin()
+    return self.player:getBodyDamage():getBodyPart(BodyPartType.Groin)
+end
 
 --- Apply wetness to the groin
 --- @param amount number | nil (optional) The amount of wetness to apply
 function WombClass:applyWetness(amount)
     amount = amount or ZombRand(self.CONSTANTS.WETNESS.MIN, self.CONSTANTS.WETNESS.MAX)
-    local player = self.player
-    local Groin = player:getBodyDamage():getBodyPart(BodyPartType.FromString("Groin"))
-    Groin:setWetness(Groin:getWetness() + amount)
+    local groin = self:getGroin()
+    groin:setWetness(groin:getWetness() + amount)
 end
 
 
@@ -131,9 +135,8 @@ function WombClass:addCycleDay()
     data.OnContraceptive = false
     if not self.Pregnancy:getIsPregnant() then
         data.CycleDay = (data.CycleDay < 28) and (data.CycleDay + 1) or 1
-    else
-        data.cycleChances = self:rollCycleChances()
     end
+    data.cycleChances = self:rollCycleChances()
 end
 
 --- Adds sperm to the womb
@@ -204,7 +207,7 @@ end
 --- @param chance number | nil (optional) The chance of running down
 function WombClass:onRunDown(chance)
     chance = chance or 50
-    if ZombRand(100) > 50 then return end -- chance of not doing anything
+    if ZombRand(100) > chance then return end -- chance of not doing anything
     local player = self.player
     local amount = ZombRand(50)
     local data = self.data
@@ -214,6 +217,30 @@ function WombClass:onRunDown(chance)
         self:applyWetness()
     end
     data.SpermAmount = data.SpermAmount - amount
+end
+
+-- Method to control menstruation effects
+function WombClass:onMenstruationEffect(chance)
+    local player = self.player
+    -- If player has the NoMenstrualCramps trait, do nothing
+    if player:HasTrait("NoMenstrualCramps") then return end
+
+    chance = chance or 50
+    local maxPain = self.player:HasTrait("StrongMenstrualCramps") and 50 or 25
+
+    local groin = self:getGroin()
+
+    -- Apply bleeding
+    if ZombRand(100) > chance then
+        local bleedTime = groin:getBleedingTime()
+        groin:setBleedingTime((bleedTime < 10) and 10 or bleedTime)
+    end
+
+    -- Apply pain
+    if (ZombRand(100) > chance) and (groin:getAdditionalPain() < maxPain) then
+        groin:setAdditionalPain(groin:getAdditionalPain() + ZombRand(maxPain))
+    end
+    
 end
 
 --- On Every One Minute update handler
@@ -231,6 +258,15 @@ function WombClass:onEveryHours()
     self.data.cycleChances = self:rollCycleChances()
 end
 
+-- On Every Dawn
+function WombClass:onDawn()
+    local data = self.data
+    -- Apply different effects dependin on cycle phase
+    if data.CyclePhase == "Menstruation" then
+        self:onMenstruationEffect()
+    end
+end
+
 --- Scenes ---
 
 --- Determines fullness based on sperm amount in Womb data
@@ -241,7 +277,7 @@ function WombClass:getFullness()
 end
 
 --- Get the animation setting based on current conditions
---- @return table Animation setting
+--- @return table setting, string type animation setting and type
 function WombClass:getAnimationSetting()
 
     local isPregnant = self.Pregnancy:getIsPregnant()
@@ -382,7 +418,7 @@ function WombClass:getCyclePhaseTranslation()
 end
 
 --- Returns true if the player is in recovery
---- @return boolean player is in recovery
+--- @return boolean inRecovery Returns true if player is in recovery
 function WombClass:getInRecovery()
     return self.data.CyclePhase == "Recovery"
 end
@@ -507,6 +543,10 @@ function WombClass:registerEvents()
 
         Events.EveryDays.Add(function()
             self:addCycleDay()
+        end)
+
+        Events.OnDawn.Add(function()
+            self:onDawn()
         end)
     end
     local function customEvents()

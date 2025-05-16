@@ -19,4 +19,10 @@ UI_EN = {
     UI_Trait_DairyCow = "Dairy Cow",
     UI_Trait_DairyCow_Description = "Increases milk production rate (+25%) and time lactating (+25%)",
 
+    UI_Trait_StrongMenstrualCramps = "Bad Menstrual Cramps",
+    UI_Trait_StrongMenstrualCramps_Description = "You have more debilitating menstrual cramps <br>- Menstrual cramps 2x stronger",
+
+    UI_Trait_NoMenstrualCramps = "No Menstrual Cramps",
+    UI_Trait_NoMenstrualCramps_Description = "You hardly feel menstrual cramps <br>- You menstruation does not have any bad effect",
+
 }
