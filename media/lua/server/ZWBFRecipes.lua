@@ -15,6 +15,24 @@ ZWBFRecipes = {
 local Lactation = require("ZWBF/ZWBFLactation")
 local Womb = require("ZWBF/ZWBFWomb")
 
+-- Test if player can Feed a baby
+--- @param item table
+--- @param result table
+--- @return boolean
+function ZWBFRecipes.OnTest.FeedBaby(item, result)
+    local player = getPlayer()
+    return player:isFemale() and Lactation:getMilkAmount() >= Lactation:getBottleAmount()
+end
+
+function ZWBFRecipes.OnCreate.FeedBaby(item, result)
+    -- TODO: implement baby feed
+    print("TODO: implement baby feed")
+    Lactation:useMilk(
+        Lactation:getBottleAmount(),
+        ZombRandFloat(0.1, 0.3)
+    )
+end
+
 -- Test if Player can Hand Express
 -- Hand expression uses double of the Breast pump milk amount
 --- @param item table

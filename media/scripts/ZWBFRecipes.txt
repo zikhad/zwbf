@@ -7,6 +7,18 @@ module ZWBFRecipes
     }
 
     /************************ Milk ************************/
+    recipe Breast Feed Baby
+    {
+        keep Baby,
+        Category: Cooking,
+        Time: 1500,
+        AnimNode: FeedBaby,
+        Sound: BreastfeedBaby,
+        OnGiveXP: Recipe.OnGiveXP.Cooking3,
+        OnTest: ZWBFRecipes.OnTest.FeedBaby,
+        OnCreate: ZWBFRecipes.OnCreate.FeedBaby,
+    }
+
     recipe Hand Expression in Bottle
     {
         WaterBottleEmpty,
@@ -16,7 +28,7 @@ module ZWBFRecipes
         Time: 800.0,
         AnimNode: Yonchi_breastpump,
         Sound: PourWaterIntoObject,
-        OnGiveXP: Recipe.OnGiveXP.None,
+        OnGiveXP: Recipe.OnGiveXP.Cooking3,
         OnTest: ZWBFRecipes.OnTest.HandExpress,
         OnCreate: ZWBFRecipes.OnCreate.HandExpress,
     }
@@ -30,7 +42,7 @@ module ZWBFRecipes
         Time: 800.0,
         AnimNode: Yonchi_breastpump,
         Sound: PourWaterIntoObject,
-        OnGiveXP: Recipe.OnGiveXP.None,
+        OnGiveXP: Recipe.OnGiveXP.Cooking3,
         OnTest: ZWBFRecipes.OnTest.HandExpress,
         OnCreate: ZWBFRecipes.OnCreate.HandExpress,
     }
@@ -45,7 +57,7 @@ module ZWBFRecipes
         Category: Cooking,
         AnimNode: Yonchi_breastpump,
         Sound: PourWaterIntoObject,
-        OnGiveXP: Recipe.OnGiveXP.None,
+        OnGiveXP: Recipe.OnGiveXP.Cooking3,
         OnTest: ZWBFRecipes.OnTest.BreastPump,
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
         Prop1:  Source=2,
@@ -61,7 +73,7 @@ module ZWBFRecipes
         Category: Cooking,
         Sound: PourWaterIntoObject,
         AnimNode: Yonchi_breastpump,
-        OnGiveXP: Recipe.OnGiveXP.None,
+        OnGiveXP: Recipe.OnGiveXP.Cooking3,
         OnTest: ZWBFRecipes.OnTest.BreastPump,
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
         Prop1:  Source=2
