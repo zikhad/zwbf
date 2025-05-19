@@ -22,7 +22,7 @@ module ZWBFRecipes
     recipe Hand Expression in Bottle
     {
         WaterBottleEmpty,
-        
+
         Result: MilkBottle,
         Category: Cooking,
         Time: 800.0,
@@ -36,7 +36,7 @@ module ZWBFRecipes
     recipe Hand Expression in Biberon
     {
         Empty_Biberon,
-        
+
         Result: Biberon_milk,
         Category: Cooking,
         Time: 800.0,
@@ -62,7 +62,7 @@ module ZWBFRecipes
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
         Prop1:  Source=2,
     }
-    
+
     recipe Fill Milk Bottle
     {
         WaterBottleEmpty,
@@ -78,21 +78,20 @@ module ZWBFRecipes
         OnCreate: ZWBFRecipes.OnCreate.BreastPump,
         Prop1:  Source=2
     }
-    
+
     /************************ Vaginal Douche ************************/
     recipe Fill Vaginal Douche
     {
         VaginalDouche_empty,
         Water;1,
-        
+
         Result: VaginalDouche_full,
         Time: 100,
         Category: Health,
         Sound: PourWaterIntoObject,
-        OnGiveXP: Recipe.OnGiveXP.None,
         Prop1:  Source=1,
     }
-    
+
     recipe Clear Sperm
     {
         VaginalDouche_full,
@@ -102,7 +101,6 @@ module ZWBFRecipes
         Sound: PourWaterIntoObject,
         StopOnWalk: true,
         AnimNode: blabla_standing_cleans_herself,
-        OnGiveXP: Recipe.OnGiveXP.None,
         OnTest: ZWBFRecipes.OnTest.ClearSperm,
         OnCreate: ZWBFRecipes.OnCreate.ClearSperm,
         Prop2:  Source=1,
@@ -125,6 +123,7 @@ module ZWBFRecipes
 
         Result: CondomBox,
         Time: 20.0,
+        Category: Health,
         Sound: PutItemInBag
     }
 }
