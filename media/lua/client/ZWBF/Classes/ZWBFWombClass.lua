@@ -94,7 +94,6 @@ function WombClass:new(props)
     props = props or {}
     local instance = setmetatable({}, WombClass)
 
-
     instance.Utils = props.Utils or require("ZWBF/ZWBFUtils")
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
     return instance
@@ -264,6 +263,40 @@ function WombClass:onDawn()
     -- Apply different effects dependin on cycle phase
     if data.CyclePhase == "Menstruation" then
         self:onMenstruationEffect()
+    end
+end
+
+--- This function will control if player will get pregnant
+function WombClass:impregnate()
+    local player = self.player
+    if (
+            player:HasTrait("Infertile") or
+            self:getOnContraceptive() or
+            self.Pregnancy:getIsPregnant()
+        ) then
+            return
+        end
+        if ZombRandFloat(0,1) > (1 - self:getFertility()) then
+            local text = getText("IGUI_ZWBF_UI_Fertilized")
+            HaloTextHelper.addText(player, text, HaloTextHelper.getColorGreen())
+            self.Pregnancy:start()
+        end
+end
+
+--- This function should be called at the end of an intercourse animation
+function WombClass:intercourse()
+    local player = self.player
+    -- Remove condom, if player has any in the main inventory
+    if self.Utils.Inventory:hasItem("ZWBF.Condom", player) then
+       local inventory = player:getInventory()
+       inventory:Remove("Condom")
+       inventory:AddItem("ZWBF.CondomUsed", 1)
+    else
+        local amount = ZombRand(10, 50)
+        local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
+        HaloTextHelper.addTextWithArrow(player, text, true, HaloTextHelper.getColorGreen())
+        self:addSperm(amount)
+        self:impregnate()
     end
 end
 
