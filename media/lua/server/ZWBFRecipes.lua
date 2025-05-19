@@ -9,11 +9,29 @@ local ZombRandFloat = ZombRandFloat
 --- VARIABLES
 ZWBFRecipes = {
     OnTest = {},
-    OnCreate = {}
+    OnCreate = {},
+    GetItemTypes = {}
 }
 
 local Lactation = require("ZWBF/ZWBFLactation")
 local Womb = require("ZWBF/ZWBFWomb")
+
+
+--- Get the item types for the recipes
+function ZWBFRecipes.GetItemTypes.Baby(scriptItems)
+    --scriptItems:addAll(getScriptManager():getItemsByType("Baby"))
+    local items = getScriptManager():getAllItems()
+    for i = 1, items:size() do
+        local item = items:get(i-1)
+        if (
+                string.find(item:getType(), "Baby")
+                and not scriptItems:contains(item)
+        ) then
+            scriptItems:add(item)
+        end
+    end
+    -- scriptItems:addAll(getScriptManager():getItemsTag("Baby"))
+end
 
 -- Test if player can Feed a baby
 --- @param item table

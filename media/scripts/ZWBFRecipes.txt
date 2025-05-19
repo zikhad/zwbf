@@ -9,7 +9,8 @@ module ZWBFRecipes
     /************************ Milk ************************/
     recipe Breast Feed Baby
     {
-        keep Baby,
+        keep [ZWBFRecipes.GetItemTypes.Baby],
+        Result: nil,
         Category: Cooking,
         Time: 1500,
         AnimNode: FeedBaby,
