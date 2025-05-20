@@ -10,6 +10,17 @@ local Womb = require("ZWBF/ZWBFWomb")
 --- This file creates the Timed Action for when contraceptive is taken
 local ZWBFActionTakeContraceptive = ISBaseTimedAction:derive("ZWBFActionTakeContraceptive")
 
+function ZWBFActionTakeContraceptive:new(character, pills)
+	local instance = setmetatable({}, self)
+	self.__index = self
+	instance.character = character
+	instance.pills = pills
+	instance.maxTime = 100
+	instance.stopOnWalk = false
+	instance.stopOnRun = false
+	return instance
+end
+
 function ZWBFActionTakeContraceptive:isValid()
 	return self.character:getInventory():contains(self.pills)
 end
@@ -36,18 +47,6 @@ function ZWBFActionTakeContraceptive:perform()
 	self.pills:setJobDelta(0.0)
 	self.pills:Use()
 	ISBaseTimedAction.perform(self)
-	Womb:setContraceptive(true)
-end
-
-function ZWBFActionTakeContraceptive:new(character, pills)
-	local o = setmetatable({}, self)
-	self.__index = self
-	o.character = character
-	o.pills = pills
-	o.maxTime = 100
-	o.stopOnWalk = false
-	o.stopOnRun = false
-	return o
 end
 
 return ZWBFActionTakeContraceptive

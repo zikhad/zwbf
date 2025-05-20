@@ -28,12 +28,12 @@ WombClass.SBvars = {
 }
 
 WombClass.data = {
-    SpermAmount = 0,
-    SpermAmountTotal = 0,
-    CycleDay = 0,
-    CyclePhase = "",
-    Fertility = 0,
-    OnContraceptive = false
+    SpermAmount = 0, -- amount of semen in womb
+    SpermAmountTotal = 0, -- total amount of semen
+    CycleDay = 0, -- day of the menstrual cycle
+    CyclePhase = "", -- current menstrual cycle phase
+    Fertility = 0, -- fertility number
+    OnContraceptive = false -- flag for contraceptive
 }
 
 -- CONSTANTS
@@ -46,9 +46,9 @@ WombClass.CONSTANTS = {
 }
 
 WombClass.Animation = {
-    isAnimation = false,
-    delta = 0,
-    duration = 0
+    isAnimation = false, -- flag for when animation is playing 
+    delta = 0, -- animatio delta (0-1) for the current animation
+    duration = 0 -- max time of the duration
 }
 
 WombClass.AnimationsSettings = {
@@ -96,6 +96,7 @@ function WombClass:new(props)
 
     instance.Utils = props.Utils or require("ZWBF/ZWBFUtils")
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
+    
     return instance
 end
 
@@ -115,7 +116,7 @@ end
 
 
 --- Rolls the cycle chances
---- @return table A table with the chances of each cycle phase
+--- @return table chances table with the chances of each cycle phase
 function WombClass:rollCycleChances()
     local chances = {
         ["Recovery"] = 0,

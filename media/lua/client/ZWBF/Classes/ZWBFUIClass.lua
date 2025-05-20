@@ -1,5 +1,6 @@
 local Events = Events
-
+local getText = getText
+local getPlayer = getPlayer
 local ZWBFCharacterInfoTabManagerClass = require("ZWBF/Classes/ZWBFCharacterInfoTabManagerClass")
 local ZWBFDebugMenuClass = require("ZWBF/Classes/ZWBFDebugMenuClass")
 
@@ -11,14 +12,13 @@ end
 
 --- This class handles the UI for the ZWBF mod, including the lactation and womb panels.
 --- @class ZWBFUIClass
---- @field UI table UIElement
+--- @field UI table The UI object
 --- @field CharacterInfoTabManager table ZWBFCharacterInfoTabManagerClass
 --- @field Utils table ZWBFUtilsClass
 --- @field Womb table ZWBFWomb
 --- @field Pregnancy table ZWBFPregnancy
 --- @field Lactation table ZWBFLactation
 --- @field DebugMenu table ZWBFDebugMenu
---- @field UI table The UI object
 --- @field activePanels table A table to track the visibility of the panels
 --- @field heights table A table to track the heights of the panels
 --- @field UIElements table A table to track the UI elements
