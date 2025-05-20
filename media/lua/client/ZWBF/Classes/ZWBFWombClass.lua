@@ -207,15 +207,16 @@ end
 function WombClass:onRunDown(chance)
     chance = chance or 50
     if ZombRand(100) > chance then return end -- chance of not doing anything
-    local player = self.player
-    local amount = ZombRand(50)
+
     local data = self.data
     if data.SpermAmount > 0 then
+        local amount = ZombRand(50)
         local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
-        HaloTextHelper.addTextWithArrow(player, text, false, HaloTextHelper.getColorWhite())
+        local newAmount = data.SpermAmount - amount
+        data.SpermAmount = newAmount < 0 and 0 or newAmount
         self:applyWetness()
+        HaloTextHelper.addTextWithArrow(self.player, text, false, HaloTextHelper.getColorWhite())
     end
-    data.SpermAmount = data.SpermAmount - amount
 end
 
 -- Method to control menstruation effects
@@ -239,7 +240,7 @@ function WombClass:onMenstruationEffect(chance)
     if (ZombRand(100) > chance) and (groin:getAdditionalPain() < maxPain) then
         groin:setAdditionalPain(groin:getAdditionalPain() + ZombRand(maxPain))
     end
-    
+
 end
 
 --- On Every One Minute update handler
