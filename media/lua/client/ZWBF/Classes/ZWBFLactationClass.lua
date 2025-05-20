@@ -234,7 +234,7 @@ function LactationClass:onEveryHours()
 
     local amount = ZombRand(self.CONSTANTS.AMOUNTS.MIN, self.CONSTANTS.AMOUNTS.MAX)
     local multiplier = 1 + data.MilkMultiplier
-    data.MilkAmount = (data.MilkAmount + amount) * multiplier
+    data.MilkAmount = data.MilkAmount + (amount * multiplier)
     data.MilkMultiplier = data.MilkMultiplier - 0.1
 
     if (data.MilkAmount < 0) then
