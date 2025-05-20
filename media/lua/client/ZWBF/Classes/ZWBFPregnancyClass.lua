@@ -51,6 +51,20 @@ function PregnancyClass:new(props)
     return instance
 end
 
+--- Initializes the pregnancy system for the player.
+function PregnancyClass:onCreatePlayer(player)
+    
+    local data = player:getModData().ZWBFPregnancy or {}
+    
+    data.PregnancyDuration = data.PregnancyDuration or (SBVars.PregnancyDuration * 24 * 60)
+    data.PregnancyCurrent = data.PregnancyCurrent or 0
+    data.InLabor = data.InLabor or false
+    data.LaborProgress = data.LaborProgress or 0
+    
+    self.player = player
+    self.data = data
+end
+
 --- Resets pregnancy-related variables.
 function PregnancyClass:resetVariables()
     self.data = self.data or {}
@@ -63,18 +77,6 @@ end
 --- Updates pregnancy data in the player's mod data.
 function PregnancyClass:update()
     self.player:getModData().ZWBFPregnancy = self.data
-end
-
---- Initializes the pregnancy system for the player.
-function PregnancyClass:onCreatePlayer(player)
-    self.player = player
-    local modData = self.player:getModData()
-    modData.ZWBFPregnancy = modData.ZWBFPregnancy or {}
-    self.data = modData.ZWBFPregnancy
-    self.data.PregnancyDuration = self.data.PregnancyDuration or (SBVars.PregnancyDuration * 24 * 60)
-    self.data.PregnancyCurrent = self.data.PregnancyCurrent or 0
-    self.data.InLabor = self.data.InLabor or false
-    self.data.LaborProgress = self.data.LaborProgress or 0
 end
 
 --- Checks if the player is pregnant.

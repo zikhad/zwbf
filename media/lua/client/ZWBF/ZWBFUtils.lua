@@ -1,18 +1,15 @@
+-- Localized PZ Variables
+local getPlayer = getPlayer
+local ISToolTip = ISToolTip
+local ISTimedActionQueue = ISTimedActionQueue
+local getPlayer = getPlayer
+local ZomboWinAnimationData = ZomboWinAnimationData
+
+--- @class Utils This class has a collection of useful methods
 local Utils = {}
 Utils.Table = {} -- Utility functions for tables
 Utils.Animation = {} -- Utility functions for animations
 Utils.Inventory = {} -- Utility functions related to Inventory
-
--- Localized PZ Variables
--- local ISToolTip = ISToolTip
--- local ISTimedActionQueue = ISTimedActionQueue;
--- local getPlayer = getPlayer;
--- local ZomboWinAnimationData = ZomboWinAnimationData;
-
--- ZomboWin Variables
--- local AnimationUtils = require("ZomboWin/ZomboWinAnimationUtils")
-
--- LOCAL FUNCTIONS
 
 --- Gets the player current animation
 --- @param player any | nil
@@ -27,10 +24,12 @@ local function getAnim(player)
     return nil
 end
 
+-- LOCAL FUNCTIONS
 -- Get animation info table
 local function getAnimInfo(player)
+    player = player or getPlayer()
     -- Get Current animation name
-    local CurrentAnim = getAnim(player or getPlayer())
+    local CurrentAnim = getAnim(player)
     -- Check if any animation is playing
     if not CurrentAnim then return nil end
 

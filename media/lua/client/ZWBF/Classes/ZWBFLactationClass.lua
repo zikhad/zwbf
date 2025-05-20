@@ -17,32 +17,26 @@ LactationClass.__index = LactationClass
 
 LactationClass.SBvars = {
     MilkCapacity = 1000, -- Maximum amount of milk that can be stored
-    MilkExpiration = 7, -- Expiration in days
-}
-
--- local representation of Lactation Data
-LactationClass.data = {
-    IsLactating = false, -- Controls if the player is lactating
-    MilkAmount = 0, -- Amount of milk currently stored
-    MilkMultiplier = 0, -- Multiplier for the milk
-    Expiration = 0, -- Expiration in minutes
+    MilkExpiration = 7,  -- Expiration in days
 }
 
 --- CONSTANTS
 LactationClass.CONSTANTS = {
     AMOUNTS = {
-        MIN = 0, -- Minimum amount of milk produced
-        MAX = 20 -- Maximum amount of milk produced
+        MIN = 0,   -- Minimum amount of milk produced
+        MAX = 20   -- Maximum amount of milk produced
     },
     MAX_LEVEL = 5, -- Maximum level of milk
 }
 
+--- Initializes the Lactation
 function LactationClass:new(props)
     props = props or {}
     local instance = setmetatable({}, LactationClass)
 
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
     instance.Utils = props.Utils or require("ZWBF/ZWBFUtils")
+
     return instance
 end
 
@@ -50,6 +44,7 @@ end
 function LactationClass:update()
     local player = self.player
     local data = self.data
+    
     data.MilkAmount = (data.MilkAmount > 0) and data.MilkAmount or 0
     data.MilkMultiplier = (data.MilkMultiplier > 0) and data.MilkMultiplier or 0
     data.IsLactating = data.IsLactating or false
@@ -73,7 +68,7 @@ function LactationClass:setExpiration(days)
 end
 
 --- Use milk.
---- 
+---
 --- Handle milk usage (also affect multiplier and expiration)
 --- @param amount number
 --- @param multiplier number | nil
@@ -82,22 +77,6 @@ function LactationClass:useMilk(amount, multiplier, expiration)
     self:remove(amount)
     self:setMultiplier(multiplier or 0)
     self:setExpiration(expiration or self.SBvars.MilkExpiration)
-end
---- Initializes the Lactation
-function LactationClass:onCreatePlayer(player)
-    self.player = player
-    -- setup SandboxVars
-    self.SBvars.MilkCapacity = SBVars.MilkCapacity
-    self.SBvars.MilkExpiration = SBVars.MilkExpiration
-
-    local data = self.player:getModData().ZWBFLactation or {}
-
-    data.IsLactating = data.IsLactating or false
-    data.MilkAmount = data.MilkAmount or 0
-    data.MilkMultiplier = data.MilkMultiplier or 0
-    data.Expiration = data.Expiration or 0
-
-    self.data = data
 end
 
 --- Returns the milk amount
@@ -117,7 +96,7 @@ end
 --- @return string
 function LactationClass:getBoobImage()
     local data = self.data
-    local skinColor = self.Utils:getSkinColor()
+    local skinColor = self.Utils:getSkinColor(self.player)
     local fullness = (data.MilkAmount > self.SBvars.MilkCapacity / 2) and "full" or "empty"
     local basePath = string.format("media/ui/lactation/boobs/color-%s/", skinColor)
     local imageName = ""
@@ -199,20 +178,32 @@ function LactationClass:getMultiplier()
     return data.MilkMultiplier
 end
 
---- Update that should occur every hour
-function LactationClass:onEveryHours()
+--- EVENT LISTERNERS ---
+--- Initializes Lactation when creating the player
+function LactationClass:onCreatePlayer(player)
+    local data = player:getModData().ZWBFLactation or {}
+
+    -- setup SandboxVars
+    self.SBvars.MilkCapacity = SBVars.MilkCapacity
+    self.SBvars.MilkExpiration = SBVars.MilkExpiration
+
+    -- setup data
+    data.IsLactating = data.IsLactating or false
+    data.MilkAmount = data.MilkAmount or 0
+    data.MilkMultiplier = data.MilkMultiplier or 0
+    data.Expiration = data.Expiration or 0
+
+    self.player = player
+    self.data = data
+end
+
+--- Check if the expiration is over and remove lactation if it is
+function LactationClass:onCheckExpiration()
     local data = self.data
-    if not data.IsLactating then return end
-
-    local amount = ZombRand(self.CONSTANTS.AMOUNTS.MIN, self.CONSTANTS.AMOUNTS.MAX)
-    local multiplier = 1 + data.MilkMultiplier
-    data.MilkAmount = (data.MilkAmount + amount) * multiplier
-    data.MilkMultiplier = data.MilkMultiplier - 0.1
-
-    if (data.MilkAmount < 0) then
-        data.MilkAmount = 0
-    elseif data.MilkAmount > self.SBvars.MilkCapacity then
-        data.MilkAmount = self.SBvars.MilkCapacity
+    if data.Expiration > 0 then
+        data.Expiration = data.Expiration - 1
+    elseif data.Expiration <= 0 then
+        self:set(false)
     end
 end
 
@@ -232,13 +223,20 @@ function LactationClass:onEveryOneMinute()
     self:update()
 end
 
---- Check if the expiration is over and remove lactation if it is
-function LactationClass:onCheckExpiration()
+--- Update that should occur every hour
+function LactationClass:onEveryHours()
     local data = self.data
-    if data.Expiration > 0 then
-        data.Expiration = data.Expiration - 1
-    elseif data.Expiration <= 0 then
-        self:set(false)
+    if not data.IsLactating then return end
+
+    local amount = ZombRand(self.CONSTANTS.AMOUNTS.MIN, self.CONSTANTS.AMOUNTS.MAX)
+    local multiplier = 1 + data.MilkMultiplier
+    data.MilkAmount = (data.MilkAmount + amount) * multiplier
+    data.MilkMultiplier = data.MilkMultiplier - 0.1
+
+    if (data.MilkAmount < 0) then
+        data.MilkAmount = 0
+    elseif data.MilkAmount > self.SBvars.MilkCapacity then
+        data.MilkAmount = self.SBvars.MilkCapacity
     end
 end
 

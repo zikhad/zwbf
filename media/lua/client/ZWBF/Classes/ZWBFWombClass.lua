@@ -27,15 +27,6 @@ WombClass.SBvars = {
     FertilityBonus = 50     -- Fertility Bonus of Fertile Trait
 }
 
-WombClass.data = {
-    SpermAmount = 0,        -- amount of semen in womb
-    SpermAmountTotal = 0,   -- total amount of semen
-    CycleDay = 0,           -- day of the menstrual cycle
-    CyclePhase = "",        -- current menstrual cycle phase
-    Fertility = 0,          -- fertility number
-    OnContraceptive = false -- flag for contraceptive
-}
-
 -- CONSTANTS
 WombClass.CONSTANTS = {
     SPERM_LEVEL = 17, -- Number of sperm levels (For UI)
@@ -43,12 +34,6 @@ WombClass.CONSTANTS = {
         MIN = 30,
         MAX = 100
     }
-}
-
-WombClass.Animation = {
-    isAnimation = false, -- flag for when animation is playing
-    delta = 0,           -- animatio delta (0-1) for the current animation
-    duration = 0         -- max time of the duration
 }
 
 WombClass.AnimationsSettings = {
@@ -97,7 +82,21 @@ function WombClass:new(props)
     instance.Utils = props.Utils or require("ZWBF/ZWBFUtils")
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
 
+    -- animation control variables
+    instance.Animation = {
+        isAnimation = false, -- flag for when animation is playing
+        delta = 0,           -- animatio delta (0-1) for the current animation
+        duration = 0         -- max time of the duration
+    }
+
     return instance
+end
+
+--- Update the Womb data
+function WombClass:update()
+    self:updateCyclePhase()
+    self:updateFertility()
+    self.player:getModData().ZWBFWomb = self.data
 end
 
 --- Methods ---
@@ -146,13 +145,6 @@ function WombClass:addSperm(amount)
     data.SpermAmountTotal = data.SpermAmountTotal + amount -- add to total
 end
 
---- Update the Womb data
-function WombClass:update()
-    self:updateCyclePhase()
-    self:updateFertility()
-    self.player:getModData().ZWBFWomb = self.data
-end
-
 --- Modify the variables according to player Traits
 function WombClass:applyTraits()
     local player = self.player
@@ -173,20 +165,25 @@ end
 --- Initialize the Womb when the player is created ---
 function WombClass:onCreatePlayer(player)
     -- setup SandboxVars
-    self.player = player
     self.SBvars.PregnancyRecovery = SBVars.PregnancyRecovery
     self.SBvars.WombMaxCapacity = SBVars.WombMaxCapacity
     self.SBvars.FertilityBonus = SBVars.FertilityBonus
+
     -- Apply Traits that are related to the Womb
     self:applyTraits()
 
-    local data = self.player:getModData().ZWBFWomb or {}
+    local data = player:getModData().ZWBFWomb or {}
 
+    -- setup data
     data.SpermAmount = data.SpermAmount or 0
     data.SpermAmountTotal = data.SpermAmountTotal or 0
     data.CycleDay = data.CycleDay or ZombRand(1, 28)
+    data.cyclePhase = data.cyclePhase or ""
+    data.Fertility = data.Fertility or 0
     data.OnContraceptive = data.OnContraceptive or false
     data.cycleChances = data.cycleChances or self:rollCycleChances()
+
+    self.player = player
     self.data = data
 end
 

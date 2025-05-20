@@ -25,6 +25,40 @@ end
 local ZWBFUIClass = {}
 ZWBFUIClass.__index = ZWBFUIClass
 
+ZWBFUIClass.UIElements = {
+    lactation = {
+        image = "lactation-image",
+        title = "lactation-level-title",
+        level = "lactation-level-image"
+    },
+    womb = {
+        title = "womb-title",
+        image = "womb-image",
+        sperm = {
+            current = {
+                title = "womb-sperm-current-title",
+                amount = "womb-sperm-current-amount",
+            },
+            total = {
+                title = "womb-sperm-total-title",
+                amount = "womb-sperm-total-amount",
+            }
+        },
+        cycle = {
+            title = "womb-cycle-title",
+            phase = {
+                title = "womb-cycle-phase-title",
+                value = "womb-cycle-phase-value",
+            }
+        },
+        fertility = {
+            title = "womb-fertility-title",
+            bar = "womb-fertility-bar",
+            value = "womb-fertility-value"
+        }
+    }
+}
+
 --- Constructor
 function ZWBFUIClass:new(props)
     props = props or {}
@@ -36,6 +70,7 @@ function ZWBFUIClass:new(props)
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
     instance.Lactation = props.Lactation or require("ZWBF/ZWBFLactation")
     instance.DebugMenu = props.DebugMenu or ZWBFDebugMenuClass:new(props)
+    
     instance.UI = nil
     instance.activePanels = {
         lactation = true,
@@ -44,39 +79,6 @@ function ZWBFUIClass:new(props)
     instance.heights = {
         lactation = 0,
         womb = 0
-    }
-    instance.UIElements = {
-        lactation = {
-            image = "lactation-image",
-            title = "lactation-level-title",
-            level = "lactation-level-image"
-        },
-        womb = {
-            title = "womb-title",
-            image = "womb-image",
-            sperm = {
-                current = {
-                    title = "womb-sperm-current-title",
-                    amount = "womb-sperm-current-amount",
-                },
-                total = {
-                    title = "womb-sperm-total-title",
-                    amount = "womb-sperm-total-amount",
-                }
-            },
-            cycle = {
-                title = "womb-cycle-title",
-                phase = {
-                    title = "womb-cycle-phase-title",
-                    value = "womb-cycle-phase-value",
-                }
-            },
-            fertility = {
-                title = "womb-fertility-title",
-                bar = "womb-fertility-bar",
-                value = "womb-fertility-value"
-            }
-        }
     }
 
     return instance
@@ -197,7 +199,6 @@ end
 
 --- Hook up event listeners
 function ZWBFUIClass:registerEvents()
-    -- if not getPlayer():isFemale() then return end
     Events.OnCreateUI.Add(function() self:onCreateUI() end)
     Events.OnCreatePlayer.Add(function(_, player) self:onCreatePlayer(player) end)
     Events.OnPostRender.Add(function() self:onUpdateUI() end)
