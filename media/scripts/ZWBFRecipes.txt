@@ -7,19 +7,6 @@ module ZWBFRecipes
     }
 
     /************************ Milk ************************/
-    recipe Breast Feed Baby
-    {
-        keep [ZWBFRecipes.GetItemTypes.Baby],
-        Result: nil,
-        Category: Cooking,
-        Time: 1500,
-        AnimNode: FeedBaby,
-        Sound: BreastfeedBaby,
-        OnGiveXP: Recipe.OnGiveXP.Cooking3,
-        OnTest: ZWBFRecipes.OnTest.FeedBaby,
-        OnCreate: ZWBFRecipes.OnCreate.FeedBaby,
-    }
-
     recipe Hand Expression in Bottle
     {
         WaterBottleEmpty,
