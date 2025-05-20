@@ -99,7 +99,7 @@ function WombClass:update()
     self:updateCyclePhase()
     self:updateFertility()
     self.player:getModData().ZWBFWomb = self.data
-    triggerEvent("ZWBFWombUpdate", self)
+    triggerEvent("ZWBFWombUpdate", self.data)
 end
 
 --- Methods ---
@@ -146,7 +146,7 @@ function WombClass:addSperm(amount)
     local data = self.data
     data.SpermAmount = data.SpermAmount + amount
     data.SpermAmountTotal = data.SpermAmountTotal + amount -- add to total
-    triggerEvent("ZWBFWombAddSperm", amount)
+    triggerEvent("ZWBFWombAddSperm", self.data, amount)
 end
 
 --- Modify the variables according to player Traits
@@ -584,6 +584,7 @@ function WombClass:registerEvents()
         end)
         LuaEventManager.AddEvent("ZWBFWombUpdate")
         LuaEventManager.AddEvent("ZWBFWombAddSperm")
+        LuaEventManager.AddEvent("ZWBFWombOnRunDown")
     end
     defaultEvents()
     customEvents()
