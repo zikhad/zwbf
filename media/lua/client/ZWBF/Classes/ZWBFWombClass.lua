@@ -99,7 +99,7 @@ function WombClass:update()
     self:updateCyclePhase()
     self:updateFertility()
     self.player:getModData().ZWBFWomb = self.data
-    triggerEvent("ZWBFWombUpdate", self.data)
+    triggerEvent("ZWBFWombUpdate", self)
 end
 
 --- Methods ---
@@ -146,7 +146,7 @@ function WombClass:addSperm(amount)
     local data = self.data
     data.SpermAmount = data.SpermAmount + amount
     data.SpermAmountTotal = data.SpermAmountTotal + amount -- add to total
-    triggerEvent("ZWBFWombAddSperm", self.data, amount)
+    triggerEvent("ZWBFWombAddSperm", self, amount)
 end
 
 --- Modify the variables according to player Traits
@@ -208,14 +208,18 @@ function WombClass:onRunDown(chance)
     chance = chance or 50
     if ZombRand(100) > chance then return end -- chance of not doing anything
 
+    local player = self.player
     local data = self.data
-    if data.SpermAmount > 0 then
-        local amount = ZombRand(50)
+    local storedAmount = data.SpermAmount
+
+    if storedAmount > 0 then
+        local amount = ZombRand(15 + math.floor(storedAmount / 50) )
         local text = string.format("%s %sml", getText("IGUI_ZWBF_UI_Sperm"), amount)
-        local newAmount = data.SpermAmount - amount
-        data.SpermAmount = newAmount < 0 and 0 or newAmount
+        HaloTextHelper.addTextWithArrow(player, text, false, HaloTextHelper.getColorWhite())
+        data.SpermAmount = storedAmount - amount
+        data.SpermAmount = data.SpermAmount > 0 and data.SpermAmount or 0
         self:applyWetness()
-        HaloTextHelper.addTextWithArrow(self.player, text, false, HaloTextHelper.getColorWhite())
+        triggerEvent("ZWBFWombOnRunDown", self, amount)
     end
 end
 
@@ -256,6 +260,7 @@ end
 --- On Every Hours update handler
 function WombClass:onEveryHours()
     self.data.cycleChances = self:rollCycleChances()
+    triggerEvent("ZWBFWombOnEveryHours", self)
 end
 
 -- On Every Dawn
@@ -583,6 +588,7 @@ function WombClass:registerEvents()
             self:setIsAnimation(false)
         end)
         LuaEventManager.AddEvent("ZWBFWombUpdate")
+        LuaEventManager.AddEvent("ZWBFWombOnEveryHours")
         LuaEventManager.AddEvent("ZWBFWombAddSperm")
         LuaEventManager.AddEvent("ZWBFWombOnRunDown")
     end
