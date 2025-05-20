@@ -34,7 +34,6 @@ LactationClass.CONSTANTS = {
         MIN = 0, -- Minimum amount of milk produced
         MAX = 20 -- Maximum amount of milk produced
     },
-    MAX_CAPACITY = 1000, -- Maximum amount of milk that can be stored
     MAX_LEVEL = 5, -- Maximum level of milk
 }
 
@@ -149,13 +148,6 @@ function LactationClass:getIsLactating()
     return data.IsLactating
 end
 
---- [DEBUG] Add Milk to the player
---- @param amount any
-function LactationClass:add(amount)
-    local data = self.data
-    data.MilkAmount = data.MilkAmount + amount
-end
-
 --- Remove Milk from the player
 --- @param amount any
 function LactationClass:remove(amount)
@@ -175,7 +167,6 @@ function LactationClass:clear()
     data.MilkAmount = 0
     data.MilkMultiplier = 0
     data.Expiration = 0
-
 end
 
 --- Set the lactation status
@@ -247,7 +238,6 @@ function LactationClass:onCheckExpiration()
     if data.Expiration > 0 then
         data.Expiration = data.Expiration - 1
     elseif data.Expiration <= 0 then
-        data.Expiration = 0
         self:set(false)
     end
 end
@@ -265,6 +255,15 @@ function LactationClass:registerEvents()
     Events.EveryHours.Add(function()
         self:onEveryHours()
     end)
+end
+
+--- DEBUG FUNCTIONS ---
+LactationClass.Debug = {}
+--- (DEBUG) Add Milk to the player
+--- @param amount any
+function LactationClass.Debug:add(amount)
+    local data = self.data
+    data.MilkAmount = data.MilkAmount + amount
 end
 
 return LactationClass

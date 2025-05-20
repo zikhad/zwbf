@@ -154,12 +154,12 @@ end
 
 function EngorgementClass:registerEvents()
 	-- Register default events
-	local function registerDefaultEvents()
+	local function defaultEvents()
 		Events.OnCreatePlayer.Add(function(_, player) self:onCreatePlayer(player) end)
 		Events.EveryOneMinute.Add(function() self:update() end)
 	end
 	-- Register custom events
-	local function registerCustomEvents()
+	local function customEvents()
 		LuaEventManager.AddEvent("ZWBFEngorgementUpdate")
 		--[[
 			-- Example usage:
@@ -168,8 +168,8 @@ function EngorgementClass:registerEvents()
 			end)
 		]]
 	end
-	registerDefaultEvents()
-	registerCustomEvents()
+	defaultEvents()
+	customEvents()
 end
 
 return EngorgementClass

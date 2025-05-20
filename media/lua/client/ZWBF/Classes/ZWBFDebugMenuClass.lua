@@ -2,6 +2,7 @@ local Events = Events
 local getSpecificPlayer = getSpecificPlayer
 local getText = getText
 local ISContextMenu = ISContextMenu
+local isDebugEnabled = isDebugEnabled
 
 --- This class handles the debug menu for the ZWBF mod.
 --- @class ZWBFDebugMenuClass
@@ -36,21 +37,21 @@ function ZWBFDebugMenuClass:onCreateDebugContextMenu(player, context, items)
 
     self.Utils:addOption(submenu, getText("ContextMenu_Add_Sperm_Title"), getText("ContextMenu_Add_Description"), function() self.Womb:addSperm(100) end)
     self.Utils:addOption(submenu, getText("ContextMenu_Remove_Title"), getText("ContextMenu_Remove_Description"), function() self.Womb:setSpermAmount(0) end)
-    self.Utils:addOption(submenu, getText("ContextMenu_Remove_Total_Title"), getText("ContextMenu_Remove_Total_Description"), function() self.Womb:clearAllSperm() end)
+    self.Utils:addOption(submenu, getText("ContextMenu_Remove_Total_Title"), getText("ContextMenu_Remove_Total_Description"), function() self.Womb.Debug:clearAllSperm() end)
 
     if self.Pregnancy:getIsPregnant() then
         self.Utils:addOption(submenu, getText("ContextMenu_Remove_Pregnancy_Title"), getText("ContextMenu_Remove_Pregnancy_Description"), function() self.Pregnancy:stop() end)
-        self.Utils:addOption(submenu, getText("ContextMenu_Advance_Pregnancy_Title"), getText("ContextMenu_Advance_Pregnancy_Description"), function() self.Pregnancy:advancePregnancy(24) end)
-        self.Utils:addOption(submenu, getText("ContextMenu_Advance_Pregnancy_Labor_Title"), getText("ContextMenu_Advance_Pregnancy_Labor_Description"), function() self.Pregnancy:advanceToLabor() end)
+        self.Utils:addOption(submenu, getText("ContextMenu_Advance_Pregnancy_Title"), getText("ContextMenu_Advance_Pregnancy_Description"), function() self.Pregnancy.Debug:advancePregnancy(24) end)
+        self.Utils:addOption(submenu, getText("ContextMenu_Advance_Pregnancy_Labor_Title"), getText("ContextMenu_Advance_Pregnancy_Labor_Description"), function() self.Pregnancy.Debug:advanceToLabor() end)
     else
         self.Utils:addOption(submenu, getText("ContextMenu_Add_Pregnancy_Title"), getText("ContextMenu_Add_Pregnancy_Description"), function() self.Pregnancy:start() end)
         self.Utils:addOption(submenu, getText("ContextMenu_Add_Cycle_Day_Title"), getText("ContextMenu_Add_Cycle_Day_Description"), function() self.Womb:addCycleDay() end)
-        self.Utils:addOption(submenu, getText("ContextMenu_Next_Cycle_Title"), getText("ContextMenu_Next_Cycle_Description"), function() self.Womb:nextCycle() end)
+        self.Utils:addOption(submenu, getText("ContextMenu_Next_Cycle_Title"), getText("ContextMenu_Next_Cycle_Description"), function() self.Womb.Debug:nextCycle() end)
     end
 
     self.Utils:addOption(submenu, getText("ContextMenu_Milk_Toggle_Lactation_Title"), getText("ContextMenu_Milk_Toggle_Lactation_Description"), function() self.Lactation:set(not self.Lactation:getIsLactating()) end)
     if self.Lactation:getIsLactating() then
-        self.Utils:addOption(submenu, getText("ContextMenu_Milk_Add_Milk_Title"), getText("ContextMenu_Milk_Add_Milk_Description"), function() self.Lactation:add(200) end)
+        self.Utils:addOption(submenu, getText("ContextMenu_Milk_Add_Milk_Title"), getText("ContextMenu_Milk_Add_Milk_Description"), function() self.Lactation.Debug:add(200) end)
         self.Utils:addOption(submenu, getText("ContextMenu_Milk_Clear_Milk_Title"), getText("ContextMenu_Milk_Clear_Milk_Description"), function() self.Lactation:clear() end)
     end
 end

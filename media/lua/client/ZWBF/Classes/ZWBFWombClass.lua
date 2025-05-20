@@ -510,15 +510,17 @@ function WombClass:getImage()
 end
 
 --- DEBUG FUNCTIONS ---
+WombClass.Debug = {}
+
 --- (DEBUG) This function is used to clear All the sperm in the Womb
-function WombClass:clearAllSperm()
+function WombClass.Debug:clearAllSperm()
     local data = self.data
     data.SpermAmount = 0
     data.SpermAmountTotal = 0
 end
 
 --- (DEBUG) Advance the player's menstrual cycle to the next phase
-function WombClass:nextCycle()
+function WombClass.Debug:nextCycle()
     if self.Pregnancy:getIsPregnant() then return end
     local data = self.data
 

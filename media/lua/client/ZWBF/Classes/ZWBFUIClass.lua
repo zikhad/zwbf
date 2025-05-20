@@ -30,14 +30,12 @@ function ZWBFUIClass:new(props)
     props = props or {}
     local instance = setmetatable({}, ZWBFUIClass)
 
-
     instance.CharacterInfoTabManager = props.CharacterInfoTabManager or ZWBFCharacterInfoTabManagerClass:new()
     instance.Utils = props.Utils or require("ZWBF/ZWBFUtils")
     instance.Womb = props.Womb or require("ZWBF/ZWBFWomb")
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
     instance.Lactation = props.Lactation or require("ZWBF/ZWBFLactation")
     instance.DebugMenu = props.DebugMenu or ZWBFDebugMenuClass:new(props)
-
     instance.UI = nil
     instance.activePanels = {
         lactation = true,

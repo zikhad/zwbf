@@ -246,16 +246,6 @@ function PregnancyClass:stop()
     triggerEvent("ZWBFPregnancyStop", self)
 end
 
---- Advances pregnancy progress by a specified number of hours (DEBUG).
-function PregnancyClass:advancePregnancy(hours)
-    self.data.PregnancyCurrent = self.data.PregnancyCurrent + (hours * 60)
-end
-
---- Advances pregnancy to just before labor (DEBUG).
-function PregnancyClass:advanceToLabor()
-    self.data.PregnancyCurrent = self.data.PregnancyDuration - 1
-end
-
 --- Sets labor progress.
 function PregnancyClass:setLaborProgress(progress)
     self.data.LaborProgress = progress
@@ -298,13 +288,17 @@ function PregnancyClass:registerEvents()
     customEvents()
 end
 
--- Instantiate Pregnancy class
--- local Pregnancy = PregnancyClass:new()
+--- DEBUG FUNCTIONS ---
+PregnancyClass.Debug = {}
 
--- Hook Events
+--- (DEBUG) Advances pregnancy progress by a specified number of hours
+function PregnancyClass.Debug:advancePregnancy(hours)
+    self.data.PregnancyCurrent = self.data.PregnancyCurrent + (hours * 60)
+end
 
-
---- Register events to be used by other mods through LuaEventManager
-
+--- (DEBUG) Advances pregnancy to just before labor
+function PregnancyClass.Debug:advanceToLabor()
+    self.data.PregnancyCurrent = self.data.PregnancyDuration - 1
+end
 
 return PregnancyClass
