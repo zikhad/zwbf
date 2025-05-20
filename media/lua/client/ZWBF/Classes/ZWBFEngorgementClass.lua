@@ -146,27 +146,22 @@ function EngorgementClass:update()
 	local level = self:getLevelFromPercentage(fullness)
 	self:moodle(level)
 	self:inflictPain(level)
-
-	--- Trigger the event for other mods to listen
-	triggerEvent("ZWBFEngorgementUpdate", level, fullness);
-
+	triggerEvent("ZWBFEngorgementUpdate", self)
 end
 
 function EngorgementClass:registerEvents()
-	-- Register default events
+	-- Register default Events
 	local function defaultEvents()
-		Events.OnCreatePlayer.Add(function(_, player) self:onCreatePlayer(player) end)
-		Events.EveryOneMinute.Add(function() self:update() end)
+		Events.OnCreatePlayer.Add(function(_, player)
+			self:onCreatePlayer(player)
+		end)
+		Events.EveryOneMinute.Add(function()
+			self:update()
+		end)
 	end
-	-- Register custom events
+	-- Register custom Events Listeners
 	local function customEvents()
 		LuaEventManager.AddEvent("ZWBFEngorgementUpdate")
-		--[[
-			-- Example usage:
-			Events.ZWBFEngorgementUpdate.Add(function(level, fullness)
-				print("Engorgement Pain inflicted with level: " .. level .. " fullness: " .. fullness)
-			end)
-		]]
 	end
 	defaultEvents()
 	customEvents()

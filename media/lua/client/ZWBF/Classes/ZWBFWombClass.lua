@@ -7,6 +7,8 @@ local getText = getText
 local Events = Events
 local SandboxVars = SandboxVars
 local SBVars = SandboxVars.ZWBF
+local triggerEvent = triggerEvent
+local LuaEventManager = LuaEventManager
 
 
 --- This class handles the womb system
@@ -97,6 +99,7 @@ function WombClass:update()
     self:updateCyclePhase()
     self:updateFertility()
     self.player:getModData().ZWBFWomb = self.data
+    triggerEvent("ZWBFWombUpdate", self)
 end
 
 --- Methods ---
@@ -143,6 +146,7 @@ function WombClass:addSperm(amount)
     local data = self.data
     data.SpermAmount = data.SpermAmount + amount
     data.SpermAmountTotal = data.SpermAmountTotal + amount -- add to total
+    triggerEvent("ZWBFWombAddSperm", amount)
 end
 
 --- Modify the variables according to player Traits
@@ -538,6 +542,7 @@ end
 
 --- Register Events
 function WombClass:registerEvents()
+	-- Register default Events
     local function defaultEvents()
         Events.OnCreatePlayer.Add(function(_, player)
             self:onCreatePlayer(player)
@@ -563,6 +568,7 @@ function WombClass:registerEvents()
             self:onDawn()
         end)
     end
+	-- Register custom Events Listeners
     local function customEvents()
         Events.ZWBFPregnancyLaborStart.Add(function(pregnancy)
             self:setIsAnimation(true)
@@ -576,6 +582,8 @@ function WombClass:registerEvents()
         Events.ZWBFPregnancyLaborEnd.Add(function()
             self:setIsAnimation(false)
         end)
+        LuaEventManager.AddEvent("ZWBFWombUpdate")
+        LuaEventManager.AddEvent("ZWBFWombAddSperm")
     end
     defaultEvents()
     customEvents()

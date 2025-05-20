@@ -2,6 +2,8 @@
 local Events = Events
 local ZombRand = ZombRand
 local SandboxVars = SandboxVars
+local triggerEvent = ZWBFEngorgementUpdate
+local LuaEventManager = LuaEventManager
 
 local SBVars = SandboxVars.ZWBF
 
@@ -44,13 +46,14 @@ end
 function LactationClass:update()
     local player = self.player
     local data = self.data
-    
+
     data.MilkAmount = (data.MilkAmount > 0) and data.MilkAmount or 0
     data.MilkMultiplier = (data.MilkMultiplier > 0) and data.MilkMultiplier or 0
     data.IsLactating = data.IsLactating or false
     data.Expiration = (data.Expiration > 0) and data.Expiration or 0
 
     player:getModData().ZWBFLactation = data
+    triggerEvent("ZWBFLactationUpdate", self)
 end
 
 --- Set expiration to the lactation
@@ -77,6 +80,7 @@ function LactationClass:useMilk(amount, multiplier, expiration)
     self:remove(amount)
     self:setMultiplier(multiplier or 0)
     self:setExpiration(expiration or self.SBvars.MilkExpiration)
+    triggerEvent("ZWBFLactationUseMilk", self)
 end
 
 --- Returns the milk amount
@@ -242,17 +246,28 @@ end
 
 --- Register the events
 function LactationClass:registerEvents()
-    Events.OnCreatePlayer.Add(function(_, player)
-        self:onCreatePlayer(player)
-    end)
+	-- Register default Events
+    local function defaultEvents()
+        Events.OnCreatePlayer.Add(function(_, player)
+            self:onCreatePlayer(player)
+        end)
 
-    Events.EveryOneMinute.Add(function()
-        self:onEveryOneMinute()
-    end)
+        Events.EveryOneMinute.Add(function()
+            self:onEveryOneMinute()
+        end)
 
-    Events.EveryHours.Add(function()
-        self:onEveryHours()
-    end)
+        Events.EveryHours.Add(function()
+            self:onEveryHours()
+        end)
+    end
+    -- Register custom Events Listeners
+    local function customEvents()
+        LuaEventManager.AddEvent("ZWBFLactationUpdate")
+        LuaEventManager.AddEvent("ZWBFLactationUseMilk")
+    end
+    defaultEvents()
+    customEvents()
+    
 end
 
 --- DEBUG FUNCTIONS ---
