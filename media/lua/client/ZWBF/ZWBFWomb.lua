@@ -1,6 +1,6 @@
 -- Localized PZ variables
 local Events = Events
-local getActivatedMods = getActiveMods
+local getActivatedMods = getActivatedMods
 
 local WombClass = require("ZWBF/Classes/ZWBFWombClass")
 
