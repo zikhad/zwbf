@@ -126,8 +126,7 @@ function EngorgementClass:inflictPain(level)
 	}
 
 	-- inflict pain until the limit of 25 (minor pain)
-	if (torso:getAdditionalPain() < 25)
-	then
+	if torso:getAdditionalPain() < 25 then
 		torso:setAdditionalPain(torso:getAdditionalPain() + painLevel[tostring(level)])
 	end
 end
@@ -155,7 +154,7 @@ function EngorgementClass:registerEvents()
 		Events.OnCreatePlayer.Add(function(_, player)
 			self:onCreatePlayer(player)
 		end)
-		Events.EveryOneMinute.Add(function()
+		Events.EveryTenMinutes.Add(function()
 			self:update()
 		end)
 	end
