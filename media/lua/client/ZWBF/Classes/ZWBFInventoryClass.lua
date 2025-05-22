@@ -31,36 +31,12 @@ function ZWBFInventoryClass:new(props)
 end
 
 --- Common function to handle item actions
---- @param item any
---- @param player any
---- @param action any
+--- @param item table
+--- @param player table
+--- @param action table
 function ZWBFInventoryClass:handleItemAction(item, player, action)
 	ISInventoryPaneContextMenu.transferIfNeeded(player, item)
 	ISTimedActionQueue.add(action:new(player, item))
-end
-
---- Handler for when Contraceptive is taken
---- @param item any
---- @param player any
---- @param items any
-function ZWBFInventoryClass:OnTake_Contraceptive(item, player, items)
-	self:handleItemAction(item, player, ZWBFActionTakeContraceptive)
-end
-
---- Handler for when Lactaid is taken
---- @param item any
---- @param player any
---- @param items any
-function ZWBFInventoryClass:OnTake_Lactaid(item, player, items)
-	self:handleItemAction(item, player, ZWBFActionTakeLactaid)
-end
-
---- Handler for when Baby is fed
---- @param item any
---- @param player any
---- @param items any
-function ZWBFInventoryClass:OnFeed_Baby(item, player, items)
-	self:handleItemAction(item, player, ZWBFActionFeedBaby)
 end
 
 --- Create context menu for ZomboWinBeingFemale
@@ -79,7 +55,7 @@ function ZWBFInventoryClass:BuildInventoryCM(playerId, context, items)
 				return self.Lactation:getMilkAmount() >= self.Lactation:getBottleAmount()
 			end,
 			handler = function(item)
-				self:OnFeed_Baby(item, player, items)
+				self:handleItemAction(item, player, ZWBFActionFeedBaby)
 			end
 		},
 		{
@@ -93,7 +69,7 @@ function ZWBFInventoryClass:BuildInventoryCM(playerId, context, items)
 				)
 			end,
 			handler = function(item)
-				self:OnTake_Contraceptive(item, player, items)
+				self:handleItemAction(item, player, ZWBFActionTakeContraceptive)
 			end
 		},
 		{
@@ -103,7 +79,7 @@ function ZWBFInventoryClass:BuildInventoryCM(playerId, context, items)
 				return true
 			end,
 			handler = function(item)
-				self:OnTake_Lactaid(item, player, items)
+				self:handleItemAction(item, player, ZWBFActionTakeLactaid)
 			end
 		}
 	}
@@ -122,9 +98,11 @@ end
 
 --- Hook up event listeners
 function ZWBFInventoryClass:registerEvents()
-	Events.OnFillInventoryObjectContextMenu.Add(function(player, context, items)
-		self:BuildInventoryCM(player, context, items)
-	end)
+	Events.OnFillInventoryObjectContextMenu.Add(
+			function(player, context, items)
+				self:BuildInventoryCM(player, context, items)
+			end
+	)
 end
 
 return ZWBFInventoryClass

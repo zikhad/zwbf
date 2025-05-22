@@ -59,20 +59,31 @@ function LactationClass:update()
     player:getModData().ZWBFLactation = data
 end
 
---- Add expiration to the lactation
+--- Set expiration to the lactation
 --- @param days number
-function LactationClass:addExpiration(days)
+function LactationClass:setExpiration(days)
     local player = self.player
     local data = self.data
 
     data.Expiration = 60 * 24 * days -- 60 minutes * 24 hours * days
 
     -- Add 25% of lactation time if player has "Dairy cow" Trait
-    if player:HasTrait("Dairy cow") then
+    if player:HasTrait("DairyCow") then
         data.Expiration = data.Expiration * 1.25;
     end
 end
 
+--- Use milk.
+--- 
+--- Handle milk usage (also affect multiplier and expiration)
+--- @param amount number
+--- @param multiplier number | nil
+--- @param expiration number | nil
+function LactationClass:useMilk(amount, multiplier, expiration)
+    self:remove(amount)
+    self:setMultiplier(multiplier or 0)
+    self:setExpiration(expiration or self.SBvars.MilkExpiration)
+end
 --- Initializes the Lactation
 function LactationClass:onCreatePlayer(player)
     self.player = player
@@ -185,7 +196,7 @@ function LactationClass:setMultiplier(multiplier)
     local player = self.player
 
     -- Add  25% of bonus to the multiplier if player has "Dairy cow" Trait
-    if player:HasTrait("Dairy cow") then
+    if player:HasTrait("DairyCow") then
         data.MilkMultiplier = data.MilkMultiplier * 1.25;
     end
 end
@@ -219,7 +230,7 @@ function LactationClass:onCheckPregnancy()
     if self.Pregnancy:getIsPregnant() and self.Pregnancy:getProgress() > 0.4 then
         self:set(true)
         self:setMultiplier(self.Pregnancy:getProgress())
-        self:addExpiration(self.SBvars.MilkExpiration)
+        self:setExpiration(self.SBvars.MilkExpiration)
     end
 end
 

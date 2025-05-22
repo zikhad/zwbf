@@ -90,9 +90,11 @@ function ZWBFActionFeedBaby:perform()
 	self.baby:setJobDelta(0.0)
 	ISBaseTimedAction.perform(self)
 	self:feedBaby()
-	Lactation:remove(Lactation:getBottleAmount())
-    Lactation:setMultiplier(ZombRandFloat(0.1, 0.3))
-    Lactation:addExpiration(Lactation.SBvars.MilkExpiration)
+    
+    Lactation:useMilk(
+        Lactation:getBottleAmount(),
+        ZombRandFloat(0.1, 0.3)
+    )
 end
 
 function ZWBFActionFeedBaby:new(character, baby)

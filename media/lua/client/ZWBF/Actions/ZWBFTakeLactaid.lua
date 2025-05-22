@@ -41,8 +41,11 @@ function ZWBFActionTakeLactaid:perform()
 	if not Lactation:getIsLactating() then
 		Lactation:set(true)
 	end
-	Lactation:setMultiplier(Lactation:getMultiplier() + ZombRandFloat(0, 0.3))
-	Lactation:addExpiration(Lactation.SBvars.MilkExpiration)
+
+	Lactation:useMilk(
+		0,
+		Lactation:getMultiplier() + ZombRandFloat(0, 0.3)
+	)
 end
 
 function ZWBFActionTakeLactaid:new(character, pills)
