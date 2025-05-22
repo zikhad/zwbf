@@ -126,8 +126,7 @@ function EngorgementClass:inflictPain(level)
 	}
 
 	-- inflict pain until the limit of 25 (minor pain)
-	if (torso:getAdditionalPain() < 25)
-	then
+	if torso:getAdditionalPain() < 25 then
 		torso:setAdditionalPain(torso:getAdditionalPain() + painLevel[tostring(level)])
 	end
 end
@@ -146,30 +145,25 @@ function EngorgementClass:update()
 	local level = self:getLevelFromPercentage(fullness)
 	self:moodle(level)
 	self:inflictPain(level)
-
-	--- Trigger the event for other mods to listen
-	triggerEvent("ZWBFEngorgementUpdate", level, fullness);
-
+	triggerEvent("ZWBFEngorgementUpdate", self)
 end
 
 function EngorgementClass:registerEvents()
-	-- Register default events
-	local function registerDefaultEvents()
-		Events.OnCreatePlayer.Add(function(_, player) self:onCreatePlayer(player) end)
-		Events.EveryOneMinute.Add(function() self:update() end)
+	-- Register default Events
+	local function defaultEvents()
+		Events.OnCreatePlayer.Add(function(_, player)
+			self:onCreatePlayer(player)
+		end)
+		Events.EveryTenMinutes.Add(function()
+			self:update()
+		end)
 	end
-	-- Register custom events
-	local function registerCustomEvents()
+	-- Register custom Events Listeners
+	local function customEvents()
 		LuaEventManager.AddEvent("ZWBFEngorgementUpdate")
-		--[[
-			-- Example usage:
-			Events.ZWBFEngorgementUpdate.Add(function(level, fullness)
-				print("Engorgement Pain inflicted with level: " .. level .. " fullness: " .. fullness)
-			end)
-		]]
 	end
-	registerDefaultEvents()
-	registerCustomEvents()
+	defaultEvents()
+	customEvents()
 end
 
 return EngorgementClass

@@ -85,8 +85,8 @@ function ZWBFInventoryClass:BuildInventoryCM(playerId, context, items)
 	}
 
 	-- Iterate through items and add context menu options
-	for _, v in ipairs(items) do
-		local item = (instanceof(v, "InventoryItem") and v) or v.items[1]
+	for _, value in ipairs(items) do
+		local item = (instanceof(value, "InventoryItem") and value) or value.items[1]
 
 		for _, action in ipairs(itemActions) do
 			if string.find(item:getType(), action.itemType) and action.condition(item) then

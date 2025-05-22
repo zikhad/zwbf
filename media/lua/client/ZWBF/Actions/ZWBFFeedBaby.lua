@@ -11,28 +11,15 @@ local Lactation = require("ZWBF/ZWBFLactation")
 
 local ZWBFActionFeedBaby = ISBaseTimedAction:derive("ZWBFActionFeedBaby")
 
-function ZWBFActionFeedBaby:isValid()
-	return self.character:getInventory():contains(self.baby)
-end
-
-function ZWBFActionFeedBaby:update()
-	self.baby:setJobDelta(self:getJobDelta())
-end
-
-function ZWBFActionFeedBaby:start()
-	self.baby:setJobType(getText("ContextMenu_BreastFeed_Baby"))
-	self.baby:setJobDelta(0.0)
-	self:setActionAnim("FeedBaby")
-	self:setOverrideHandModels(nil, self.baby)
-	self.character:playSound("BreastfeedBaby")
-
-    self:stopCrying()
-
-end
-
-function ZWBFActionFeedBaby:stop()
-	ISBaseTimedAction.stop(self)
-	self.baby:setJobDelta(0.0)
+function ZWBFActionFeedBaby:new(character, baby)
+	local instance = setmetatable({}, self)
+	self.__index = self
+	instance.character = character
+	instance.baby = baby
+	instance.maxTime = 1500
+	instance.stopOnWalk = false
+	instance.stopOnRun = false
+	return instance
 end
 
 function ZWBFActionFeedBaby:stopCrying()
@@ -85,6 +72,30 @@ function ZWBFActionFeedBaby:feedBaby()
     end
 end
 
+function ZWBFActionFeedBaby:isValid()
+	return self.character:getInventory():contains(self.baby)
+end
+
+function ZWBFActionFeedBaby:start()
+	self.baby:setJobType(getText("ContextMenu_BreastFeed_Baby"))
+	self.baby:setJobDelta(0.0)
+	self:setActionAnim("FeedBaby")
+	self:setOverrideHandModels(nil, self.baby)
+	self.character:playSound("BreastfeedBaby")
+
+    self:stopCrying()
+
+end
+
+function ZWBFActionFeedBaby:update()
+	self.baby:setJobDelta(self:getJobDelta())
+end
+
+function ZWBFActionFeedBaby:stop()
+	ISBaseTimedAction.stop(self)
+	self.baby:setJobDelta(0.0)
+end
+
 function ZWBFActionFeedBaby:perform()
 	self.baby:getContainer():setDrawDirty(true)
 	self.baby:setJobDelta(0.0)
@@ -95,17 +106,6 @@ function ZWBFActionFeedBaby:perform()
         Lactation:getBottleAmount(),
         ZombRandFloat(0.1, 0.3)
     )
-end
-
-function ZWBFActionFeedBaby:new(character, baby)
-	local o = setmetatable({}, self)
-	self.__index = self
-	o.character = character
-	o.baby = baby
-	o.maxTime = 1500
-	o.stopOnWalk = false
-	o.stopOnRun = false
-	return o
 end
 
 return ZWBFActionFeedBaby

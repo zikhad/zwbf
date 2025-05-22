@@ -1,5 +1,6 @@
 local Events = Events
-
+local getText = getText
+local getPlayer = getPlayer
 local ZWBFCharacterInfoTabManagerClass = require("ZWBF/Classes/ZWBFCharacterInfoTabManagerClass")
 local ZWBFDebugMenuClass = require("ZWBF/Classes/ZWBFDebugMenuClass")
 
@@ -11,25 +12,57 @@ end
 
 --- This class handles the UI for the ZWBF mod, including the lactation and womb panels.
 --- @class ZWBFUIClass
---- @field UI table UIElement
+--- @field UI table The UI object
 --- @field CharacterInfoTabManager table ZWBFCharacterInfoTabManagerClass
 --- @field Utils table ZWBFUtilsClass
 --- @field Womb table ZWBFWomb
 --- @field Pregnancy table ZWBFPregnancy
 --- @field Lactation table ZWBFLactation
 --- @field DebugMenu table ZWBFDebugMenu
---- @field UI table The UI object
 --- @field activePanels table A table to track the visibility of the panels
 --- @field heights table A table to track the heights of the panels
 --- @field UIElements table A table to track the UI elements
 local ZWBFUIClass = {}
 ZWBFUIClass.__index = ZWBFUIClass
 
+ZWBFUIClass.UIElements = {
+    lactation = {
+        image = "lactation-image",
+        title = "lactation-level-title",
+        level = "lactation-level-image"
+    },
+    womb = {
+        title = "womb-title",
+        image = "womb-image",
+        sperm = {
+            current = {
+                title = "womb-sperm-current-title",
+                amount = "womb-sperm-current-amount",
+            },
+            total = {
+                title = "womb-sperm-total-title",
+                amount = "womb-sperm-total-amount",
+            }
+        },
+        cycle = {
+            title = "womb-cycle-title",
+            phase = {
+                title = "womb-cycle-phase-title",
+                value = "womb-cycle-phase-value",
+            }
+        },
+        fertility = {
+            title = "womb-fertility-title",
+            bar = "womb-fertility-bar",
+            value = "womb-fertility-value"
+        }
+    }
+}
+
 --- Constructor
 function ZWBFUIClass:new(props)
     props = props or {}
     local instance = setmetatable({}, ZWBFUIClass)
-
 
     instance.CharacterInfoTabManager = props.CharacterInfoTabManager or ZWBFCharacterInfoTabManagerClass:new()
     instance.Utils = props.Utils or require("ZWBF/ZWBFUtils")
@@ -37,7 +70,7 @@ function ZWBFUIClass:new(props)
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
     instance.Lactation = props.Lactation or require("ZWBF/ZWBFLactation")
     instance.DebugMenu = props.DebugMenu or ZWBFDebugMenuClass:new(props)
-
+    
     instance.UI = nil
     instance.activePanels = {
         lactation = true,
@@ -46,39 +79,6 @@ function ZWBFUIClass:new(props)
     instance.heights = {
         lactation = 0,
         womb = 0
-    }
-    instance.UIElements = {
-        lactation = {
-            image = "lactation-image",
-            title = "lactation-level-title",
-            level = "lactation-level-image"
-        },
-        womb = {
-            title = "womb-title",
-            image = "womb-image",
-            sperm = {
-                current = {
-                    title = "womb-sperm-current-title",
-                    amount = "womb-sperm-current-amount",
-                },
-                total = {
-                    title = "womb-sperm-total-title",
-                    amount = "womb-sperm-total-amount",
-                }
-            },
-            cycle = {
-                title = "womb-cycle-title",
-                phase = {
-                    title = "womb-cycle-phase-title",
-                    value = "womb-cycle-phase-value",
-                }
-            },
-            fertility = {
-                title = "womb-fertility-title",
-                bar = "womb-fertility-bar",
-                value = "womb-fertility-value"
-            }
-        }
     }
 
     return instance
@@ -199,7 +199,6 @@ end
 
 --- Hook up event listeners
 function ZWBFUIClass:registerEvents()
-    -- if not getPlayer():isFemale() then return end
     Events.OnCreateUI.Add(function() self:onCreateUI() end)
     Events.OnCreatePlayer.Add(function(_, player) self:onCreatePlayer(player) end)
     Events.OnPostRender.Add(function() self:onUpdateUI() end)

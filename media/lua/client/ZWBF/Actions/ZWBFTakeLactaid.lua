@@ -11,6 +11,17 @@ local Lactation = require("ZWBF/ZWBFLactation")
 --- This file creates the Timed Action for when lactaid is taken
 local ZWBFActionTakeLactaid = ISBaseTimedAction:derive("ZWBFActionTakeLactaid")
 
+function ZWBFActionTakeLactaid:new(character, pills)
+	local instance = setmetatable({}, self)
+	self.__index = self
+	instance.character = character
+	instance.pills = pills
+	instance.maxTime = 100
+	instance.stopOnWalk = false
+	instance.stopOnRun = false
+	return instance
+end
+
 function ZWBFActionTakeLactaid:isValid()
 	return self.character:getInventory():contains(self.pills)
 end
@@ -46,17 +57,6 @@ function ZWBFActionTakeLactaid:perform()
 		0,
 		Lactation:getMultiplier() + ZombRandFloat(0, 0.3)
 	)
-end
-
-function ZWBFActionTakeLactaid:new(character, pills)
-	local o = setmetatable({}, self)
-	self.__index = self
-	o.character = character
-	o.pills = pills
-	o.maxTime = 100
-	o.stopOnWalk = false
-	o.stopOnRun = false
-	return o
 end
 
 return ZWBFActionTakeLactaid
