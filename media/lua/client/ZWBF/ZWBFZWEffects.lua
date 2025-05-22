@@ -18,13 +18,14 @@ if getActivatedMods():contains("ZomboWinDefeatStrip") then
 
 		-- Succucbus trait, if sperm is present in the womb, decrease hunger & fatigue, increase endurance
 		if player:HasTrait("succubus") and storedAmount > 0 then
+			local maxModifier = 0.2
+			local scale = storedAmount / (data.SBVars.WombMaxCapacity * 10)
+			local modifier = math.min(scale, maxModifier)
 			local stats = player:getStats()
-			-- TODO: increase the amount recovered based on the amount held
-			-- local amount = ZombRand(15 + math.floor(storedAmount / 50)) * 0.01
-			stats:setHunger(stats:getHunger() - 0.040)
-			stats:setFatigue(stats:getFatigue() - 0.040)
-			stats:setEndurance(stats:getEndurance() + 0.040)
-		end
 
+			stats:setHunger(stats:getHunger() - modifier)
+			stats:setFatigue(stats:getFatigue() - modifier)
+			stats:setEndurance(stats:getEndurance() + modifier)
+		end
 	end)
 end
