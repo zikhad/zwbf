@@ -49,7 +49,7 @@ function ZWBFDebugMenuClass:onCreateDebugContextMenu(player, context, items)
         self.Utils:addOption(submenu, getText("ContextMenu_Next_Cycle_Title"), getText("ContextMenu_Next_Cycle_Description"), function() self.Womb.Debug:nextCycle() end)
     end
 
-    self.Utils:addOption(submenu, getText("ContextMenu_Milk_Toggle_Lactation_Title"), getText("ContextMenu_Milk_Toggle_Lactation_Description"), function() self.Lactation:set(not self.Lactation:getIsLactating()) end)
+    self.Utils:addOption(submenu, getText("ContextMenu_Milk_Toggle_Lactation_Title"), getText("ContextMenu_Milk_Toggle_Lactation_Description"), function() self.Lactation:toggle(not self.Lactation:getIsLactating()) end)
     if self.Lactation:getIsLactating() then
         self.Utils:addOption(submenu, getText("ContextMenu_Milk_Add_Milk_Title"), getText("ContextMenu_Milk_Add_Milk_Description"), function() self.Lactation.Debug:add(200) end)
         self.Utils:addOption(submenu, getText("ContextMenu_Milk_Clear_Milk_Title"), getText("ContextMenu_Milk_Clear_Milk_Description"), function() self.Lactation:clear() end)

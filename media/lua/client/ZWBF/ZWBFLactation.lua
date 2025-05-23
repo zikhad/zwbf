@@ -2,6 +2,6 @@ local LactationClass = require("ZWBF/Classes/ZWBFLactationClass")
 
 local Lactation = LactationClass:new()
 
-Lactation:registerEvents()
+Lactation.Events:register()
 
 return Lactation

@@ -50,7 +50,7 @@ function ZWBFActionTakeLactaid:perform()
 
 	ISBaseTimedAction.perform(self)
 	if not Lactation:getIsLactating() then
-		Lactation:set(true)
+		Lactation:toggle(true)
 	end
 
 	Lactation:useMilk(
