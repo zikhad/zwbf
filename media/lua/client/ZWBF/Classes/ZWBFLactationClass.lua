@@ -48,12 +48,12 @@ function LactationClass:update()
     local data = self.data
 
     data.MilkAmount = (data.MilkAmount > 0) and data.MilkAmount or 0
+    data.MilkAmount = (data.MilkAmount < self.SBvars.MilkCapacity) and data.MilkAmount or self.SBvars.MilkCapacity
     data.MilkMultiplier = (data.MilkMultiplier > 0) and data.MilkMultiplier or 0
     data.IsLactating = data.IsLactating or false
     data.Expiration = (data.Expiration > 0) and data.Expiration or 0
 
     player:getModData().ZWBFLactation = data
-    triggerEvent("ZWBFLactationUpdate", self)
 end
 
 --- Set expiration to the lactation
@@ -62,7 +62,7 @@ function LactationClass:setExpiration(days)
     local player = self.player
     local data = self.data
 
-    data.Expiration = 60 * 24 * days -- 60 minutes * 24 hours * days
+    data.Expiration = 24 * days -- (24h) * days
 
     -- Add 25% of lactation time if player has "Dairy cow" Trait
     if player:HasTrait("DairyCow") then
@@ -77,6 +77,7 @@ end
 --- @param multiplier number | nil
 --- @param expiration number | nil
 function LactationClass:useMilk(amount, multiplier, expiration)
+    local data = self.data
     self:remove(amount)
     self:setMultiplier(multiplier or 0)
     self:setExpiration(expiration or self.SBvars.MilkExpiration)
@@ -86,33 +87,30 @@ end
 --- Returns the milk amount
 --- @return number Womb.data.MilkAmount The amount of milk
 function LactationClass:getMilkAmount()
-    local data = self.data
-    return data.MilkAmount
+    return self.data.MilkAmount
 end
 
 --- Returns the percentage 0-1 of current milk amount
 function LactationClass:getMilkAmountPercentage()
-    local data = self.data
-    return data.MilkAmount / self.SBvars.MilkCapacity
+    return self.data.MilkAmount / self.SBvars.MilkCapacity
 end
 
 --- Returns the image for the boobs
 --- @return string
 function LactationClass:getBoobImage()
-    local data = self.data
-    local skinColor = self.Utils:getSkinColor(self.player)
-    local fullness = (data.MilkAmount > self.SBvars.MilkCapacity / 2) and "full" or "empty"
-    local basePath = string.format("media/ui/lactation/boobs/color-%s/", skinColor)
-    local imageName = ""
-
-    if self.Pregnancy:getIsPregnant() and self.Pregnancy:getProgress() > 0.4 then
-        local stage = (self.Pregnancy:getProgress() < 0.7) and "early" or "late"
-        imageName = string.format("pregnant_%s_%s.png", stage, fullness)
-    else
-        imageName = string.format("normal_%s.png", fullness)
+    local function getImageName()
+        local fullness = (self.data.MilkAmount > self.SBvars.MilkCapacity / 2) and "full" or "empty"
+        if self.Pregnancy:getIsPregnant() and self.Pregnancy:getProgress() > 0.4 then
+            local stage = (self.Pregnancy:getProgress() < 0.7) and "early" or "late"
+            return string.format("pregnant_%s_%s.png", stage, fullness)
+        end
+        return string.format("normal_%s.png", fullness)
     end
 
-    return basePath .. imageName
+    local skinColor = self.Utils:getSkinColor(self.player)
+    local imageName = getImageName()
+
+    return string.format("media/ui/lactation/boobs/color-%s/%s", skinColor, imageName)
 end
 
 --- Returns the image for the milk level
@@ -127,8 +125,7 @@ end
 --- Returns if the player is lactating
 --- @return boolean
 function LactationClass:getIsLactating()
-    local data = self.data
-    return data.IsLactating
+    return self.data.IsLactating
 end
 
 --- Remove Milk from the player
@@ -144,21 +141,15 @@ function LactationClass:getBottleAmount()
     return self.SBvars.MilkCapacity / self.CONSTANTS.MAX_LEVEL
 end
 
---- Clear the milk amount
-function LactationClass:clear()
-    local data = self.data
-    data.MilkAmount = 0
-    data.MilkMultiplier = 0
-    data.Expiration = 0
-end
-
 --- Set the lactation status
 --- @param status boolean
 function LactationClass:set(status)
     local data = self.data
     data.IsLactating = status
-    if (not data.IsLactating) then
-        self:clear()
+    if not data.IsLactating then
+        data.MilkAmount = 0
+        data.MilkMultiplier = 0
+        data.Expiration = 0
     end
 end
 
@@ -166,8 +157,9 @@ end
 --- @param multiplier number
 function LactationClass:setMultiplier(multiplier)
     local data = self.data
-    data.MilkMultiplier = multiplier
     local player = self.player
+
+    data.MilkMultiplier = math.min(multiplier, 1)
 
     -- Add  25% of bonus to the multiplier if player has "Dairy cow" Trait
     if player:HasTrait("DairyCow") then
@@ -178,8 +170,7 @@ end
 --- Get The Milk Multiplier amount
 --- @return number
 function LactationClass:getMultiplier()
-    local data = self.data
-    return data.MilkMultiplier
+    return self.data.MilkMultiplier
 end
 
 --- EVENT LISTERNERS ---
@@ -206,25 +197,18 @@ function LactationClass:onCheckExpiration()
     local data = self.data
     if data.Expiration > 0 then
         data.Expiration = data.Expiration - 1
-    elseif data.Expiration <= 0 then
+    else
         self:set(false)
     end
 end
 
 --- Check if the player is pregnant and if the pregnancy is advanced enough to be lactating
 function LactationClass:onCheckPregnancy()
-    if self.Pregnancy:getIsPregnant() and self.Pregnancy:getProgress() > 0.4 then
-        self:set(true)
-        self:setMultiplier(self.Pregnancy:getProgress())
-        self:setExpiration(self.SBvars.MilkExpiration)
-    end
-end
+    if self.Pregnancy:getProgress() < 0.5 then return end
 
---- Update that should occur every minute
-function LactationClass:onEveryOneMinute()
-    self:onCheckExpiration()
-    self:onCheckPregnancy()
-    self:update()
+    self:set(true)
+    self:setMultiplier(self.Pregnancy:getProgress())
+    self:setExpiration(self.SBvars.MilkExpiration)
 end
 
 --- Update that should occur every hour
@@ -234,26 +218,23 @@ function LactationClass:onEveryHours()
 
     local amount = ZombRand(self.CONSTANTS.AMOUNTS.MIN, self.CONSTANTS.AMOUNTS.MAX)
     local multiplier = 1 + data.MilkMultiplier
+
     data.MilkAmount = data.MilkAmount + (amount * multiplier)
     data.MilkMultiplier = data.MilkMultiplier - 0.1
 
-    if (data.MilkAmount < 0) then
-        data.MilkAmount = 0
-    elseif data.MilkAmount > self.SBvars.MilkCapacity then
-        data.MilkAmount = self.SBvars.MilkCapacity
-    end
+    self:onCheckExpiration()
 end
 
 --- Register the events
 function LactationClass:registerEvents()
-	-- Register default Events
+    -- Register default Events
     local function defaultEvents()
         Events.OnCreatePlayer.Add(function(_, player)
             self:onCreatePlayer(player)
         end)
 
         Events.EveryOneMinute.Add(function()
-            self:onEveryOneMinute()
+            self:update()
         end)
 
         Events.EveryHours.Add(function()
@@ -262,12 +243,14 @@ function LactationClass:registerEvents()
     end
     -- Register custom Events Listeners
     local function customEvents()
-        LuaEventManager.AddEvent("ZWBFLactationUpdate")
         LuaEventManager.AddEvent("ZWBFLactationUseMilk")
+        LuaEventManager.AddEvent("ZWBFLactationOnEveryHour")
+        Events.ZWBFPregnancyProgressOneHour.Add(function(pregnancy)
+            self:onCheckPregnancy()
+        end)
     end
     defaultEvents()
     customEvents()
-    
 end
 
 --- DEBUG FUNCTIONS ---
