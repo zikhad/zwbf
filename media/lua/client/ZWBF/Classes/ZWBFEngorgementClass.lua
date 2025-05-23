@@ -10,6 +10,7 @@ local getTexture = getTexture
 
 --- This class handles the engorgement system
 --- @class EngorgementClass
+--- @field player table The player
 --- @field Lactation table ZWBFLactation
 --- @field isMF boolean Flag to check if MoodleFramework is activated
 local EngorgementClass = {}
@@ -33,10 +34,6 @@ function EngorgementClass:new(props)
     return instance
 end
 
-function EngorgementClass:onCreatePlayer(player)
-	self.player = player
-end
-
 --- Fallback method that will handle the moodle text when there is no MoodleFramework
 --- @param lvl number The level for the moodle text
 function EngorgementClass:noMoodleFramework(lvl)
@@ -55,7 +52,7 @@ function EngorgementClass:noMoodleFramework(lvl)
 
 	HaloTextHelper.addText(
 		player,
-		getText("Moodles_Engorgement_Bad_desc_lvl3" .. parseLvl[tostring(lvl)]),
+		getText(string.format("Moodles_Engorgement_Bad_lvl%s", parseLvl[tostring(lvl)])),
 		HaloTextHelper.getColorRed()
 	)
 end
@@ -131,13 +128,20 @@ function EngorgementClass:inflictPain(level)
 	end
 end
 
---- Update engorgement
---- This method should be called periodically
-function EngorgementClass:update()
+--- EVENTS HANDLERS ---
+EngorgementClass.Events = {}
+
+--- Initializes Lactation when creating the player
+--- @param player table The player Object
+function EngorgementClass.Events:OnCreatePlayer(player)
+	self.player = player
+end
+
+--- Update that should occur Ever Ten Minutes
+function EngorgementClass.Events:EveryTenMinutes()
 	local player = self.player
 	if (
-		player:isNPC()
-		or not player:isFemale()
+		not player:isFemale()
 		or not self.Lactation:getIsLactating()
 	)  then return end
 
@@ -145,25 +149,16 @@ function EngorgementClass:update()
 	local level = self:getLevelFromPercentage(fullness)
 	self:moodle(level)
 	self:inflictPain(level)
-	triggerEvent("ZWBFEngorgementUpdate", self)
+	triggerEvent("ZWBFEngorgementEveryTenMinutes", self)
 end
 
-function EngorgementClass:registerEvents()
+--- Register Events for EngorgementClass
+function EngorgementClass.Events:register()
 	-- Register default Events
-	local function defaultEvents()
-		Events.OnCreatePlayer.Add(function(_, player)
-			self:onCreatePlayer(player)
-		end)
-		Events.EveryTenMinutes.Add(function()
-			self:update()
-		end)
-	end
+	Events.OnCreatePlayer.Add(function(_, player) self.Events:OnCreatePlayer(player) end)
+	Events.EveryTenMinutes.Add(function() self.Events:EveryTenMinutes() end)
 	-- Register custom Events Listeners
-	local function customEvents()
-		LuaEventManager.AddEvent("ZWBFEngorgementUpdate")
-	end
-	defaultEvents()
-	customEvents()
+	LuaEventManager.AddEvent("ZWBFEngorgementEveryTenMinutes")
 end
 
 return EngorgementClass

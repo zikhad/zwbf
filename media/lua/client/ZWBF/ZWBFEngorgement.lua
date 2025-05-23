@@ -2,6 +2,6 @@ local EngorgementClass = require("ZWBF/Classes/ZWBFEngorgementClass")
 
 local Engorgement = EngorgementClass:new()
 
-Engorgement:registerEvents()
+Engorgement.Events:register()
 
 return Engorgement
