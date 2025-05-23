@@ -70,7 +70,7 @@ function ZWBFUIClass:new(props)
     instance.Pregnancy = props.Pregnancy or require("ZWBF/ZWBFPregnancy")
     instance.Lactation = props.Lactation or require("ZWBF/ZWBFLactation")
     instance.DebugMenu = props.DebugMenu or ZWBFDebugMenuClass:new(props)
-    
+
     instance.UI = nil
     instance.activePanels = {
         lactation = true,
@@ -181,7 +181,7 @@ function ZWBFUIClass:onUpdateUI()
 
     -- Milk --
     if self.activePanels.lactation then
-        self.UI[self.UIElements.lactation.image]:setPath(self.Lactation:getBoobImage())
+        self.UI[self.UIElements.lactation.image]:setPath(self.Lactation:getImage())
         self.UI[self.UIElements.lactation.level]:setPath(self.Lactation:getMilkLevelImage())
     end
 
